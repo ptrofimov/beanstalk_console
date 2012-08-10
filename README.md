@@ -1,4 +1,4 @@
-# Beanstalk console
+# Beanstalk console ![English version](http://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/22px-Flag_of_the_United_Kingdom.svg.png)
 
 *Admin console for Beanstalk queue server, written in PHP*
 
@@ -13,3 +13,19 @@
 - Ability to add/kick/delete jobs in tube
 
 **Authors:** Petr Trofimov, Sergey Lysenko
+
+--------------------------------------------------
+
+# Beanstalk консоль ![Русская версия](http://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/22px-Flag_of_Russia.svg.png)
+
+*Административная консоль для сервера очередей Beanstalk, написанная на PHP*
+
+**Возможности**
+
+- Полный список доступных труб
+- Возможность добавить в админку персональный сервер
+- Полная статистика тасков в трубах
+- Realtime обновление с подсветкой изменившихся значений
+- Возможность добавить/протолкнуть/удалить таск из трубы
+
+**Авторы:** Петр Трофимов, Сергей Лысенко
