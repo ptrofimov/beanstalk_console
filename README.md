@@ -29,3 +29,7 @@
 - Возможность добавить/протолкнуть/удалить таск из трубы
 
 **Авторы:** Петр Трофимов, Сергей Лысенко
+
+--------------------------------------------------
+
+*Keywords: beanstalk, beanstalkd, queue, console, gui, admin, web admin, monitoring, stats, interface*
