@@ -60,9 +60,13 @@ class BeanstalkInterface
 		
 		foreach ( $this->_client->statsTube( $tube ) as $key => $value )
 		{
-			$stats[] = array( 
-				'key' => $nameTube[ $key ], 
-				'value' => $value, 
+			if (! array_key_exists($key, $nameTube)) {
+				continue;
+			}
+
+			$stats[] = array(
+				'key' => $nameTube[ $key ],
+				'value' => $value,
 				'descr' => isset( $descr[ $key ] ) ? $descr[ $key ] : '' );
 		}
 		return $stats;
