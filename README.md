@@ -32,4 +32,4 @@
 
 --------------------------------------------------
 
-*Keywords: beanstalk, beanstalkd, queue, console, gui, admin, web admin, monitoring, stats, interface*
+*Keywords: beanstalk, beanstalkd, queue, console, gui, admin, web admin, monitoring, stats, interface, php*
