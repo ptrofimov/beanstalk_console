@@ -12,6 +12,8 @@
 - Auto-update realtime with changes highlighting
 - Ability to add/kick/delete jobs in tube
 
+[Download and enjoy!](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip)
+
 **Authors:** Petr Trofimov, Sergey Lysenko
 
 --------------------------------------------------
@@ -27,6 +29,8 @@
 - Полная статистика тасков в трубах
 - Realtime обновление с подсветкой изменившихся значений
 - Возможность добавить/протолкнуть/удалить таск из трубы
+
+[Скачивайте и наслаждайтесь!](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip)
 
 **Авторы:** Петр Трофимов, Сергей Лысенко
 
