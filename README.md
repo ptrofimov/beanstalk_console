@@ -16,7 +16,7 @@
 
 **Installation**
 
-[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), put unzipped files to web-server dir and enjoy!
+[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), put unzipped files to your www dir and enjoy!
 
 **Authors:** Petr Trofimov, Sergey Lysenko
 
@@ -28,13 +28,17 @@
 
 **Возможности**
 
+- Общий список серверов в конфиге для всех пользователей
+- Каждый пользователь может добавить свой персональный сервер
 - Полный список доступных труб
-- Возможность добавить в админку персональный сервер
 - Полная статистика тасков в трубах
-- Realtime обновление с подсветкой изменившихся значений
-- Возможность добавить/протолкнуть/удалить таск из трубы
+- Realtime-обновление с подсветкой изменившихся значений
+- Вы можете просматривать таски в каждой трубе (ready/delayed/buried)
+- Вы можете выполнять операции с тасками в каждой трубе (add/kick/delete)
 
-[Скачивайте и наслаждайтесь!](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip)
+**Установка**
+
+[Скачайте](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), положите распакованные файлы в www папку и наслаждайтесь!
 
 **Авторы:** Петр Трофимов, Сергей Лысенко
 
