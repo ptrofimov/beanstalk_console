@@ -6,13 +6,17 @@
 
 **Features**
 
+- Common list of servers in config for all users
+- Each user can add its own personal Beanstalkd server
 - Full list of available tubes
-- Ability to add your personal queue server
 - Complete statistics about jobs in tubes
-- Auto-update realtime with changes highlighting
-- Ability to add/kick/delete jobs in tube
+- Realtime auto-update with highlighting of changed values
+- You can view jobs in ready/delayed/buried states in every tube
+- You can add/kick/delete jobs in every tube
 
-[Download and enjoy!](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip)
+**Installation**
+
+[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), put unzipped files to web-server dir and enjoy!
 
 **Authors:** Petr Trofimov, Sergey Lysenko
 
