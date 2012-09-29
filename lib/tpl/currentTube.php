@@ -47,7 +47,7 @@
 		    </div>
 			<div class="span9">
 				<b>Job data:</b><br />
-				<pre><code><?=trim(var_export($job['data'],true), "'");?></code></pre>			
+				<pre><code><?=htmlspecialchars(trim(var_export($job['data'],true), "'"), ENT_COMPAT)?></code></pre>	
 			</div>
 		</div>		
 		<?php else:?>
