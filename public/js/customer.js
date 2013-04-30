@@ -2,6 +2,7 @@ $(document).ready(
 		function() {
 
 			var timer;
+            var doAutoRefresh=false;
 
 			__init();
 
@@ -43,6 +44,7 @@ $(document).ready(
 						$('#autoRefresh i').toggleClass('icon-white');
 					} else {
 						clearTimeout(timer);
+                        doAutoRefresh=false;
 						$('#autoRefresh').toggleClass('btn-success');
 						$('#autoRefresh i').toggleClass('icon-white');
 					}
@@ -181,15 +183,21 @@ $(document).ready(
 				}
 				var res;
 
+                doAutoRefresh=true;
 				$.ajax({
 					'url' : url,
 					'data' : params,
 					'success' : function(data) {
-						var html = $('#idAllTubes').html();
-						$('#idAllTubes').html(data);
-						$('#idAllTubesCopy').html(html);
-						updateTable();
-						timer = setTimeout(reloader, 500);
+                        if (doAutoRefresh)
+                        {
+                            // wrapping all of this to prevent last update
+                            // after you turn it off
+                            var html = $('#idAllTubes').html();
+                            $('#idAllTubes').html(data);
+                            $('#idAllTubesCopy').html(html);
+                            updateTable();
+                            timer = setTimeout(reloader, 500);
+                        }
 					},
 					'type' : 'GET',
 					'dataType' : 'html',
