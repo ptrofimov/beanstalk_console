@@ -6,18 +6,18 @@
 	    <thead>
 	      	<tr>
 			<?php foreach(reset($tubesStats) as $item):?>
-				<th title="<?=$item['descr']?>"><?=$item['key']?></th>
+				<th title="<?php echo $item['descr']?>"><?php echo $item['key']?></th>
 			<?php endforeach;?>
 			</tr>
 	    </thead>
 	    <tbody>			
 		<?php foreach($tubesStats as $row):?>
-			<tr id="tube_<?=$row[0]['value']?>">
+			<tr id="tube_<?php echo $row[0]['value']?>">
 			<?php foreach($row as $item):?>
 				<?php if($item['key']=='name'):?>
-					<td><a href="?server=<?=$server?>&tube=<?=$item['value']?>"><?=$item['value']?></a></td>
+					<td><a href="?server=<?php echo $server?>&tube=<?php echo $item['value']?>"><?php echo $item['value']?></a></td>
 				<?php else:?>
-					<td><?=$item['value']?></td>
+					<td><?php echo $item['value']?></td>
 				<?php endif?>
 			<?php endforeach;?>
 			</tr>
