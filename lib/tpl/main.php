@@ -20,8 +20,8 @@
     </style>
     
     <script>
-    	var url = "./?server=<?=$server?>";
-    	var contentType = "<?=isset($contentType)?$contentType:''?>";
+    	var url = "./?server=<?php echo $server?>";
+    	var contentType = "<?php echo isset($contentType)?$contentType:''?>";
     </script>
     
     <link href="./css/bootstrap-responsive.css" rel="stylesheet">
@@ -59,7 +59,7 @@
 	            </a>
 	            <ul class="dropdown-menu" id="listServers">
 	            <?php foreach($config['servers'] as $item):?> 
-					<li><a href="./?server=<?=$item?>"><?=$item?></a></li>
+					<li><a href="./?server=<?php echo $item?>"><?php echo $item?></a></li>
 				<?php endforeach?>              
 	            </ul>
           	</div>
@@ -67,7 +67,7 @@
           
           <div class="nav-collapse">
             <ul class="nav">
-            	<?php if(!empty($server)):?><li class="active"><a href="?server=<?=$server?>"><?=$server?></a></li><?php endif;?>
+            	<?php if(!empty($server)):?><li class="active"><a href="?server=<?php echo $server?>"><?php echo $server?></a></li><?php endif;?>
             </ul>
           </div><!--/.nav-collapse -->
         </div>        
@@ -85,7 +85,7 @@
 <?php if(!empty($errors)): ?>
 	<h2>Errors</h2>
 	<?php foreach ($errors as $item):?>		
-		<p><?=$item?></p>
+		<p><?php echo $item?></p>
 	<?php endforeach;?>	
 	<a href="./"><< back</a>
 <?php else:?>     
@@ -101,8 +101,8 @@
 	<?php elseif(!in_array($tube,$tubes)):?>
 	
 	<!-- Tube not found -->
-		<?=sprintf('Tube "%s" not found or it is empty',$tube)?>
-		<br><br><a href="./?server=<?=$server?>"> << back </a>
+		<?php echo sprintf('Tube "%s" not found or it is empty',$tube)?>
+		<br><br><a href="./?server=<?php echo $server?>"> << back </a>
 	<!-- End Tube not found -->
 	 
 	<?php else:?>
