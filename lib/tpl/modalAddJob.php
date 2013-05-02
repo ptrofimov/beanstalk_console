@@ -14,7 +14,7 @@
 		    <div class="control-group">
 		   		<label class="control-label" for="focusedInput">*Tube name</label>
 		        <div class="controls">
-		        	<input class="input-xlarge focused" id="tubeName" type="text" value="<?=$tube?>">
+		        	<input class="input-xlarge focused" id="tubeName" type="text" value="<?php echo $tube?>">
 		        </div>
 		    </div>
 		    <div class="control-group">
