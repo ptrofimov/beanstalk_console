@@ -20,7 +20,7 @@
     </style>
     
     <script>
-    	var url = "./?server=<?php echo $server?>";
+    	var url = "./index.php?server=<?php echo $server?>";
     	var contentType = "<?php echo isset($contentType)?$contentType:''?>";
     </script>
     
