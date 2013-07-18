@@ -39,8 +39,9 @@ class BeanstalkInterface
 			'current-jobs-buried' => 'the number of buried jobs in this tube', 
 			'total-jobs' => 'the cumulative count of jobs created in this tube', 
 			'current-waiting' => 'the number of open connections that have issued a reserve command while watching this tube but not yet received a response', 
-			'pause' => 'the number of seconds the tube has been paused for', 
-			'cmd-pause-tube' => 'the cumulative number of pause-tube commands for this tube', 
+			'cmd-delete' => 'the cumulative number of delete commands for this tube',
+			'pause' => 'the number of seconds the tube has been paused for',
+			'cmd-pause-tube' => 'the cumulative number of pause-tube commands for this tube',
 			'pause-time-left' => 'the number of seconds until the tube is un-paused' );
 		
 		$nameTube = array( 
@@ -54,10 +55,10 @@ class BeanstalkInterface
 			'current-using' => 'Using', 
 			'current-watching' => 'Watching', 
 			'current-waiting' => 'Waiting', 
-			'cmd-pause-tube' => 'Pause(cmd)', 
-			'pause' => 'Pause(sec)', 
+			'cmd-delete' => 'Delete(cmd)',
+			'cmd-pause-tube' => 'Pause(cmd)',
+			'pause' => 'Pause(sec)',
 			'pause-time-left' => 'Pause(left)' );
-		
 		foreach ( $this->_client->statsTube( $tube ) as $key => $value )
 		{
 			if (! array_key_exists($key, $nameTube)) {

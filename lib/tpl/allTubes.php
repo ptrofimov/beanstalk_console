@@ -6,7 +6,7 @@
 </ul>
 
 <section id="summaryTable">
-  <table class="table table-bordered table-striped">
+  <table class="table table-striped table-hover">
     <thead>
         <tr>
         <?php foreach(reset($tubesStats) as $item):?>
