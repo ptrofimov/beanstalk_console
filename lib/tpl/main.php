@@ -14,6 +14,7 @@
     </script>
 </head>
 <body>
+<?php /*?>
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -58,7 +59,7 @@
         <button type="submit" id="saveServer" class="btn btn-primary">Add</button>
     </div>
 </div>
-<!-- End Header Line -->
+<?php */?>
 
 <?php if(!empty($errors)): ?>
 <h2>Errors</h2>
