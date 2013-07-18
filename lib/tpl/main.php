@@ -9,6 +9,7 @@
 
     <!-- Le styles -->
     <link href="./css/bootstrap.css" rel="stylesheet">
+    <script src="/assets/vendor/jquery/jquery.js"></script>
     
     <style type="text/css">
       body {
@@ -121,7 +122,6 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./js/jquery.js"></script>
     <script src="./js/jquery.color.js"></script>
     <script src="./js/jquery.cookie.js"></script>
     <script src="./js/bootstrap-transition.js"></script>
