@@ -1,8 +1,7 @@
 
 <ul class="breadcrumb lead">
     <li><a href="/">Home</a> <span class="divider">/</span></li>
-    <li><a href="?server=<?php echo $server?>">Server &laquo;<?php echo $server?>&raquo;</a> <span class="divider">/</span></li>
-    <li class="active">Tubes</li>
+    <li class="active">Server &laquo;<?php echo $server?>&raquo;</li>
 </ul>
 
 <section id="summaryTable">

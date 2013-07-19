@@ -62,41 +62,28 @@
 <?php */?>
 
 <?php if(!empty($errors)): ?>
-<h2>Errors</h2>
+    <h2>Errors</h2>
     <?php foreach ($errors as $item):?>
-    <p><?php echo $item?></p>
-        <?php endforeach;?>
-<a href="./"><< back</a>
-    <?php else:?>
-    <?php if(!$tube):?>
-
-    <!-- Table All Tube -->
-    <div id="idAllTubes">
-        <?php require_once '../lib/tpl/allTubes.php';?>
-    </div>
-    <div id="idAllTubesCopy" style="display:none"></div>
-    <!-- End Table All Tube -->
-
-        <?php elseif(!in_array($tube,$tubes)):?>
-
-    <!-- Tube not found -->
+        <p><?php echo $item?></p>
+    <?php endforeach;?>
+    <a href="./"><< back</a>
+<?php else:?>
+    <?php if(!$server):?>
+        <?php include(dirname(__FILE__) . '/serversList.php')?>
+    <?php elseif(!$tube):?>
+        <div id="idAllTubes">
+            <?php require_once '../lib/tpl/allTubes.php';?>
+        </div>
+        <div id="idAllTubesCopy" style="display:none"></div>
+    <?php elseif(!in_array($tube,$tubes)):?>
         <?php echo sprintf('Tube "%s" not found or it is empty',$tube)?>
-    <br><br><a href="./?server=<?php echo $server?>"> << back </a>
-    <!-- End Tube not found -->
-
-        <?php else:?>
-
-    <!-- Table current Tube -->
+        <br><br><a href="./?server=<?php echo $server?>"> << back </a>
+    <?php else:?>
         <?php require_once '../lib/tpl/currentTube.php';?>
-    <!-- End Table current Tube -->
-
-        <?php endif;?>
-
-
-<!-- Modal window add job -->
-    <?php require_once '../lib/tpl/modalAddJob.php';?>
-<!-- End Modal window add job -->
     <?php endif;?>
+
+    <?php require_once '../lib/tpl/modalAddJob.php';?>
+<?php endif;?>
 
 <script src="/assets/vendor/jquery/jquery.js"></script>
 <script src="./js/jquery.color.js"></script>

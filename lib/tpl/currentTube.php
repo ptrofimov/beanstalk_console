@@ -2,8 +2,7 @@
 <ul class="breadcrumb lead">
     <li><a href="/">Home</a> <span class="divider">/</span></li>
     <li><a href="?server=<?php echo $server?>">Server &laquo;<?php echo $server?>&raquo;</a> <span class="divider">/</span></li>
-    <li><a href="?server=<?php echo $server?>&tube=<?php echo $tube?>">Tube &laquo;<?php echo $tube?>&raquo;</a> <span class="divider">/</span></li>
-    <li class="active">Jobs</li>
+    <li class="active">Tube &laquo;<?php echo $tube?>&raquo;</li>
 </ul>
 
 	<table class="table table-bordered table-striped styled">
