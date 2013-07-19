@@ -7,19 +7,13 @@ $(document).ready(
         __init();
 
         function __init() {
-            $('#addServer').on('click', function () {
-                $('#subnavServer').fadeToggle("fast");
+            $('#servers-add .btn-primary').click(function () {
+                addServer($('#host').val(), $('#port').val());
+                $("#host,#port").val('');
+                $('#servers-add').modal('hide');
+                window.location.href = window.location.href;
                 return false;
             });
-            $('#saveServer').on('click', function () {
-                addServer();
-                $('#subnavServer').fadeToggle("fast");
-                $("#port").val('')
-                $("#server").val('')
-
-                return false;
-            });
-
             $('#addJob').on('click', function () {
                 $('#modalAddJob').modal('toggle');
                 return false;
@@ -57,45 +51,21 @@ $(document).ready(
                 var jn = formatJson(cn);
                 $('pre code').html(jn);
             }
-
-            // Выстраиваем листинг серверов из куки
-            readServersFromCookies();
         }
 
-        function addServer() {
-            server = $("#server").val();
-            port = $("#port").val();
-
-            if (port && server) {
+        function addServer(host, port) {
+            if (host && port) {
                 myCoockie = $.cookie("beansServers");
                 if (myCoockie == null) {
-                    server = server + ":" + port;
+                    server = host + ":" + port;
                 } else {
-                    server = myCoockie + ";" + server + ":" + port;
+                    server = myCoockie + ";" + host + ":" + port;
                 }
                 $.cookie("beansServers", server, {
                     expires:365
                 });
-
-                readServersFromCookies();
             } else {
                 alert("Some fields empty..");
-            }
-        }
-
-        function readServersFromCookies() {
-            $('.rawServer').empty();
-            if ($.cookie("beansServers")) {
-                myCoockie = $.cookie("beansServers").split(';');
-                if (myCoockie.length > 0) {
-                    $('<li class="divider"></li>').appendTo('#listServers');
-
-                    for (var i = 0; i < myCoockie.length; i++) {
-                        $(
-                            '<li class="rawServer"><a href="./?server=' + myCoockie[i] + '">' + myCoockie[i]
-                                + '</a></li>').appendTo('#listServers');
-                    }
-                }
             }
         }
 
