@@ -2,10 +2,6 @@
 $servers = $console->getServers();
 ?>
 
-<div class="page-header">
-    <h1 class="text-info">Hello!</h1>
-</div>
-
 <?php if(!empty($servers)):?>
     <ul class="breadcrumb lead">
         <li class="active">Beanstalkd console</li>
@@ -27,6 +23,9 @@ $servers = $console->getServers();
         </tbody>
     </table>
 <?php else:?>
+    <div class="page-header">
+        <h1 class="text-info">Hello!</h1>
+    </div>
     <p>
         This is Beanstalk console, web-interface for
         <a href="http://kr.github.io/beanstalkd/" target="_blank">simple and fast work queue</a>
@@ -40,12 +39,12 @@ $servers = $console->getServers();
     </p>
 <?php endif?>
 
-<br /><a href="#servers-add" role="button" class="btn btn-info btn-large" data-toggle="modal">Add server</a>
+<br /><a href="#servers-add" role="button" class="btn btn-info" data-toggle="modal">Add server</a>
 
 <div id="servers-add" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="servers-add-label">Add server</h3>
+        <h3 id="servers-add-label" class="text-info">Add server</h3>
     </div>
     <div class="modal-body">
         <form class="form-horizontal">
@@ -58,19 +57,19 @@ $servers = $console->getServers();
             <div class="control-group">
                 <label class="control-label" for="port">Port</label>
                 <div class="controls">
-                    <input type="text" id="port" value="<?php echo Pheanstalk::DEFAULT_PORT?>">
+                    <input type="text" id="port" placeholder="default: <?php echo Pheanstalk::DEFAULT_PORT?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="ttl">TTL</label>
                 <div class="controls">
-                    <input type="text" id="ttl" value="<?php echo Pheanstalk_Connection::DEFAULT_CONNECT_TIMEOUT?>">
+                    <input type="text" id="ttl" placeholder="default: <?php echo Pheanstalk_Connection::DEFAULT_CONNECT_TIMEOUT?> sec">
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary">Add server</button>
+        <button class="btn btn-info">Add server</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
     </div>
 </div>

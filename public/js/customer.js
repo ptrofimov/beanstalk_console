@@ -7,7 +7,7 @@ $(document).ready(
         __init();
 
         function __init() {
-            $('#servers-add .btn-primary').click(function () {
+            $('#servers-add .btn-info').click(function () {
                 addServer($('#host').val(), $('#port').val());
                 $("#host,#port").val('');
                 $('#servers-add').modal('hide');
