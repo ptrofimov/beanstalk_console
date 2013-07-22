@@ -14,7 +14,7 @@
     </script>
 </head>
 <body>
-
+<div class="container">
 <?php if(!empty($errors)): ?>
     <h2>Errors</h2>
     <?php foreach ($errors as $item):?>
@@ -38,6 +38,7 @@
 
     <?php require_once '../lib/tpl/modalAddJob.php';?>
 <?php endif;?>
+</div>
 
 <script src="/assets/vendor/jquery/jquery.js"></script>
 <script src="./js/jquery.color.js"></script>

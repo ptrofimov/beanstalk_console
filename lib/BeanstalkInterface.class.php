@@ -16,6 +16,11 @@ class BeanstalkInterface
 		sort( $tubes );
 		return $tubes;
 	}
+
+    public function getServerStats()
+    {
+        return $this->_client->stats();
+    }
 	
 	public function getTubesStats()
 	{

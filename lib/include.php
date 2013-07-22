@@ -88,12 +88,6 @@ class Console
 
         if (!isset($_GET['server'])) {
             return;
-//            if (!isset($this->_globalVar['config']['servers'][0])) {
-//                $this->_errors[] = 'Please define Beanstalk servers in $config["servers"] (include.php)';
-//            } else {
-//                header(sprintf('Location: ./index.php?server=%s', $this->_globalVar['config']['servers'][0]));
-//                exit();
-//            }
         }
 
         try {
