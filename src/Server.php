@@ -1,14 +1,14 @@
 <?php
-class Server
+class Server extends Model
 {
     /** @var string */
-    private $host;
+    protected $host;
     /** @var int */
-    private $port;
+    protected $port;
     /** @var int */
-    private $ttl;
+    protected $ttl;
 
-    public function __construct($host, $port, $ttl)
+    protected function __construct($host, $port, $ttl)
     {
         $this->host = (string) $host;
         $this->port = (int) $port;
