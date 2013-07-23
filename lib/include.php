@@ -40,7 +40,14 @@ class Console
 
     public function getServerStats($server)
     {
+        try {
+            $interface = new BeanstalkInterface($server);
+            $stats = $interface->getServerStats();
+        } catch (Pheanstalk_Exception_ConnectionException $e) {
+            $stats = [];
+        }
 
+        return $stats;
     }
 
     protected function __init()

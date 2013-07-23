@@ -1,15 +1,27 @@
 <?php
 $servers = $console->getServers();
+$visible = array(
+    'current-jobs-urgent',
+    'current-jobs-ready',
+    'current-jobs-reserved',
+    'current-jobs-delayed',
+    'current-jobs-buried',
+    'current-tubes',
+    'current-connections',
+);
 ?>
 
 <?php if(!empty($servers)):?>
     <ul class="breadcrumb lead">
-        <li class="active">Beanstalkd console</li>
+        <li class="active">Beanstalk console</li>
     </ul>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="servers-index">
         <thead>
             <tr>
                 <th>Server</th>
+                <?php foreach($console->getServerStats(reset($servers)) as $key => $item):?>
+                    <th class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>" title="<?php echo $item['description']?>"><?php echo $key?></th>
+                <?php endforeach?>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -17,6 +29,9 @@ $servers = $console->getServers();
             <?php foreach($servers as $server):?>
                 <tr>
                     <td><a href="?server=<?php echo $server?>"><?php echo $server?></a></td>
+                    <?php foreach($console->getServerStats($server) as $key => $item):?>
+                        <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>"><?php echo htmlspecialchars($item['value'])?></td>
+                    <?php endforeach?>
                     <td><a class="btn" href="?action=serversRemove&removeServer=<?php echo $server?>">Remove</a></td>
                 </tr>
             <?php endforeach?>
