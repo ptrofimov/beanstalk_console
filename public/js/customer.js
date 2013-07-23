@@ -18,6 +18,16 @@ $(document).ready(
                 $('#modalAddJob').modal('toggle');
                 return false;
             });
+            $('#filter input[type=checkbox]').click(function () {
+                $('table')
+                    .find('[name=' + $(this).attr('name') + ']')
+                    .toggle($(this).is(':checked'));
+                var names = [];
+                $('#filter input:checked').each(function () {
+                    names.push($(this).attr('name'));
+                });
+                $.cookie('filter', names, {expires:365});
+            });
 
             $('#tubeSave').on('click', function () {
                 var result = addNewJob();

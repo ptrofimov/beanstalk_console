@@ -1,20 +1,27 @@
 <?php
 $servers = $console->getServers();
-$visible = array(
-    'current-jobs-urgent',
-    'current-jobs-ready',
-    'current-jobs-reserved',
-    'current-jobs-delayed',
-    'current-jobs-buried',
-    'current-tubes',
-    'current-connections',
-);
+if (!empty($_COOKIE['filter'])) {
+    $visible = explode(',', $_COOKIE['filter']);
+} else {
+    $visible = array(
+        'current-jobs-urgent',
+        'current-jobs-ready',
+        'current-jobs-reserved',
+        'current-jobs-delayed',
+        'current-jobs-buried',
+        'current-tubes',
+        'current-connections',
+    );
+}
 ?>
 
 <?php if(!empty($servers)):?>
     <ul class="breadcrumb lead">
         <li class="active">Beanstalk console</li>
     </ul>
+    <div class="text-right">
+        <a href="#filter" role="button" class="btn btn-info" data-toggle="modal">Filter columns</a>
+    </div>
     <table class="table table-striped table-hover" id="servers-index">
         <thead>
             <tr>
@@ -80,5 +87,30 @@ $visible = array(
     <div class="modal-footer">
         <button class="btn btn-info">Add server</button>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    </div>
+</div>
+
+<div id="filter" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="filter-label" class="text-info">Filter columns</h3>
+    </div>
+    <div class="modal-body">
+        <form>
+            <?php foreach($console->getServerStats(reset($servers)) as $key => $item):?>
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" name="<?php echo $key?>" <?php if(in_array($key, $visible)) echo 'checked="checked"'?>>
+                            <b><?php echo $key?></b>
+                            <br /><?php echo $item['description']?>
+                        </label>
+                    </div>
+                </div>
+            <?php endforeach?>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
 </div>
