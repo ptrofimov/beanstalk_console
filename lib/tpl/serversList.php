@@ -57,13 +57,7 @@ $servers = $console->getServers();
             <div class="control-group">
                 <label class="control-label" for="port">Port</label>
                 <div class="controls">
-                    <input type="text" id="port" placeholder="default: <?php echo Pheanstalk::DEFAULT_PORT?>">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="ttl">TTL</label>
-                <div class="controls">
-                    <input type="text" id="ttl" placeholder="default: <?php echo Pheanstalk_Connection::DEFAULT_CONNECT_TIMEOUT?> sec">
+                    <input type="text" id="port" value="<?php echo Pheanstalk::DEFAULT_PORT?>">
                 </div>
             </div>
         </form>

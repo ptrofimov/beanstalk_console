@@ -10,8 +10,7 @@ function __autoload($class)
 }
 
 require_once 'BeanstalkInterface.class.php';
-
-$config = array('servers' => array( /* Write here list of your servers */));
+require_once dirname(__FILE__) . '/../config.php';
 
 $server = !empty($_GET['server']) ? $_GET['server'] : '';
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
@@ -37,6 +36,11 @@ class Console
     public function getServers()
     {
         return $this->servers;
+    }
+
+    public function getServerStats($server)
+    {
+
     }
 
     protected function __init()

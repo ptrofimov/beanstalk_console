@@ -54,7 +54,7 @@ $(document).ready(
         }
 
         function addServer(host, port) {
-            if (host && port) {
+            if (host) {
                 myCoockie = $.cookie("beansServers");
                 if (myCoockie == null) {
                     server = host + ":" + port;
