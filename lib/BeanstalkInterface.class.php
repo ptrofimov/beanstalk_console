@@ -17,7 +17,7 @@ class BeanstalkInterface
         return $tubes;
     }
 
-    public function getServerStatsFields()
+    public static function getServerStatsFields()
     {
         return array(
             'binlog-current-index' => 'the index of the current binlog file being written to. If binlog is not active this value will be 0',

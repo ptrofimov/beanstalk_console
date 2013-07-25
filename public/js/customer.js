@@ -27,6 +27,7 @@ $(document).ready(
                     names.push($(this).attr('name'));
                 });
                 $.cookie('filter', names, {expires:365});
+                $('.row-full').attr('colspan', names.length);
             });
 
             $('#tubeSave').on('click', function () {

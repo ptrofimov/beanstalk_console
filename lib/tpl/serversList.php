@@ -13,6 +13,7 @@ if (!empty($_COOKIE['filter'])) {
         'current-connections',
     );
 }
+
 ?>
 
 
@@ -72,7 +73,7 @@ if (!empty($_COOKIE['filter'])) {
     <table class="table table-striped table-hover" id="servers-index">
         <thead>
             <tr>
-                <th>Server</th>
+                <th>name</th>
                 <?php foreach($console->getServerStats(reset($servers)) as $key => $item):?>
                     <th class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>" title="<?php echo $item['description']?>"><?php echo $key?></th>
                 <?php endforeach?>
@@ -80,13 +81,25 @@ if (!empty($_COOKIE['filter'])) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach($servers as $server):?>
+            <?php foreach($servers as $server):
+                    $stats = $console->getServerStats($server);
+            ?>
                 <tr>
+                    <?php if(empty($stats)):?>
+                    <td><?php echo $server?></td>
+                    <?php else:?>
                     <td><a href="?server=<?php echo $server?>"><?php echo $server?></a></td>
-                    <?php foreach($console->getServerStats($server) as $key => $item):?>
+                    <?php endif?>
+                    <?php foreach($stats as $key => $item):?>
                         <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>"><?php echo htmlspecialchars($item['value'])?></td>
                     <?php endforeach?>
-                    <td><a class="btn" href="?action=serversRemove&removeServer=<?php echo $server?>">Remove</a></td>
+                    <?php if(empty($stats)):?>
+                        <td colspan="<?php echo count($visible)?>" class="row-full">connection error</td>
+                        <?/*php foreach(BeanstalkInterface::getServerStatsFields() as $key => $item):?>
+                            <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>">ERROR</td>
+                        <?php endforeach*/?>
+                    <?php endif?>
+                    <td><a class="btn btn-small" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server?>"><span class="icon-minus"></span></a></td>
                 </tr>
             <?php endforeach?>
         </tbody>
