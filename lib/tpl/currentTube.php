@@ -18,7 +18,7 @@
 			<?php endforeach;?>
 		</tr>
 	</table>
-	
+
 	<p>
 		<b>Actions:</b>&nbsp;
 		<a class="btn btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=kick&count=1"><i class="icon-play"></i> Kick 1 job</a>
@@ -31,7 +31,7 @@
 		<hr />
 		<h3>Next job in "<?php echo $state?>" state</h3>
 		<?php if($job):?>
-		
+
 		<div class="row show-grid">
 		    <div class="span3">
 		    	<table class="table">
@@ -53,9 +53,9 @@
 		    </div>
 			<div class="span9">
 				<b>Job data:</b><br />
-				<pre><code><?php echo htmlspecialchars(trim(var_export($job['data'],true), "'"), ENT_COMPAT)?></code></pre>	
+				<pre><code><?php echo htmlspecialchars(trim(var_export($job['data'],true), "'"), ENT_COMPAT)?></code></pre>
 			</div>
-		</div>		
+		</div>
 		<?php else:?>
 			<i>empty</i>
 		<?php endif?>

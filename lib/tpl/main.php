@@ -1,3 +1,6 @@
+<?php
+$servers = $console->getServers();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +18,88 @@
 </head>
 <body>
 <div class="container">
+
+
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="index.php">Beanstalk console</a>
+                <div class="nav-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav">
+                        <?php if($server && $tube):?>
+                        <li><a href="index.php"><b>server:</b></a></li>
+                        <li class="active1"><a href="index.php?server=<?php echo $server?>"><?php echo $server?></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li class="nav-header">Nav header</li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="index.php">tube:</a></li>
+                        <li class="active1"><a href="index.php?server=<?php echo $server?>"><?php echo $tube?></a></li>
+                        <?php elseif($server):?>
+                        <li><a href="index.php">server:</a></li>
+                        <li class="active"><a href="index.php?server=<?php echo $server?>"><?php echo $server?></a></li>
+                        <?php else:?>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">all servers <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="index.php">all servers</a></li>
+                                <?php foreach($servers as $serverItem):?>
+                                <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                <?php endforeach?>
+                            </ul>
+                        </li>
+                        <?php endif?>
+                        <!--<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li class="nav-header">Nav header</li>
+                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>-->
+                    </ul>
+                    <!--<form class="navbar-search pull-left" action="">
+                        <input type="text" class="search-query span2" placeholder="Search">
+                    </form>-->
+                    <ul class="nav pull-right">
+                        <li>
+                            <a href="#filter" role="button" data-toggle="modal">Filter columns</a>
+                        </li>
+                        <!--<li><a href="#">Link</a></li>
+                        <li class="divider-vertical"></li>-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
+                                <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
+                                <li class="divider"></li>
+                                <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.nav-collapse -->
+            </div>
+        </div><!-- /navbar-inner -->
+    </div>
+
 <?php if(!empty($errors)): ?>
     <h2>Errors</h2>
     <?php foreach ($errors as $item):?>

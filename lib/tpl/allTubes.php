@@ -1,9 +1,3 @@
-
-<ul class="breadcrumb lead">
-    <li><a href="/">Home</a> <span class="divider">/</span></li>
-    <li class="active">Server &laquo;<?php echo $server?>&raquo;</li>
-</ul>
-
 <section id="summaryTable">
   <table class="table table-striped table-hover">
     <thead>
