@@ -50,18 +50,28 @@ $servers = $console->getServers();
                         <li><a href="index.php">tube:</a></li>
                         <li class="active1"><a href="index.php?server=<?php echo $server?>"><?php echo $tube?></a></li>
                         <?php elseif($server):?>
-                        <li><a href="index.php">server:</a></li>
-                        <li class="active"><a href="index.php?server=<?php echo $server?>"><?php echo $server?></a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $server?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php">All servers</a></li>
+                                    <?php foreach(array_diff($servers, array($server)) as $serverItem):?>
+                                        <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
                         <?php else:?>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">all servers <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="index.php">all servers</a></li>
-                                <?php foreach($servers as $serverItem):?>
-                                <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
-                                <?php endforeach?>
-                            </ul>
-                        </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    All servers <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php foreach($servers as $serverItem):?>
+                                        <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
                         <?php endif?>
                         <!--<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
@@ -101,11 +111,9 @@ $servers = $console->getServers();
     </div>
 
 <?php if(!empty($errors)): ?>
-    <h2>Errors</h2>
     <?php foreach ($errors as $item):?>
-        <p><?php echo $item?></p>
+        <p class="alert alert-error"><span class="label label-important">Error</span> <?php echo $item?></p>
     <?php endforeach;?>
-    <a href="./"><< back</a>
 <?php else:?>
     <?php if(!$server):?>
         <?php include(dirname(__FILE__) . '/serversList.php')?>

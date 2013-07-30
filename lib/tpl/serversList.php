@@ -13,7 +13,6 @@ if (!empty($_COOKIE['filter'])) {
         'current-connections',
     );
 }
-
 ?>
 
 
@@ -46,7 +45,7 @@ if (!empty($_COOKIE['filter'])) {
                         <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>"><?php echo htmlspecialchars($item['value'])?></td>
                     <?php endforeach?>
                     <?php if(empty($stats)):?>
-                        <td colspan="<?php echo count($visible)?>" class="row-full">connection error</td>
+                        <td colspan="<?php echo count($visible)?>" class="row-full">&nbsp;</td>
                         <?/*php foreach(BeanstalkInterface::getServerStatsFields() as $key => $item):?>
                             <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>">ERROR</td>
                         <?php endforeach*/?>
