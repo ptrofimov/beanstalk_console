@@ -1,3 +1,5 @@
+**New version 1.1! Previous version is available [here](https://github.com/ptrofimov/beanstalk_console/tree/1.0)**
+
 # Beanstalk console ![English version](http://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/22px-Flag_of_the_United_Kingdom.svg.png)
 
 *Admin console for [Beanstalk](http://kr.github.com/beanstalkd) queue server, written in PHP*
