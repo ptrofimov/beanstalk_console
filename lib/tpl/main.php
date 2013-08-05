@@ -1,145 +1,160 @@
+<?php
+$servers = $console->getServers();
+?>
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html>
+<head>
     <meta charset="utf-8">
     <title>Beanstalk console</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- Le styles -->
-    <link href="./css/bootstrap.css" rel="stylesheet">
-    
-    <style type="text/css">
-      body {
-        padding: 80px 10px 40px 10px; 
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    
-    <script>
-    	var url = "./index.php?server=<?php echo $server?>";
-    	var contentType = "<?php echo isset($contentType)?$contentType:''?>";
-    </script>
-    
-    <link href="./css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/assets/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
     <link href="./css/customer.css" rel="stylesheet">
-	<link href="./highlight/styles/magula.css" rel="stylesheet">
-	
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body data-spy="scroll" data-target=".subnav" data-offset="50">
-  
-<!-- Header Line -->  
-	<div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="./">Beanstalk console</a>
-          
-          <div class="btn-toolbar pull-right" style="margin: 0px; padding: 0px; height: 40px">
-          	<?php if(empty($tube)):?>
-          	<div class="btn-group" style="margin: 0px 21px 0px 0px;">
-          		<a class="btn btn-small" href="#" id="autoRefresh"><i class="icon-refresh"></i></a>
-          	</div>
-          	<?php endif;?>
-          	<div class="btn-group">
-          		<a class="btn btn-info" id="addServer" href="#"><i class="icon-plus-sign icon-white"></i> Add server</a>
-	            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-	              <i class="icon-leaf"></i> Server<span class="caret"></span>
-	            </a>
-	            <ul class="dropdown-menu" id="listServers">
-	            <?php foreach($config['servers'] as $item):?> 
-					<li><a href="./?server=<?php echo $item?>"><?php echo $item?></a></li>
-				<?php endforeach?>              
-	            </ul>
-          	</div>
-          </div>         
-          
-          <div class="nav-collapse">
-            <ul class="nav">
-            	<?php if(!empty($server)):?><li class="active"><a href="?server=<?php echo $server?>"><?php echo $server?></a></li><?php endif;?>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>        
-      </div>      
+    <link href="./highlight/styles/magula.css" rel="stylesheet">
+    <script>
+        var url = "./index.php?server=<?php echo $server?>";
+        var contentType = "<?php echo isset($contentType)?$contentType:''?>";
+    </script>
+</head>
+<body>
+<div class="container">
+
+    <?php if(!empty($servers)):?>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="index.php">Beanstalk console</a>
+                <div class="nav-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav">
+                        <?php if($server && $tube):?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $server?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php">All servers</a></li>
+                                    <?php foreach(array_diff($servers, array($server)) as $serverItem):?>
+                                    <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $tube?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php?server=<?php echo $server?>">All tubes</a></li>
+                                    <?php foreach(array_diff($tubes, array($tube)) as $tubeItem):?>
+                                    <li><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>"><?php echo $tubeItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                        <?php elseif($server):?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $server?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php">All servers</a></li>
+                                    <?php foreach(array_diff($servers, array($server)) as $serverItem):?>
+                                        <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    All tubes <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php foreach($tubes as $tubeItem):?>
+                                        <li><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>"><?php echo $tubeItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                        <?php else:?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    All servers <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php foreach($servers as $serverItem):?>
+                                        <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                        <?php endif?>
+                        <!--<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li class="nav-header">Nav header</li>
+                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>-->
+                    </ul>
+                    <!--<form class="navbar-search pull-left" action="">
+                        <input type="text" class="search-query span2" placeholder="Search">
+                    </form>-->
+                    <ul class="nav pull-right">
+                        <li>
+                            <a href="#filter" role="button" data-toggle="modal">Filter columns</a>
+                        </li>
+                        <!--<li><a href="#">Link</a></li>
+                        <li class="divider-vertical"></li>-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
+                                <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
+                                <li class="divider"></li>
+                                <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.nav-collapse -->
+            </div>
+        </div><!-- /navbar-inner -->
     </div>
-    <div id="subnavServer" class="subnav subnav-fixed" style="display:none;">
-	    <div class="pull-right form-inline" style="padding: 4px 25px 0px 0px">
-	   		<input class="input-xlarge focused" id="server" name="server" type="text" placeholder="server"> : 
-	   		<input class="input-small focused" id="port" name="port" type="text" placeholder="port">
-	   		<button type="submit" id="saveServer" class="btn btn-primary">Add</button>
-	   	</div>
-	</div>
-<!-- End Header Line -->
+    <?php endif?>
 
 <?php if(!empty($errors)): ?>
-	<h2>Errors</h2>
-	<?php foreach ($errors as $item):?>		
-		<p><?php echo $item?></p>
-	<?php endforeach;?>	
-	<a href="./"><< back</a>
-<?php else:?>     
-	<?php if(!$tube):?>
-	
-	<!-- Table All Tube -->
-	<div id="idAllTubes">	
-		<?php require_once '../lib/tpl/allTubes.php';?>
-	</div>
-	<div id="idAllTubesCopy" style="display:none"></div>
-	<!-- End Table All Tube -->
-	
-	<?php elseif(!in_array($tube,$tubes)):?>
-	
-	<!-- Tube not found -->
-		<?php echo sprintf('Tube "%s" not found or it is empty',$tube)?>
-		<br><br><a href="./?server=<?php echo $server?>"> << back </a>
-	<!-- End Tube not found -->
-	 
-	<?php else:?>
-	
-	<!-- Table current Tube -->
-		<?php require_once '../lib/tpl/currentTube.php';?>
-	<!-- End Table current Tube -->
-	
-	<?php endif;?>	
-	
-	
-	<!-- Modal window add job -->
-	<?php require_once '../lib/tpl/modalAddJob.php';?>
-	<!-- End Modal window add job -->
+    <?php foreach ($errors as $item):?>
+        <p class="alert alert-error"><span class="label label-important">Error</span> <?php echo $item?></p>
+    <?php endforeach;?>
+<?php else:?>
+    <?php if(!$server):?>
+        <?php include(dirname(__FILE__) . '/serversList.php')?>
+    <?php elseif(!$tube):?>
+        <div id="idAllTubes">
+            <?php require_once '../lib/tpl/allTubes.php';?>
+        </div>
+        <div id="idAllTubesCopy" style="display:none"></div>
+    <?php elseif(!in_array($tube,$tubes)):?>
+        <?php echo sprintf('Tube "%s" not found or it is empty',$tube)?>
+        <br><br><a href="./?server=<?php echo $server?>"> << back </a>
+    <?php else:?>
+        <?php require_once '../lib/tpl/currentTube.php';?>
+    <?php endif;?>
+
+    <?php require_once '../lib/tpl/modalAddJob.php';?>
 <?php endif;?>
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./js/jquery.js"></script>
-    <script src="./js/jquery.color.js"></script>
-    <script src="./js/jquery.cookie.js"></script>
-    <script src="./js/bootstrap-transition.js"></script>
-    <script src="./js/bootstrap-alert.js"></script>
-    <script src="./js/bootstrap-modal.js"></script>
-    <script src="./js/bootstrap-dropdown.js"></script>
-    <script src="./js/bootstrap-scrollspy.js"></script>
-    <script src="./js/bootstrap-tab.js"></script>
-    <script src="./js/bootstrap-tooltip.js"></script>
-    <script src="./js/bootstrap-popover.js"></script>
-    <script src="./js/bootstrap-button.js"></script>
-    <script src="./js/bootstrap-collapse.js"></script>
-    <script src="./js/bootstrap-carousel.js"></script>
-    <script src="./js/bootstrap-typeahead.js"></script>
-    
-    <script src="./highlight/highlight.pack.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    
-    <script src="./js/customer.js"></script>
-  </body>
- </html>
+</div>
+
+<script src="/assets/vendor/jquery/jquery.js"></script>
+<script src="./js/jquery.color.js"></script>
+<script src="./js/jquery.cookie.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="./highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="./js/customer.js"></script>
+</body>
+</html>
