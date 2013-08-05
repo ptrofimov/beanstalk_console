@@ -2,7 +2,7 @@
 class BeanstalkInterface
 {
     protected $_contentType;
-    protected $_client;
+    public $_client;
 
     public function __construct($server)
     {

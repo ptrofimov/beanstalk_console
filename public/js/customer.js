@@ -26,7 +26,7 @@ $(document).ready(
                 $('#filter input:checked').each(function () {
                     names.push($(this).attr('name'));
                 });
-                $.cookie('filter', names, {expires:365});
+                $.cookie($('#filter').data('cookie'), names, {expires:365});
                 $('.row-full').attr('colspan', names.length);
             });
 

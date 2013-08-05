@@ -110,6 +110,69 @@ class Console
         );
     }
 
+    public function getTubeStatFields()
+    {
+        return array(
+            'current-jobs-urgent' => 'number of ready jobs with priority < 1024 in this tube',
+            'current-jobs-ready' => 'number of jobs in the ready queue in this tube',
+            'current-jobs-reserved' => 'number of jobs reserved by all clients in this tube',
+            'current-jobs-delayed' => 'number of delayed jobs in this tube',
+            'current-jobs-buried' => 'number of buried jobs in this tube',
+            'total-jobs' => 'cumulative count of jobs created in this tube in the current beanstalkd process',
+            'current-using' => 'number of open connections that are currently using this tube',
+            'current-waiting' => 'number of open connections that have issued a reserve command while watching this tube but not yet received a response',
+            'current-watching' => 'number of open connections that are currently watching this tube',
+            'pause' => 'number of seconds the tube has been paused for',
+            'cmd-delete' => 'cumulative number of delete commands for this tube',
+            'cmd-pause-tube' => 'cumulative number of pause-tube commands for this tube',
+            'pause-time-left' => 'number of seconds until the tube is un-paused',
+        );
+    }
+
+    public function getTubeStatGroups()
+    {
+        return array(
+            'current' => array(
+                'current-jobs-buried',
+                'current-jobs-delayed',
+                'current-jobs-ready',
+                'current-jobs-reserved',
+                'current-jobs-urgent',
+                'current-using',
+                'current-waiting',
+                'current-watching',
+            ),
+            'other' => array(
+                'cmd-delete',
+                'cmd-pause-tube',
+                'pause',
+                'pause-time-left',
+                'total-jobs',
+            ),
+        );
+    }
+
+    public function getTubeStatVisible()
+    {
+        if (!empty($_COOKIE['tubefilter'])) {
+            return explode(',', $_COOKIE['tubefilter']);
+        } else {
+            return array(
+                'current-jobs-buried',
+                'current-jobs-delayed',
+                'current-jobs-ready',
+                'current-jobs-reserved',
+                'current-jobs-urgent',
+                'total-jobs',
+            );
+        }
+    }
+
+    public function getTubeStatValues($tube)
+    {
+        return $this->interface->_client->statsTube($tube);
+    }
+
     protected function __init()
     {
         global $server, $action, $count, $tube, $config;
@@ -149,13 +212,7 @@ class Console
 
     protected function _main()
     {
-        if (!empty($_GET['action'])) {
-            $funcName = "_action" . ucfirst($this->_globalVar['action']);
-            if (method_exists($this, $funcName)) {
-                $this->$funcName();
-            }
-            return;
-        }
+
 
         if (!isset($_GET['server'])) {
             return;
@@ -171,6 +228,15 @@ class Console
             $this->_tplVars['tubesStats'] = $stats;
             $this->_tplVars['peek'] = $this->interface->peekAll($this->_globalVar['tube']);
             $this->_tplVars['contentType'] = $this->interface->getContentType();
+
+            if (!empty($_GET['action'])) {
+                $funcName = "_action" . ucfirst($this->_globalVar['action']);
+                if (method_exists($this, $funcName)) {
+                    $this->$funcName();
+                }
+                return;
+            }
+
         } catch (Pheanstalk_Exception_ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
         }

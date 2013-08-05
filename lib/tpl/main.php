@@ -19,8 +19,7 @@ $servers = $console->getServers();
 <body>
 <div class="container">
 
-
-
+    <?php if(!empty($servers)):?>
     <div class="navbar">
         <div class="navbar-inner">
             <div class="container">
@@ -33,22 +32,28 @@ $servers = $console->getServers();
                 <div class="nav-collapse collapse navbar-responsive-collapse">
                     <ul class="nav">
                         <?php if($server && $tube):?>
-                        <li><a href="index.php"><b>server:</b></a></li>
-                        <li class="active1"><a href="index.php?server=<?php echo $server?>"><?php echo $server?></a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li class="nav-header">Nav header</li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="index.php">tube:</a></li>
-                        <li class="active1"><a href="index.php?server=<?php echo $server?>"><?php echo $tube?></a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $server?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php">All servers</a></li>
+                                    <?php foreach(array_diff($servers, array($server)) as $serverItem):?>
+                                    <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <?php echo $tube?> <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php?server=<?php echo $server?>">All tubes</a></li>
+                                    <?php foreach(array_diff($tubes, array($tube)) as $tubeItem):?>
+                                    <li><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>"><?php echo $tubeItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
                         <?php elseif($server):?>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -58,6 +63,16 @@ $servers = $console->getServers();
                                     <li><a href="index.php">All servers</a></li>
                                     <?php foreach(array_diff($servers, array($server)) as $serverItem):?>
                                         <li><a href="index.php?server=<?php echo $serverItem?>"><?php echo $serverItem?></a></li>
+                                    <?php endforeach?>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    All tubes <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php foreach($tubes as $tubeItem):?>
+                                        <li><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>"><?php echo $tubeItem?></a></li>
                                     <?php endforeach?>
                                 </ul>
                             </li>
@@ -109,6 +124,7 @@ $servers = $console->getServers();
             </div>
         </div><!-- /navbar-inner -->
     </div>
+    <?php endif?>
 
 <?php if(!empty($errors)): ?>
     <?php foreach ($errors as $item):?>

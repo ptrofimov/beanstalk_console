@@ -14,13 +14,7 @@ if (!empty($_COOKIE['filter'])) {
     );
 }
 ?>
-
-
-
 <?php if(!empty($servers)):?>
-    <!--<div class="text-right">
-        <a href="#filter" role="button" class="btn btn-info" data-toggle="modal">Filter columns</a>
-    </div>-->
     <table class="table table-striped table-hover" id="servers-index">
         <thead>
             <tr>
@@ -46,11 +40,8 @@ if (!empty($_COOKIE['filter'])) {
                     <?php endforeach?>
                     <?php if(empty($stats)):?>
                         <td colspan="<?php echo count($visible)?>" class="row-full">&nbsp;</td>
-                        <?/*php foreach(BeanstalkInterface::getServerStatsFields() as $key => $item):?>
-                            <td class="<?php if(!in_array($key, $visible)) echo 'hide'?>" name="<?php echo $key?>">ERROR</td>
-                        <?php endforeach*/?>
                     <?php endif?>
-                    <td><a class="btn btn-small" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server?>"><span class="icon-minus"></span></a></td>
+                    <td><a class="btn btn-small" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server?>&server=<?php echo $server?>"><span class="icon-minus"></span></a></td>
                 </tr>
             <?php endforeach?>
         </tbody>
@@ -101,7 +92,7 @@ if (!empty($_COOKIE['filter'])) {
     </div>
 </div>
 
-<div id="filter" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
+<div id="filter" data-cookie="filter" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="filter-label" class="text-info">Filter columns</h3>
