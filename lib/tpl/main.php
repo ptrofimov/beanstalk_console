@@ -7,10 +7,10 @@ $servers = $console->getServers();
     <meta charset="utf-8">
     <title>Beanstalk console</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="/assets/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-    <link href="./css/customer.css" rel="stylesheet">
-    <link href="./highlight/styles/magula.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="assets/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="css/customer.css" rel="stylesheet">
+    <link href="highlight/styles/magula.css" rel="stylesheet">
     <script>
         var url = "./index.php?server=<?php echo $server?>";
         var contentType = "<?php echo isset($contentType)?$contentType:''?>";
@@ -149,12 +149,12 @@ $servers = $console->getServers();
 <?php endif;?>
 </div>
 
-<script src="/assets/vendor/jquery/jquery.js"></script>
-<script src="./js/jquery.color.js"></script>
-<script src="./js/jquery.cookie.js"></script>
-<script src="/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="./highlight/highlight.pack.js"></script>
+<script src="assets/vendor/jquery/jquery.js"></script>
+<script src="js/jquery.color.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script src="./js/customer.js"></script>
+<script src="js/customer.js"></script>
 </body>
 </html>
