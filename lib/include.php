@@ -44,7 +44,7 @@ class Console
             $interface = new BeanstalkInterface($server);
             $stats = $interface->getServerStats();
         } catch (Pheanstalk_Exception_ConnectionException $e) {
-            $stats = [];
+            $stats = array();
         }
 
         return $stats;
