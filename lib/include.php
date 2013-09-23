@@ -4,7 +4,7 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
-function __autoload($class)
+ function __autoload($class)
 {
     require_once str_replace('_', '/', $class) . '.php';
 }
@@ -215,6 +215,14 @@ class Console
 
 
         if (!isset($_GET['server'])) {
+			// execute methods without a server
+			if (isset($_GET['action']) && in_array($_GET['action'],array('serversRemove'))) {
+                $funcName = "_action" . ucfirst($this->_globalVar['action']);
+                if (method_exists($this, $funcName)) {
+                    $this->$funcName();
+                }
+                return;
+            }
             return;
         }
 
@@ -228,7 +236,6 @@ class Console
             $this->_tplVars['tubesStats'] = $stats;
             $this->_tplVars['peek'] = $this->interface->peekAll($this->_globalVar['tube']);
             $this->_tplVars['contentType'] = $this->interface->getContentType();
-
             if (!empty($_GET['action'])) {
                 $funcName = "_action" . ucfirst($this->_globalVar['action']);
                 if (method_exists($this, $funcName)) {
@@ -283,8 +290,13 @@ class Console
     {
         $server = $_GET['removeServer'];
         $this->servers = array_diff($this->servers, array($server));
-        setcookie('beansServers', implode(';', $this->servers), time() + 86400 * 365);
-        header('Location: /');
+		if (count($this->servers)) {
+			setcookie('beansServers', implode(';', $this->servers), time() + 86400 * 365);
+		} else {
+			// no servers, clear cookie
+			setcookie('beansServers', '', time() - 86400 * 365);
+		}
+        header('Location: index.php');
         exit();
     }
 

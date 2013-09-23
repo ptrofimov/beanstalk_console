@@ -41,7 +41,7 @@ if (!empty($_COOKIE['filter'])) {
                     <?php if(empty($stats)):?>
                         <td colspan="<?php echo count($visible)?>" class="row-full">&nbsp;</td>
                     <?php endif?>
-                    <td><a class="btn btn-small" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server?>&server=<?php echo $server?>"><span class="icon-minus"></span></a></td>
+                    <td><a class="btn btn-small" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server?>"><span class="icon-minus"></span></a></td>
                 </tr>
             <?php endforeach?>
         </tbody>
