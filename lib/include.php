@@ -264,6 +264,12 @@ class Console
     protected function _actionDelete()
     {
         $this->interface->deleteReady($this->_globalVar['tube']);
+		$arr=$this->getTubeStatValues($this->_globalVar['tube']);
+		$availableJobs=$arr['current-jobs-urgent']+$arr['current-jobs-ready']+$arr['current-jobs-reserved']+$arr['current-jobs-delayed']+$arr['current-jobs-buried'];
+		if (empty($availableJobs)) {
+			// make sure we redirect to all tubes, as this tube no longer exists
+			$this->_globalVar['tube']=null;
+		}
         header(
             sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
@@ -281,7 +287,7 @@ class Console
 		}
 		while (!empty($job));
         header(
-            sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
+            sprintf('Location: index.php?server=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
         exit();
     }
