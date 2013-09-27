@@ -75,7 +75,7 @@ $visible = $console->getTubeStatVisible();
     <b>Actions:</b>&nbsp;
     <a class="btn btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=kick&count=1"><i class="icon-play"></i> Kick 1 job</a>
     <a class="btn btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=kick&count=10"><i class="icon-forward"></i> Kick 10 jobs</a>
-    <a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=delete&count=1"><i class="icon-trash icon-white"></i> Delete next ready job</a>
+    <a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=deleteReady&count=1"><i class="icon-trash icon-white"></i> Delete next ready job</a>
 	<a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash icon-white"></i> Delete all jobs</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
 </p>
