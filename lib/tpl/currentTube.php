@@ -84,7 +84,6 @@ $visible = $console->getTubeStatVisible();
     <hr />
     <h3>Next job in "<?php echo $state?>" state</h3>
     <?php if($job):?>
-
     <div class="row show-grid">
         <div class="span3">
             <table class="table">
@@ -105,7 +104,14 @@ $visible = $console->getTubeStatVisible();
             </table>
         </div>
         <div class="span9">
-            <b>Job data:</b><br />
+            <div class="clearfix">
+				<div class="pull-left">
+					<b>Job data:</b><br />
+				</div>
+				<div class="pull-right">
+					<a class="btn btn-mini" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=delete<?php echo ucfirst($state);?>"><i class="icon-remove"></i></a>
+				</div>
+			</div>
             <pre><code><?php echo htmlspecialchars(trim(var_export($job['data'],true), "'"), ENT_COMPAT)?></code></pre>
         </div>
     </div>

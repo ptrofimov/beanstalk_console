@@ -261,9 +261,25 @@ class Console
         exit();
     }
 
-    protected function _actionDelete()
+    protected function _actionDeleteReady()
     {
-        $this->interface->deleteReady($this->_globalVar['tube']);
+		$this->interface->deleteReady($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _actionDeleteDelayed()
+    {
+		$this->interface->deleteDelayed($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _actionDeleteBuried()
+    {
+		$this->interface->deleteBuried($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _postDelete() {
 		$arr=$this->getTubeStatValues($this->_globalVar['tube']);
 		$availableJobs=$arr['current-jobs-urgent']+$arr['current-jobs-ready']+$arr['current-jobs-reserved']+$arr['current-jobs-delayed']+$arr['current-jobs-buried'];
 		if (empty($availableJobs)) {
@@ -274,7 +290,7 @@ class Console
             sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
         exit();
-    }
+	}
 	
 	protected function _actionDeleteAll()
     {
