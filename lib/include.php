@@ -294,14 +294,19 @@ class Console
 	
 	protected function _actionDeleteAll()
     {
-		do {
-			$job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
-			if ($job) {
-				$this->interface->_client->delete($job);
-				set_time_limit(5);
+		try {
+			do {
+				$job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
+				if ($job) {
+					$this->interface->_client->delete($job);
+					set_time_limit(5);
+				}
 			}
+			while (!empty($job));
 		}
-		while (!empty($job));
+		catch (Exception $e) {
+			// there might be no jobs to peek at, and peekReady raises exception in this situation
+		}
         header(
             sprintf('Location: index.php?server=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
