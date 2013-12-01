@@ -174,7 +174,19 @@ class BeanstalkInterface
         $this->_client->delete($job);
 
     }
+	
+	public function deleteBuried($tube)
+    {
+        $job = $this->_client->useTube($tube)->peekBuried();
+        $this->_client->delete($job);
+    }
 
+	public function deleteDelayed($tube)
+    {
+        $job = $this->_client->useTube($tube)->peekDelayed();
+        $this->_client->delete($job);
+    }
+	
     public function addJob($tubeName, $tubeData, $tubePriority = null, $tubeDelay = null, $tubeTtr = null)
     {
         $this->_client->useTube($tubeName);

@@ -18,7 +18,7 @@ $visible = $console->getTubeStatVisible();
         <tbody>
         <?php foreach(array($tube) as $tubeItem):?>
         <tr>
-            <td name="<?php echo $key?>"><?=$tubeItem?></td>
+            <td name="<?php echo $key?>"><?php echo $tubeItem?></td>
             <?php $values=$console->getTubeStatValues($tubeItem)?>
             <?php foreach($fields as $key=>$item):
             $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
@@ -75,7 +75,7 @@ $visible = $console->getTubeStatVisible();
     <b>Actions:</b>&nbsp;
     <a class="btn btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=kick&count=1"><i class="icon-play"></i> Kick 1 job</a>
     <a class="btn btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=kick&count=10"><i class="icon-forward"></i> Kick 10 jobs</a>
-    <a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=delete&count=1"><i class="icon-trash icon-white"></i> Delete next ready job</a>
+    <a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=deleteReady&count=1"><i class="icon-trash icon-white"></i> Delete next ready job</a>
 	<a class="btn btn-danger btn-small" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash icon-white"></i> Delete all jobs</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
 </p>
@@ -84,7 +84,6 @@ $visible = $console->getTubeStatVisible();
     <hr />
     <h3>Next job in "<?php echo $state?>" state</h3>
     <?php if($job):?>
-
     <div class="row show-grid">
         <div class="span3">
             <table class="table">
@@ -105,7 +104,14 @@ $visible = $console->getTubeStatVisible();
             </table>
         </div>
         <div class="span9">
-            <b>Job data:</b><br />
+            <div class="clearfix">
+				<div class="pull-left">
+					<b>Job data:</b><br />
+				</div>
+				<div class="pull-right">
+					<a class="btn btn-mini" href="?server=<?php echo $server?>&tube=<?php echo $tube?>&action=delete<?php echo ucfirst($state);?>"><i class="icon-remove"></i></a>
+				</div>
+			</div>
             <pre><code><?php echo htmlspecialchars(trim(var_export($job['data'],true), "'"), ENT_COMPAT)?></code></pre>
         </div>
     </div>

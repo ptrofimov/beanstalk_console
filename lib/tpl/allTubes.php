@@ -18,7 +18,7 @@ $visible = $console->getTubeStatVisible();
     <tbody>
     <?php foreach($tubes as $tubeItem):?>
         <tr>
-            <td name="<?php echo $key?>"><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>" ><?=$tubeItem?></a></td>
+            <td name="<?php echo $key?>"><a href="index.php?server=<?php echo $server?>&tube=<?php echo $tubeItem?>" ><?php echo $tubeItem?></a></td>
             <?php $values=$console->getTubeStatValues($tubeItem)?>
             <?php foreach($fields as $key=>$item):
             $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';

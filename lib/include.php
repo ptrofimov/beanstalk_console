@@ -261,27 +261,54 @@ class Console
         exit();
     }
 
-    protected function _actionDelete()
+    protected function _actionDeleteReady()
     {
-        $this->interface->deleteReady($this->_globalVar['tube']);
+		$this->interface->deleteReady($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _actionDeleteDelayed()
+    {
+		$this->interface->deleteDelayed($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _actionDeleteBuried()
+    {
+		$this->interface->deleteBuried($this->_globalVar['tube']);
+		$this->_postDelete();
+    }
+	
+	protected function _postDelete() {
+		$arr=$this->getTubeStatValues($this->_globalVar['tube']);
+		$availableJobs=$arr['current-jobs-urgent']+$arr['current-jobs-ready']+$arr['current-jobs-reserved']+$arr['current-jobs-delayed']+$arr['current-jobs-buried'];
+		if (empty($availableJobs)) {
+			// make sure we redirect to all tubes, as this tube no longer exists
+			$this->_globalVar['tube']=null;
+		}
         header(
             sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
         exit();
-    }
+	}
 	
 	protected function _actionDeleteAll()
     {
-		do {
-			$job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
-			if ($job) {
-				$this->interface->_client->delete($job);
-				set_time_limit(5);
+		try {
+			do {
+				$job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
+				if ($job) {
+					$this->interface->_client->delete($job);
+					set_time_limit(5);
+				}
 			}
+			while (!empty($job));
 		}
-		while (!empty($job));
+		catch (Exception $e) {
+			// there might be no jobs to peek at, and peekReady raises exception in this situation
+		}
         header(
-            sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
+            sprintf('Location: index.php?server=%s', $this->_globalVar['server'],
                 $this->_globalVar['tube']));
         exit();
     }
