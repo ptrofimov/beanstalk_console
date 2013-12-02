@@ -64,6 +64,10 @@ $(document).ready(
             }
             $('#clearTubesSelect').on('click', function () {
                 $('#clear-tubes input[type=checkbox]:regex(name,'+$("#tubeSelector").val()+')').prop('checked', true);
+                $.cookie("tubeSelector", $("#tubeSelector").val(), {
+                    expires:365
+                });
+                $('#clearTubes').text('Clear '+$('#clear-tubes input[type=checkbox]:checked').length+' selected tubes');
             });
             $('#clearTubes').on('click', function () {
                 clearTubes();

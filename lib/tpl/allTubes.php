@@ -90,7 +90,7 @@ $visible = $console->getTubeStatVisible();
                 <div class="control-group">
                     <label class="control-label" for="focusedInput">Tube name (supports <a href="http://james.padolsey.com/javascript/regex-selector-for-jquery/" target="_blank">jQuery regexp</a> syntax)</label>
                     <div class="controls">
-                        <input class="input-xlarge focused" id="tubeSelector" type="text" placeholder="prefix*" value="ae_email*">
+                        <input class="input-xlarge focused" id="tubeSelector" type="text" placeholder="prefix*" value="<?php echo @$_COOKIE['tubeSelector'];?>">
                     </div>
                     <a href="#" class="btn" id="clearTubesSelect">Select</a>
                 </div>
