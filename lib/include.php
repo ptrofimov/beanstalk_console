@@ -4,7 +4,7 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
- function __autoload($class)
+function __autoload($class)
 {
     require_once str_replace('_', '/', $class) . '.php';
 }
@@ -14,6 +14,7 @@ require_once dirname(__FILE__) . '/../config.php';
 
 $server = !empty($_GET['server']) ? $_GET['server'] : '';
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
+$state = !empty($_GET['state']) ? $_GET['state'] : '';
 $count = !empty($_GET['count']) ? $_GET['count'] : '';
 $tube = !empty($_GET['tube']) ? $_GET['tube'] : '';
 
@@ -175,11 +176,12 @@ class Console
 
     protected function __init()
     {
-        global $server, $action, $count, $tube, $config;
+        global $server, $action, $state, $count, $tube, $config;
 
         $this->_globalVar = array(
             'server' => $server,
             'action' => $action,
+            'state' => $state,
             'count' => $count,
             'tube' => $tube,
             'config' => $config);
@@ -261,25 +263,25 @@ class Console
         exit();
     }
 
-    protected function _actionDeleteReady()
+    protected function _actionDelete()
     {
-		$this->interface->deleteReady($this->_globalVar['tube']);
-		$this->_postDelete();
+        switch ($this->_globalVar['state']) {
+            case 'ready':
+                $this->interface->deleteReady($this->_globalVar['tube']);
+                break;
+            case 'delayed':
+                $this->interface->deleteDelayed($this->_globalVar['tube']);
+                break;
+            case 'buried':
+                $this->interface->deleteBuried($this->_globalVar['tube']);
+                break;
+        }
+		
+        $this->_postDelete();
     }
 	
-	protected function _actionDeleteDelayed()
+    protected function _postDelete()
     {
-		$this->interface->deleteDelayed($this->_globalVar['tube']);
-		$this->_postDelete();
-    }
-	
-	protected function _actionDeleteBuried()
-    {
-		$this->interface->deleteBuried($this->_globalVar['tube']);
-		$this->_postDelete();
-    }
-	
-	protected function _postDelete() {
 		$arr=$this->getTubeStatValues($this->_globalVar['tube']);
 		$availableJobs=$arr['current-jobs-urgent']+$arr['current-jobs-ready']+$arr['current-jobs-reserved']+$arr['current-jobs-delayed']+$arr['current-jobs-buried'];
 		if (empty($availableJobs)) {
@@ -294,9 +296,20 @@ class Console
 	
 	protected function _actionDeleteAll()
     {
-		try {
+        try {
 			do {
-				$job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
+                switch ($this->_globalVar['state']) {
+                    case 'ready':
+                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
+                        break;
+                    case 'delayed':
+                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekDelayed();
+                        break;
+                    case 'buried':
+                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekBuried();
+                        break;
+                }
+
 				if ($job) {
 					$this->interface->_client->delete($job);
 					set_time_limit(5);
@@ -307,10 +320,8 @@ class Console
 		catch (Exception $e) {
 			// there might be no jobs to peek at, and peekReady raises exception in this situation
 		}
-        header(
-            sprintf('Location: index.php?server=%s', $this->_globalVar['server'],
-                $this->_globalVar['tube']));
-        exit();
+
+        $this->_postDelete();
     }
 
     protected function _actionServersRemove()
