@@ -62,6 +62,16 @@ $(document).ready(
                 var jn = formatJson(cn);
                 $('pre code').html(jn);
             }
+            $('#clearTubesSelect').on('click', function () {
+                $('#clear-tubes input[type=checkbox]:regex(name,'+$("#tubeSelector").val()+')').prop('checked', true);
+                $.cookie("tubeSelector", $("#tubeSelector").val(), {
+                    expires:365
+                });
+                $('#clearTubes').text('Clear '+$('#clear-tubes input[type=checkbox]:checked').length+' selected tubes');
+            });
+            $('#clearTubes').on('click', function () {
+                clearTubes();
+            });
         }
 
         function addServer(host, port) {
@@ -199,6 +209,25 @@ $(document).ready(
                         }, 500);
                 }
             }
+        }
+        
+        function clearTubes() {
+            if ($('#clear-tubes input[type=checkbox]:checked').length===0) {
+                return ;
+            }
+
+            $.ajax({
+                'url':url + '&action=clearTubes',
+                'data':$('#clear-tubes input[type=checkbox]:checked').serialize(),
+                'success':function (data) {
+                    var result = data.result;
+                    location.reload();
+                },
+                'type':'POST',
+                'error':function () {
+                    alert('error from ajax (clear might take a while, be patient)...');
+                }
+            });
         }
     }
 );

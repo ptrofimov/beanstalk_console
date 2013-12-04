@@ -211,6 +211,34 @@ class Console
 
         return $result;
     }
+    
+    protected function deleteAllFromTube($state,$tube) {
+        try {
+			do {
+                switch ($state) {
+                    case 'ready':
+                        $job = $this->interface->_client->useTube($tube)->peekReady();
+                        break;
+                    case 'delayed':
+                        $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                        break;
+                    case 'buried':
+                        $job = $this->interface->_client->useTube($tube)->peekBuried();
+                        break;
+                }
+
+				if ($job) {
+					$this->interface->_client->delete($job);
+					set_time_limit(5);
+				}
+			}
+			while (!empty($job));
+		}
+		catch (Exception $e) {
+			// there might be no jobs to peek at, and peekReady raises exception in this situation
+            echo $e->getMessage();
+		}
+    }
 
     protected function _main()
     {
@@ -294,33 +322,12 @@ class Console
         exit();
 	}
 	
-	protected function _actionDeleteAll()
+	protected function _actionDeleteAll($tube=null)
     {
-        try {
-			do {
-                switch ($this->_globalVar['state']) {
-                    case 'ready':
-                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekReady();
-                        break;
-                    case 'delayed':
-                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekDelayed();
-                        break;
-                    case 'buried':
-                        $job = $this->interface->_client->useTube($this->_globalVar['tube'])->peekBuried();
-                        break;
-                }
-
-				if ($job) {
-					$this->interface->_client->delete($job);
-					set_time_limit(5);
-				}
-			}
-			while (!empty($job));
-		}
-		catch (Exception $e) {
-			// there might be no jobs to peek at, and peekReady raises exception in this situation
-		}
-
+        if (empty($tube)) {
+            $tube=$this->_globalVar['tube'];
+        }
+        $this->deleteAllFromTube($this->_globalVar['state'],$tube);
         $this->_postDelete();
     }
 
@@ -362,5 +369,18 @@ class Console
     {
         $this->_tplVars['_tplMain'] = 'ajax';
         $this->_tplVars['_tplBlock'] = 'allTubes';
+    }
+    
+    protected function _actionClearTubes() {
+        if (is_array($_POST)) {
+            foreach ($_POST as $tube=>$v) {
+                $states=array('ready','delayed','buried');
+                foreach ($states as $state) {
+                    $this->deleteAllFromTube($state,$tube);
+                }
+            }
+        }
+        echo json_encode(array('result'=>true));
+        exit();
     }
 }
