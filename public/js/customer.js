@@ -207,7 +207,6 @@ $(document).ready(
                 var r=td2[i].innerText || td2[i].innerHTML || td2[i].textContent;
                 if (l != r) {
                     var $td1 = $(td1[i]), color = $td1.css('background-color');
-                    console.log('changed');
                     $td1.css({
                         'background-color':'#afa'
                     }).animate({
