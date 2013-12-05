@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @link https://github.com/ptrofimov/beanstalk_console
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
-function __autoload($class)
-{
+function __autoload($class) {
     require_once str_replace('_', '/', $class) . '.php';
 }
 
@@ -18,29 +18,25 @@ $state = !empty($_GET['state']) ? $_GET['state'] : '';
 $count = !empty($_GET['count']) ? $_GET['count'] : '';
 $tube = !empty($_GET['tube']) ? $_GET['tube'] : '';
 
-class Console
-{
-    public $interface;
+class Console {
 
+    public $interface;
     protected $_tplVars = array();
     protected $_globalVar = array();
     protected $_errors = array();
     private $servers = array();
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->__init();
         $this->_main();
     }
 
     /** @return array */
-    public function getServers()
-    {
+    public function getServers() {
         return $this->servers;
     }
 
-    public function getServerStats($server)
-    {
+    public function getServerStats($server) {
         try {
             $interface = new BeanstalkInterface($server);
             $stats = $interface->getServerStats();
@@ -51,8 +47,7 @@ class Console
         return $stats;
     }
 
-    public function getServerStatsGroups()
-    {
+    public function getServerStatsGroups() {
         return array(
             'binlog' => array(
                 'binlog-current-index' => 'the index of the current binlog file being written to. If binlog is not active this value will be 0',
@@ -111,8 +106,7 @@ class Console
         );
     }
 
-    public function getTubeStatFields()
-    {
+    public function getTubeStatFields() {
         return array(
             'current-jobs-urgent' => 'number of ready jobs with priority < 1024 in this tube',
             'current-jobs-ready' => 'number of jobs in the ready queue in this tube',
@@ -130,8 +124,7 @@ class Console
         );
     }
 
-    public function getTubeStatGroups()
-    {
+    public function getTubeStatGroups() {
         return array(
             'current' => array(
                 'current-jobs-buried',
@@ -153,8 +146,7 @@ class Console
         );
     }
 
-    public function getTubeStatVisible()
-    {
+    public function getTubeStatVisible() {
         if (!empty($_COOKIE['tubefilter'])) {
             return explode(',', $_COOKIE['tubefilter']);
         } else {
@@ -169,13 +161,20 @@ class Console
         }
     }
 
-    public function getTubeStatValues($tube)
-    {
-        return $this->interface->_client->statsTube($tube);
+    public function getTubeStatValues($tube) {
+        // make sure, that rapid tube disappearance (eg: anonymous tubes, don't kill the interface, as they might be missing)
+        try {
+            return $this->interface->_client->statsTube($tube);
+        } catch (Pheanstalk_Exception_ServerException $ex) {
+            if (strpos($ex->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) !== false) {
+                return array();
+            } else {
+                throw $ex;
+            }
+        }
     }
 
-    protected function __init()
-    {
+    protected function __init() {
         global $server, $action, $state, $count, $tube, $config;
 
         $this->_globalVar = array(
@@ -196,13 +195,11 @@ class Console
         }
     }
 
-    public function getErrors()
-    {
+    public function getErrors() {
         return $this->_errors;
     }
 
-    public function getTplVars($var = null)
-    {
+    public function getTplVars($var = null) {
         if (!empty($var)) {
             $result = !empty($this->_tplVars[$var]) ? $this->_tplVars[$var] : null;
         } else {
@@ -211,10 +208,10 @@ class Console
 
         return $result;
     }
-    
-    protected function deleteAllFromTube($state,$tube) {
+
+    protected function deleteAllFromTube($state, $tube) {
         try {
-			do {
+            do {
                 switch ($state) {
                     case 'ready':
                         $job = $this->interface->_client->useTube($tube)->peekReady();
@@ -227,26 +224,23 @@ class Console
                         break;
                 }
 
-				if ($job) {
-					$this->interface->_client->delete($job);
-					set_time_limit(5);
-				}
-			}
-			while (!empty($job));
-		}
-		catch (Exception $e) {
-			// there might be no jobs to peek at, and peekReady raises exception in this situation
+                if ($job) {
+                    $this->interface->_client->delete($job);
+                    set_time_limit(5);
+                }
+            } while (!empty($job));
+        } catch (Exception $e) {
+            // there might be no jobs to peek at, and peekReady raises exception in this situation
             echo $e->getMessage();
-		}
+        }
     }
 
-    protected function _main()
-    {
+    protected function _main() {
 
 
         if (!isset($_GET['server'])) {
-			// execute methods without a server
-			if (isset($_GET['action']) && in_array($_GET['action'],array('serversRemove'))) {
+            // execute methods without a server
+            if (isset($_GET['action']) && in_array($_GET['action'], array('serversRemove'))) {
                 $funcName = "_action" . ucfirst($this->_globalVar['action']);
                 if (method_exists($this, $funcName)) {
                     $this->$funcName();
@@ -273,26 +267,21 @@ class Console
                 }
                 return;
             }
-
         } catch (Pheanstalk_Exception_ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->_errors[] = $e->getMessage();
         }
     }
 
-    protected function _actionKick()
-    {
+    protected function _actionKick() {
         $this->interface->kick($this->_globalVar['tube'], $this->_globalVar['count']);
         header(
-            sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
-                $this->_globalVar['tube']));
+                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         exit();
     }
 
-    protected function _actionDelete()
-    {
+    protected function _actionDelete() {
         switch ($this->_globalVar['state']) {
             case 'ready':
                 $this->interface->deleteReady($this->_globalVar['tube']);
@@ -304,49 +293,44 @@ class Console
                 $this->interface->deleteBuried($this->_globalVar['tube']);
                 break;
         }
-		
-        $this->_postDelete();
-    }
-	
-    protected function _postDelete()
-    {
-		$arr=$this->getTubeStatValues($this->_globalVar['tube']);
-		$availableJobs=$arr['current-jobs-urgent']+$arr['current-jobs-ready']+$arr['current-jobs-reserved']+$arr['current-jobs-delayed']+$arr['current-jobs-buried'];
-		if (empty($availableJobs)) {
-			// make sure we redirect to all tubes, as this tube no longer exists
-			$this->_globalVar['tube']=null;
-		}
-        header(
-            sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'],
-                $this->_globalVar['tube']));
-        exit();
-	}
-	
-	protected function _actionDeleteAll($tube=null)
-    {
-        if (empty($tube)) {
-            $tube=$this->_globalVar['tube'];
-        }
-        $this->deleteAllFromTube($this->_globalVar['state'],$tube);
+
         $this->_postDelete();
     }
 
-    protected function _actionServersRemove()
-    {
+    protected function _postDelete() {
+        $arr = $this->getTubeStatValues($this->_globalVar['tube']);
+        $availableJobs = $arr['current-jobs-urgent'] + $arr['current-jobs-ready'] + $arr['current-jobs-reserved'] + $arr['current-jobs-delayed'] + $arr['current-jobs-buried'];
+        if (empty($availableJobs)) {
+            // make sure we redirect to all tubes, as this tube no longer exists
+            $this->_globalVar['tube'] = null;
+        }
+        header(
+                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        exit();
+    }
+
+    protected function _actionDeleteAll($tube = null) {
+        if (empty($tube)) {
+            $tube = $this->_globalVar['tube'];
+        }
+        $this->deleteAllFromTube($this->_globalVar['state'], $tube);
+        $this->_postDelete();
+    }
+
+    protected function _actionServersRemove() {
         $server = $_GET['removeServer'];
         $this->servers = array_diff($this->servers, array($server));
-		if (count($this->servers)) {
-			setcookie('beansServers', implode(';', $this->servers), time() + 86400 * 365);
-		} else {
-			// no servers, clear cookie
-			setcookie('beansServers', '', time() - 86400 * 365);
-		}
+        if (count($this->servers)) {
+            setcookie('beansServers', implode(';', $this->servers), time() + 86400 * 365);
+        } else {
+            // no servers, clear cookie
+            setcookie('beansServers', '', time() - 86400 * 365);
+        }
         header('Location: index.php');
         exit();
     }
 
-    protected function _actionAddjob()
-    {
+    protected function _actionAddjob() {
         $result = array('result' => false);
 
         $tubeName = !empty($_POST['tubeName']) ? $_POST['tubeName'] : '';
@@ -365,22 +349,22 @@ class Console
         exit();
     }
 
-    protected function _actionReloader()
-    {
+    protected function _actionReloader() {
         $this->_tplVars['_tplMain'] = 'ajax';
         $this->_tplVars['_tplBlock'] = 'allTubes';
     }
-    
+
     protected function _actionClearTubes() {
         if (is_array($_POST)) {
-            foreach ($_POST as $tube=>$v) {
-                $states=array('ready','delayed','buried');
+            foreach ($_POST as $tube => $v) {
+                $states = array('ready', 'delayed', 'buried');
                 foreach ($states as $state) {
-                    $this->deleteAllFromTube($state,$tube);
+                    $this->deleteAllFromTube($state, $tube);
                 }
             }
         }
-        echo json_encode(array('result'=>true));
+        echo json_encode(array('result' => true));
         exit();
     }
+
 }
