@@ -200,8 +200,14 @@ $(document).ready(
         function updateTable() {
             var td1 = $('#idAllTubes table').find('td'), td2 = $('#idAllTubesCopy table').find('td');
             for (i = 0, il = td1.length; i < il; i++) {
-                if (td1[i].innerText != td2[i].innerText) {
+                if(typeof td2[i] === 'undefined' || typeof td1[i] === 'undefined') {                    // tube is missing
+                    continue;
+                }
+                var l=td1[i].innerText || td1[i].innerHTML || td1[i].textContent;
+                var r=td2[i].innerText || td2[i].innerHTML || td2[i].textContent;
+                if (l != r) {
                     var $td1 = $(td1[i]), color = $td1.css('background-color');
+                    console.log('changed');
                     $td1.css({
                         'background-color':'#afa'
                     }).animate({
