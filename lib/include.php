@@ -269,6 +269,11 @@ class Console {
             }
         } catch (Pheanstalk_Exception_ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
+        } catch (Pheanstalk_Exception_ServerException $e) {
+            // if we get response not found, we just skip it (as the peekAll reached a tube which no longer existed)
+            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+                $this->_errors[] = $e->getMessage();
+            }
         } catch (Exception $e) {
             $this->_errors[] = $e->getMessage();
         }
