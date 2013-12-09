@@ -17,6 +17,8 @@ $action = !empty($_GET['action']) ? $_GET['action'] : '';
 $state = !empty($_GET['state']) ? $_GET['state'] : '';
 $count = !empty($_GET['count']) ? $_GET['count'] : '';
 $tube = !empty($_GET['tube']) ? $_GET['tube'] : '';
+$tplMain = !empty($_GET['tplMain']) ? $_GET['tplMain'] : '';
+$tplBlock = !empty($_GET['tplBlock']) ? $_GET['tplBlock'] : '';
 
 class Console {
 
@@ -175,7 +177,7 @@ class Console {
     }
 
     protected function __init() {
-        global $server, $action, $state, $count, $tube, $config;
+        global $server, $action, $state, $count, $tube, $config, $tplMain, $tplBlock;
 
         $this->_globalVar = array(
             'server' => $server,
@@ -183,9 +185,19 @@ class Console {
             'state' => $state,
             'count' => $count,
             'tube' => $tube,
+            '_tplMain' => $tplMain,
+            '_tplBlock' => $tplBlock,
             'config' => $config);
         $this->_tplVars = $this->_globalVar;
-        $this->_tplVars['_tplMain'] = 'main';
+        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes'))) {
+            unset($this->_tplVars['_tplBlock']);
+        }
+        if (!in_array($this->_tplVars['_tplMain'], array('main', 'ajax'))) {
+            unset($this->_tplVars['_tplMain']);
+        }
+        if (empty($this->_tplVars['_tplMain'])) {
+            $this->_tplVars['_tplMain'] = 'main';
+        }
 
         $this->servers = $config['servers'];
         if (isset($_COOKIE['beansServers'])) {
