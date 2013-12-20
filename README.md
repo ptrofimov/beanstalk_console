@@ -19,7 +19,7 @@
 
 **Installation**
 
-[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), put unzipped files to your www dir and enjoy!
+[Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), put unzipped files to your www dir and enjoy!
 
 **Authors:** Petr Trofimov, Sergey Lysenko
 
@@ -41,7 +41,7 @@
 
 **Установка**
 
-[Скачайте](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), положите распакованные файлы в www папку и наслаждайтесь!
+[Скачайте](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), положите распакованные файлы в www папку и наслаждайтесь!
 
 **Авторы:** Петр Трофимов, Сергей Лысенко
 
