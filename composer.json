@@ -1,0 +1,24 @@
+{
+    "name": "ptrofimov/beanstalk_console",
+    "description": "Admin console for Beanstalk queue server",
+    "keywords": ["beanstalk", "beanstalkd", "queue", "console", "gui", "admin", "web admin", "monitoring", "stats", "interface", "php"],
+    "type": "project",
+	"authors": [
+        {
+            "name": "Petr Trofimov"
+        },
+        {
+            "name": "Sergey Lysenko"
+        },
+		{
+            "name": "Pentium10"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ptrofimov/beanstalk_console/issues"
+    },
+	"require": {
+        "php": ">=5.2.0",
+		"ext-json": "*"
+    }
+}

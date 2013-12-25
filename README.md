@@ -1,4 +1,3 @@
-**New version 1.1! Previous version is available [here](https://github.com/ptrofimov/beanstalk_console/tree/1.0)**
 
 # Beanstalk console ![English version](http://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/22px-Flag_of_the_United_Kingdom.svg.png)
 
@@ -19,9 +18,24 @@
 
 **Installation**
 
-[Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), put unzipped files to your www dir and enjoy!
+### Use composer (*recommended*)
 
-**Authors:** Petr Trofimov, Sergey Lysenko
+If you don't have Composer yet, download it following the instructions on http://getcomposer.org/ or just run the following command:
+
+    curl -s http://getcomposer.org/installer | php
+
+Then, use the `create-project` command to generate a new application:
+
+    php composer.phar create-project ptrofimov/beanstalk_console -s dev path/to/install
+
+Composer will install the Beanstalk Cosnole and all its dependencies under the `path/to/install` directory.
+
+### Download an Archive File
+
+[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), unzip files to your *wwww* directory and launch from *public* directory, enjoy!
+
+
+**Authors:** Petr Trofimov, Sergey Lysenko, Pentium10
 
 --------------------------------------------------
 
@@ -41,10 +55,12 @@
 
 **Установка**
 
-[Скачайте](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), положите распакованные файлы в www папку и наслаждайтесь!
+[Скачайте](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), положите распакованные файлы в www папку и наслаждайтесь!
 
-**Авторы:** Петр Трофимов, Сергей Лысенко
+**Авторы:** Петр Трофимов, Сергей Лысенко, Pentium10
 
 --------------------------------------------------
+
+** Previous version is available [here](https://github.com/ptrofimov/beanstalk_console/tree/1.0)**
 
 *Keywords: beanstalk, beanstalkd, queue, console, gui, admin, web admin, monitoring, stats, interface, php*
