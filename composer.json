@@ -13,7 +13,7 @@
 		{
             "name": "Pentium10"
         }
-    ]
+    ],
     "support": {
         "issues": "https://github.com/ptrofimov/beanstalk_console/issues"
     },
