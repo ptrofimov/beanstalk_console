@@ -26,7 +26,7 @@ If you don't have Composer yet, download it following the instructions on http:/
 
 Then, use the `create-project` command to generate a new application:
 
-    php composer.phar create-project ptrofimov/beanstalk_console path/to/install
+    php composer.phar create-project ptrofimov/beanstalk_console -s dev path/to/install
 
 Composer will install the Beanstalk Cosnole and all its dependencies under the `path/to/install` directory.
 
