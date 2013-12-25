@@ -1,5 +1,5 @@
 {
-    "name": "pentium10/beanstalk_console",
+    "name": "ptrofimov/beanstalk_console",
     "description": "Admin console for Beanstalk queue server",
     "keywords": ["beanstalk", "beanstalkd", "queue", "console", "gui", "admin", "web admin", "monitoring", "stats", "interface", "php"],
     "type": "project",
