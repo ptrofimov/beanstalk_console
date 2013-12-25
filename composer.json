@@ -18,6 +18,7 @@
         "issues": "https://github.com/ptrofimov/beanstalk_console/issues"
     },
 	"require": {
-        "php": ">=5.2.0"
-    },
+        "php": ">=5.2.0",
+		"ext-json": "*"
+    }
 }
