@@ -32,7 +32,7 @@ Composer will install the Beanstalk Cosnole and all its dependencies under the `
 
 ### Download an Archive File
 
-[Download](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), unzip files to your *wwww* directory and launch from *public* directory, enjoy!
+[Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), unzip files to your *wwww* directory and launch from *public* directory, enjoy!
 
 
 **Authors:** Petr Trofimov, Sergey Lysenko, Pentium10
@@ -55,7 +55,7 @@ Composer will install the Beanstalk Cosnole and all its dependencies under the `
 
 **Установка**
 
-[Скачайте](https://github.com/downloads/ptrofimov/beanstalk_console/beanstalk_console.zip), положите распакованные файлы в www папку и наслаждайтесь!
+[Скачайте](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), положите распакованные файлы в www папку и наслаждайтесь!
 
 **Авторы:** Петр Трофимов, Сергей Лысенко, Pentium10
 
