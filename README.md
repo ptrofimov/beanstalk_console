@@ -30,6 +30,14 @@ Then, use the `create-project` command to generate a new application:
 
 Composer will install the Beanstalk Cosnole and all its dependencies under the `path/to/install` directory.
 
+### Setup using vagrant
+
+Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [vagrant](http://www.vagrantup.com/downloads.html) then run (from project root):
+
+    vagrant up
+
+After provision beanstalk console will be available at [http://localhost:7654](http://localhost:7654) (port could be configured in Vagrantfile)
+
 ### Download an Archive File
 
 [Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), unzip files to your *wwww* directory and launch from *public* directory, enjoy!
@@ -56,6 +64,14 @@ Composer will install the Beanstalk Cosnole and all its dependencies under the `
 **Установка**
 
 [Скачайте](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), положите распакованные файлы в www папку и наслаждайтесь!
+
+**Установка с помощью vagrant**
+
+Установите [VirtualBox](https://www.virtualbox.org/wiki/Downloads) и [vagrant](http://www.vagrantup.com/downloads.html) затем запустите (в корневой директории проекта):
+
+    vagrant up
+
+После завершения провизии консоль будет доступна по адресу [http://localhost:7654](http://localhost:7654) (порт можно сконфигурировать в Vagrantfile)
 
 **Авторы:** Петр Трофимов, Сергей Лысенко, Pentium10
 
