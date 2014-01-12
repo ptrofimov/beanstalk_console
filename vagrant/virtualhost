@@ -1,0 +1,17 @@
+ServerName localhost
+<Virtualhost *:80>
+    DocumentRoot /vagrant/public/
+    ServerName localhost
+    <directory /vagrant/public/>
+        AllowOverride All
+        Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+        <limit GET POST OPTIONS DELETE PUT>
+            Order allow,deny
+            Allow from all
+        </limit>
+        <limitexcept GET POST OPTIONS>
+            Order deny,allow
+            Deny from all
+        </limitexcept>
+    </directory>
+</virtualhost>
