@@ -41,12 +41,13 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
 
 <p>
     <b>Actions:</b>&nbsp;
-    <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1" title="To kick more jobs, edit the `count` parameter"><i class="icon-repeat"></i> Kick 1 job</a>
+    <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="icon-forward"></i> Kick 1 job</a>
+    <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10" title="To kick more jobs, edit the `count` parameter"><i class="icon-fast-forward"></i> Kick 10 job</a>
     <?php
     if (empty($tubeStats['pause-time-left'])) {
         ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1" title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="icon-pause"></i> Pause tube</a><?php
     } else {
-        ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0" title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="icon-pause"></i> Unpause tube</a><?php
+        ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0" title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="icon-play"></i> Unpause tube</a><?php
     }
     ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
