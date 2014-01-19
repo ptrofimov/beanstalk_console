@@ -14,19 +14,34 @@ $visible = $console->getTubeStatVisible();
                     ?>
                     <th<?php echo $markHidden ?>  name="<?php echo $key ?>" title="<?php echo $item ?>"><?php echo $key ?></th>
                 <?php endforeach; ?>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($tubes as $tubeItem): ?>
                 <tr>
                     <td name="<?php echo $key ?>"><a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>" ><?php echo $tubeItem ?></a></td>
-                    <?php $values = $console->getTubeStatValues($tubeItem) ?>
+                    <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
                     <?php
                     foreach ($fields as $key => $item):
                         $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
                         ?>
-                        <td<?php echo $markHidden ?>><?php echo isset($values[$key]) ? $values[$key] : '' ?></td>
+                        <td<?php echo $markHidden ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
                     <?php endforeach; ?>
+                    <td name="tube_menu">
+                        <ul class="inline" style="margin:0px;">
+                            <li class="dropdown">
+                                <a class="btn btn-mini" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#filter"><i class="icon-trash"></i> Clear tube</a>
+                                        <a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>&action=pause"><i class="icon-off"></i> Pause tube</a>
+                                        <a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>&action=unpause"><i class="icon-off"></i> Unpause tube</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </td>
                 </tr>
             <?php endforeach ?>
         </tbody>
@@ -90,7 +105,7 @@ $visible = $console->getTubeStatVisible();
                 <div class="control-group">
                     <label class="control-label" for="focusedInput">Tube name (supports <a href="http://james.padolsey.com/javascript/regex-selector-for-jquery/" target="_blank">jQuery regexp</a> syntax)</label>
                     <div class="controls">
-                        <input class="input-xlarge focused" id="tubeSelector" type="text" placeholder="prefix*" value="<?php echo @$_COOKIE['tubeSelector'];?>">
+                        <input class="input-xlarge focused" id="tubeSelector" type="text" placeholder="prefix*" value="<?php echo @$_COOKIE['tubeSelector']; ?>">
                     </div>
                     <a href="#" class="btn" id="clearTubesSelect">Select</a>
                 </div>
@@ -113,10 +128,10 @@ $visible = $console->getTubeStatVisible();
     </div>
     <div class="modal-footer">
         <p class="muted text-left">
-        * Tube clear works by peeking to all jobs and deleting them in a loop.
+            * Tube clear works by peeking to all jobs and deleting them in a loop.
         </p>
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
         <a href="#" class="btn btn-success" id="clearTubes">Clear selected tubes</a>
-        
+
     </div>
 </div>
