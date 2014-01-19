@@ -16,7 +16,7 @@
 - You can add/kick/delete jobs in every tube
 - You can select multiple tubes by regExp and clear them
 - Ability to Pause tubes
-- Customizable UI (choose columns, edit auto refresh seconds, pause tube seconds)
+- Customizable UI (code highlighter, choose columns, edit auto refresh seconds, pause tube seconds)
 
 **Installation**
 

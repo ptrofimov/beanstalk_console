@@ -214,18 +214,38 @@ class BeanstalkInterface {
     private function _decodeDate($pData) {
         $this->_contentType = false;
         $out = $pData;
-        $data = @unserialize($pData);
+        $data = null;
+
+        if (@$_COOKIE['isDisabledUnserialization'] != 1) {
+            $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
+            try {
+                $data = unserialize($pData);
+            } catch (Exception $e) {
+                $data = $e->getMessage();
+            }
+            ob_get_clean();
+            // restore old error handler
+            set_error_handler($mixed);
+        }
+
         if ($data) {
             $this->_contentType = 'php';
             $out = $data;
         } else {
-            $data = @json_decode($pData, true);
+            if (@$_COOKIE['isDisabledJsonDecode'] != 1) {
+                $data = @json_decode($pData, true);
+            }
             if ($data) {
                 $this->_contentType = 'json';
                 //$out = $data;
             }
         }
         return $out;
+    }
+
+    public function exceptions_error_handler($severity, $message, $filename, $lineno) {
+        echo '<span style="color:red">Unserialize got a fatal error, please include the necessary files, or deactivate unserialization from Settings</span></br>';
+        return false;
     }
 
 }
