@@ -108,12 +108,12 @@ $servers = $console->getServers();
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Toolbox <b class="caret"></b></a>
                                         <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="#filter" role="button" data-toggle="modal">Filter columns</a>
-                                                <?php if ($server && !$tube) { ?>
-                                                    <a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a>
-                                                <?php } ?> 
-                                            </li>
+                                            <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
+                                            <?php if ($server && !$tube) { ?>
+                                                <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
+                                            <?php } ?> 
+                                            <li class="divider"></li>
+                                            <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
                                         </ul>
                                     </li>
 
@@ -129,7 +129,9 @@ $servers = $console->getServers();
                                             <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                         </ul>
                                     </li>
-                                    <a class="btn btn-small" href="#" id="autoRefresh"><i class="icon-refresh"></i></a>
+                                    <?php if ($server && !$tube) { ?>
+                                        <a class="btn btn-small" href="#" id="autoRefresh"><i class="icon-refresh"></i></a>
+                                    <?php } ?>
                                 </ul>
                             </div><!-- /.nav-collapse -->
                         </div>
@@ -146,6 +148,7 @@ $servers = $console->getServers();
                 <?php elseif (!$tube): ?>
                     <div id="idAllTubes">
                         <?php require_once '../lib/tpl/allTubes.php'; ?>
+                        <?php require_once '../lib/tpl/modalClearTubes.php'; ?>
                     </div>
                     <div id="idAllTubesCopy" style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)): ?>
@@ -156,6 +159,8 @@ $servers = $console->getServers();
                 <?php endif; ?>
 
                 <?php require_once '../lib/tpl/modalAddJob.php'; ?>
+                <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
+                <?php require_once '../lib/tpl/modalSettings.php'; ?>
             <?php endif; ?>
         </div>
 

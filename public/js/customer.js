@@ -72,6 +72,9 @@ $(document).ready(
                 $('#clearTubes').on('click', function() {
                     clearTubes();
                 });
+                $('#settings input').on('change', function() {
+                    $.cookie(this.id, $(this).val(), {expires: 365});
+                });
             }
 
             function addServer(host, port) {

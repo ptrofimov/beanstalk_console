@@ -386,7 +386,11 @@ class Console {
 
     protected function _actionPause() {
         if ($this->_globalVar['count'] == -1) {
-            $this->_globalVar['count'] = 60;
+            if (!@empty($_COOKIE['tubePauseSeconds'])) {
+                $this->_globalVar['count'] = $_COOKIE['tubePauseSeconds'];
+            } else {
+                $this->_globalVar['count'] = 3600;
+            }
         }
         $this->interface->pauseTube($this->_globalVar['tube'], $this->_globalVar['count']);
         header(
