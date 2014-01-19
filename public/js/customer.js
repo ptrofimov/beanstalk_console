@@ -185,13 +185,20 @@ $(document).ready(
                     'data': params,
                     'success': function(data) {
                         if (doAutoRefresh) {
+                            var ms = 500;
+                            if ($.cookie('autoRefreshTimeoutMs')) {
+                                ms = parseInt($.cookie('autoRefreshTimeoutMs'));
+                            }
+                            if (ms < 200) {
+                                ms = 200;
+                            }
                             // wrapping all of this to prevent last update
                             // after you turn it off
                             var html = $('#idAllTubes').html();
                             $('#idAllTubes').html(data);
                             $('#idAllTubesCopy').html(html);
                             updateTable();
-                            timer = setTimeout(reloader, 500);
+                            timer = setTimeout(reloader, ms);
                         }
                     },
                     'type': 'GET',
