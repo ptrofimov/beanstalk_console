@@ -1,7 +1,6 @@
 <?php
 $servers = $console->getServers();
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -169,8 +168,9 @@ $servers = $console->getServers();
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.regexp.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="highlight/highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <?php if (@$_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+            <script src="highlight/highlight.pack.js"></script>
+            <script>hljs.initHighlightingOnLoad();</script><?php } ?>
         <script src="js/customer.js"></script>
     </body>
 </html>

@@ -73,7 +73,19 @@ $(document).ready(
                     clearTubes();
                 });
                 $('#settings input').on('change', function() {
-                    $.cookie(this.id, $(this).val(), {expires: 365});
+                    var val;
+                    if ($(this).attr('type') == 'checkbox') {
+                        if ($(this).is(':checked')) {
+                            val = $(this).val();
+                        } else {
+                            val = null;
+                        }
+                    } else {
+                        val = $(this).val();
+                    }
+                    if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']))
+                        val = $(this).is(':checked') ? null : 1;
+                    $.cookie(this.id, val, {expires: 365});
                 });
             }
 
