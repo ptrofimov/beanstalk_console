@@ -14,7 +14,6 @@ $visible = $console->getTubeStatVisible();
                     ?>
                     <th<?php echo $markHidden ?>  name="<?php echo $key ?>" title="<?php echo $item ?>"><?php echo $key ?></th>
                 <?php endforeach; ?>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -28,20 +27,6 @@ $visible = $console->getTubeStatVisible();
                         ?>
                         <td<?php echo $markHidden ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
                     <?php endforeach; ?>
-                    <td name="tube_menu">
-                        <ul class="inline" style="margin:0px;">
-                            <li class="dropdown">
-                                <a class="btn btn-mini" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#filter"><i class="icon-trash"></i> Clear tube</a>
-                                        <a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>&action=pause"><i class="icon-off"></i> Pause tube</a>
-                                        <a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>&action=unpause"><i class="icon-off"></i> Unpause tube</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </td>
                 </tr>
             <?php endforeach ?>
         </tbody>

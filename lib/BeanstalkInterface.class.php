@@ -1,24 +1,22 @@
 <?php
-class BeanstalkInterface
-{
+
+class BeanstalkInterface {
+
     protected $_contentType;
     public $_client;
 
-    public function __construct($server)
-    {
+    public function __construct($server) {
         $list = explode(':', $server);
         $this->_client = new Pheanstalk($list[0], isset($list[1]) ? $list[1] : '');
     }
 
-    public function getTubes()
-    {
+    public function getTubes() {
         $tubes = $this->_client->listTubes();
         sort($tubes);
         return $tubes;
     }
 
-    public static function getServerStatsFields()
-    {
+    public static function getServerStatsFields() {
         return array(
             'binlog-current-index' => 'the index of the current binlog file being written to. If binlog is not active this value will be 0',
             'binlog-max-size' => 'the maximum size in bytes a binlog file is allowed to get before a new binlog file is opened',
@@ -69,8 +67,7 @@ class BeanstalkInterface
         );
     }
 
-    public function getServerStats()
-    {
+    public function getServerStats() {
         $fields = $this->getServerStatsFields();
         $stats = array();
         $object = $this->_client->stats();
@@ -86,8 +83,7 @@ class BeanstalkInterface
         return $stats;
     }
 
-    public function getTubesStats()
-    {
+    public function getTubesStats() {
         $stats = array();
         foreach ($this->getTubes() as $tube) {
             $stats[] = $this->getTubeStats($tube);
@@ -95,8 +91,7 @@ class BeanstalkInterface
         return $stats;
     }
 
-    public function getTubeStats($tube)
-    {
+    public function getTubeStats($tube) {
         $stats = array();
         $descr = array(
             'name' => 'the tube\'s name',
@@ -140,63 +135,56 @@ class BeanstalkInterface
         return $stats;
     }
 
-    public function peekReady($tube)
-    {
+    public function peekReady($tube) {
         return $this->_peek($tube, 'peekReady');
     }
 
-    public function peekDelayed($tube)
-    {
+    public function peekDelayed($tube) {
         return $this->_peek($tube, 'peekDelayed');
     }
 
-    public function peekBuried($tube)
-    {
+    public function peekBuried($tube) {
         return $this->_peek($tube, 'peekBuried');
     }
 
-    public function peekAll($tube)
-    {
+    public function peekAll($tube) {
         return array(
             'ready' => $this->peekReady($tube),
             'delayed' => $this->peekDelayed($tube),
             'buried' => $this->peekBuried($tube));
     }
 
-    public function kick($tube, $limit)
-    {
+    public function kick($tube, $limit) {
         $this->_client->useTube($tube)->kick($limit);
     }
 
-    public function deleteReady($tube)
-    {
+    public function deleteReady($tube) {
         $job = $this->_client->useTube($tube)->peekReady();
         $this->_client->delete($job);
-
     }
-	
-	public function deleteBuried($tube)
-    {
+
+    public function deleteBuried($tube) {
         $job = $this->_client->useTube($tube)->peekBuried();
         $this->_client->delete($job);
     }
 
-	public function deleteDelayed($tube)
-    {
+    public function deleteDelayed($tube) {
         $job = $this->_client->useTube($tube)->peekDelayed();
         $this->_client->delete($job);
     }
-	
-    public function addJob($tubeName, $tubeData, $tubePriority = null, $tubeDelay = null, $tubeTtr = null)
-    {
+
+    public function addJob($tubeName, $tubeData, $tubePriority = null, $tubeDelay = null, $tubeTtr = null) {
         $this->_client->useTube($tubeName);
         $result = $this->_client->useTube($tubeName)->put($tubeData, $tubePriority, $tubeDelay, $tubeTtr);
 
         return $result;
     }
 
-    public function getContentType()
-    {
+    public function pauseTube($tube, $delay) {
+        $this->_client->pauseTube($tube, $delay);
+    }
+
+    public function getContentType() {
         return $this->_contentType;
     }
 
@@ -207,9 +195,7 @@ class BeanstalkInterface
      *
      * @var Pheanstalk
      */
-
-    private function _peek($tube, $method)
-    {
+    private function _peek($tube, $method) {
         try {
             $job = $this->_client->useTube($tube)->{$method}();
             $peek = array(
@@ -225,8 +211,7 @@ class BeanstalkInterface
         return $peek;
     }
 
-    private function _decodeDate($pData)
-    {
+    private function _decodeDate($pData) {
         $this->_contentType = false;
         $out = $pData;
         $data = @unserialize($pData);
@@ -242,4 +227,5 @@ class BeanstalkInterface
         }
         return $out;
     }
+
 }
