@@ -15,6 +15,8 @@
 - You can view jobs in ready/delayed/buried states in every tube
 - You can add/kick/delete jobs in every tube
 - You can select multiple tubes by regExp and clear them
+- Ability to Pause tubes
+- Customizable UI (choose columns, edit auto refresh seconds, pause tube seconds)
 
 **Installation**
 

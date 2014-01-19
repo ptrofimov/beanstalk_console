@@ -384,4 +384,18 @@ class Console {
         exit();
     }
 
+    protected function _actionPause() {
+        if ($this->_globalVar['count'] == -1) {
+            if (!@empty($_COOKIE['tubePauseSeconds'])) {
+                $this->_globalVar['count'] = $_COOKIE['tubePauseSeconds'];
+            } else {
+                $this->_globalVar['count'] = 3600;
+            }
+        }
+        $this->interface->pauseTube($this->_globalVar['tube'], $this->_globalVar['count']);
+        header(
+                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        exit();
+    }
+
 }
