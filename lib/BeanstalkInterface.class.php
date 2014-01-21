@@ -225,7 +225,7 @@ class BeanstalkInterface {
             }
             ob_get_clean();
             // restore old error handler
-            set_error_handler($mixed);
+            restore_error_handler();
         }
 
         if ($data) {
