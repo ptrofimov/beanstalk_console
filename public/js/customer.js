@@ -83,7 +83,7 @@ $(document).ready(
                     } else {
                         val = $(this).val();
                     }
-                    if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']))
+                    if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']) >= 0)
                         val = $(this).is(':checked') ? null : 1;
                     $.cookie(this.id, val, {expires: 365});
                 });
