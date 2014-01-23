@@ -1,4 +1,3 @@
-
 # Beanstalk console ![English version](http://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/22px-Flag_of_the_United_Kingdom.svg.png)
 
 *Admin console for [Beanstalk](http://kr.github.com/beanstalkd) queue server, written in PHP*
@@ -30,7 +29,7 @@ Then, use the `create-project` command to generate a new application:
 
     php composer.phar create-project ptrofimov/beanstalk_console -s dev path/to/install
 
-Composer will install the Beanstalk Cosnole and all its dependencies under the `path/to/install` directory.
+Composer will install the Beanstalk Console and all its dependencies under the `path/to/install` directory.
 
 ### Setup using vagrant
 
