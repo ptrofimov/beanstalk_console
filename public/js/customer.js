@@ -62,6 +62,7 @@ $(document).ready(
                     var jn = formatJson(cn);
                     $('pre code').html(jn);
                 }
+
                 $('#clearTubesSelect').on('click', function() {
                     $('#clear-tubes input[type=checkbox]:regex(name,' + $("#tubeSelector").val() + ')').prop('checked', true);
                     $.cookie("tubeSelector", $("#tubeSelector").val(), {
@@ -69,9 +70,11 @@ $(document).ready(
                     });
                     $('#clearTubes').text('Clear ' + $('#clear-tubes input[type=checkbox]:checked').length + ' selected tubes');
                 });
+
                 $('#clearTubes').on('click', function() {
                     clearTubes();
                 });
+
                 $('#settings input').on('change', function() {
                     var val;
                     if ($(this).attr('type') == 'checkbox') {
@@ -86,6 +89,40 @@ $(document).ready(
                     if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']) >= 0)
                         val = $(this).is(':checked') ? null : 1;
                     $.cookie(this.id, val, {expires: 365});
+                });
+
+                $('.addSample').on('click', function() {
+                    var selectedText = "";
+                    if (typeof window.getSelection != "undefined") {
+                        var sel = window.getSelection();
+                        if (sel.rangeCount) {
+                            var container = document.createElement("div");
+                            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                                container.appendChild(sel.getRangeAt(i).cloneContents());
+                            }
+                            selectedText = container.textContent || container.innerText;
+                        }
+                    } else if (typeof document.selection != "undefined") {
+                        if (document.selection.type == "Text") {
+                            selectedText = document.selection.createRange().htmlText;
+                        }
+                    }
+                    $('#addsamplename').val(selectedText);
+                    $('#addsamplestate').val($(this).data('state'));
+                    $('#modalAddSample').modal('toggle');
+                    return false;
+                });
+
+                $('#sampleSave').on('click', function() {
+                    var result = addSampleJob();
+                    console.log(result);
+                    if (result == 'empty') {
+                        $('#sampleSaveAlert').fadeIn('fast');
+                    } else {
+                        $('#modalAddJob').modal('toggle');
+                    }
+
+                    return false;
                 });
             }
 
@@ -255,6 +292,25 @@ $(document).ready(
                     'type': 'POST',
                     'error': function() {
                         alert('error from ajax (clear might take a while, be patient)...');
+                    }
+                });
+            }
+
+            function addSampleJob() {
+                if (!$('#addsamplename').val() || $('input[name^=tube]:checked').length < 1) {
+                    return 'empty';
+                }
+
+                $.ajax({
+                    'url': url + '&action=addSample',
+                    'data': $('#modalAddSample input[type=checkbox]:checked').serialize(),
+                    'success': function(data) {
+                        $('#modalAddSample').modal('toggle');
+                    },
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'error': function() {
+                        console.log('error ajax...');
                     }
                 });
             }

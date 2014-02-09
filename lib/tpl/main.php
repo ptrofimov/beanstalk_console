@@ -155,9 +155,9 @@ $servers = $console->getServers();
                     <br><br><a href="./?server=<?php echo $server ?>"> << back </a>
                 <?php else: ?>
                     <?php require_once '../lib/tpl/currentTube.php'; ?>
+                        <?php require_once '../lib/tpl/modalAddJob.php'; ?>
+                        <?php require_once '../lib/tpl/modalAddSample.php'; ?>
                 <?php endif; ?>
-
-                <?php require_once '../lib/tpl/modalAddJob.php'; ?>
                 <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
                 <?php require_once '../lib/tpl/modalSettings.php'; ?>
             <?php endif; ?>

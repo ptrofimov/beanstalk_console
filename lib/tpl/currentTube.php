@@ -58,10 +58,6 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
     <div class="pull-left">
         <h3>Next job in "<?php echo $state ?>" state</h3>
     </div>
-    <div class="pull-right">
-        <a class="btn btn-danger btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i class="icon-trash icon-white"></i> Delete next <?php echo $state ?> job</a>
-        <a class="btn btn-danger btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash icon-white"></i> Delete all <?php echo $state ?> jobs</a>
-    </div>
     <div class="clearfix"></div>
     <?php if ($job): ?>
 
@@ -85,7 +81,21 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
                 </table>
             </div>
             <div class="span9">
-                <b>Job data:</b><br />
+                <div class="clearfix">
+                    <div class="pull-left">
+                        <b>Job data:</b>
+                    </div>
+                    <?php if ($job): ?>
+                    <div class="pull-right">
+                            <div class="btn-group" style="margin-bottom: 3px;">
+                                <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash"></i> Delete all <?php echo $state ?> jobs</a>
+                                <a class="btn btn-small addSample" data-state="<?php echo $state ?>" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="icon-plus"></i> Add to samples</a>
+                                <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i class="icon-remove"></i> Delete</a>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                </div>
                 <pre><code><?php echo htmlspecialchars(trim(var_export($job['data'], true), "'"), ENT_COMPAT) ?></code></pre>
             </div>
         </div>
