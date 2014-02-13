@@ -114,14 +114,7 @@ $(document).ready(
                 });
 
                 $('#sampleSave').on('click', function() {
-                    var result = addSampleJob();
-                    console.log(result);
-                    if (result == 'empty') {
-                        $('#sampleSaveAlert').fadeIn('fast');
-                    } else {
-                        $('#modalAddJob').modal('toggle');
-                    }
-
+                    addSampleJob();
                     return false;
                 });
             }
@@ -298,14 +291,22 @@ $(document).ready(
 
             function addSampleJob() {
                 if (!$('#addsamplename').val() || $('input[name^=tube]:checked').length < 1) {
-                    return 'empty';
+                    $('#sampleSaveAlert span').text('Required fields are marked *');
+                    $('#sampleSaveAlert').fadeIn('fast');
+                    return;
                 }
 
                 $.ajax({
                     'url': url + '&action=addSample',
-                    'data': $('#modalAddSample input[type=checkbox]:checked').serialize(),
+                    'data': $('#modalAddSample input').serialize(),
                     'success': function(data) {
-                        $('#modalAddSample').modal('toggle');
+                        console.log(data);
+                        if (data.result) {
+                            $('#modalAddSample').modal('toggle');
+                        } else {
+                            $('#sampleSaveAlert span').text(data.error);
+                            $('#sampleSaveAlert').fadeIn('fast');
+                        }
                     },
                     'type': 'POST',
                     'dataType': 'json',

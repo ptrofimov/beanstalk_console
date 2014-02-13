@@ -4,10 +4,11 @@
         <h3 id="settings-label" class="text-info">Add to samples</h3>
     </div>
     <div class="modal-body">
+        <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
         <fieldset>
             <div class="alert alert-error hide" id="sampleSaveAlert">
                 <button type="button" class="close" data-dismiss="alert">×</button>
-                <strong>Error!</strong> Required fields are marked *
+                <span><strong>Error!</strong> Required fields are marked *</span>
             </div>
             <input type="hidden" name="addsamplestate" id="addsamplestate">
             <div class="control-group">
@@ -29,7 +30,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <label class="checkbox">
-                            <input type="checkbox" autocomplete="off" name="tube[<?php echo $t ?>]" value="1" <?php echo $checked; ?>>
+                            <input type="checkbox" autocomplete="off" name="tubes[<?php echo $t ?>]" value="1" <?php echo $checked; ?>>
                             <?php echo $t ?>
                         </label>
                     </div>

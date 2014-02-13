@@ -398,4 +398,46 @@ class Console {
         exit();
     }
 
+    protected function _actionAddSample() {
+        $success = false;
+        $error = '';
+        $response = array('result' => &$success, 'error' => &$error);
+        if (isset($_POST['addsamplestate']) && isset($_POST['addsamplename']) && isset($_POST['tube']) && isset($_POST['tubes'])) {
+            try {
+                switch ($_POST['addsamplestate']) {
+                    case 'ready':
+                        $job = $this->interface->_client->useTube($_POST['tube'])->peekReady();
+                        break;
+                    case 'delayed':
+                        $job = $this->interface->_client->useTube($_POST['tube'])->peekDelayed();
+                        break;
+                    case 'buried':
+                        $job = $this->interface->_client->useTube($_POST['tube'])->peekBuried();
+                        break;
+                }
+                if ($job) {
+                    $res = $this->storeSampleJob($_POST, $job->getData());
+                    if ($res === true) {
+                        $success = true;
+                    } else {
+                        $error = $res;
+                    }
+                } else {
+                    $error = 'Invalid state option';
+                }
+            } catch (Exception $e) {
+                // there might be no jobs to peek at, and peekReady raises exception in this situation
+                $error = 'The job no longer exists.';
+            }
+        } else {
+            $error = 'Required fields are not set';
+        }
+        echo json_encode($response);
+        exit();
+    }
+
+    public function storeSampleJob($arr, $jobData) {
+        return 'folder not writable';
+    }
+
 }
