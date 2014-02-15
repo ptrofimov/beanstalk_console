@@ -173,7 +173,7 @@ class BeanstalkInterface {
         $this->_client->delete($job);
     }
 
-    public function addJob($tubeName, $tubeData, $tubePriority = null, $tubeDelay = null, $tubeTtr = null) {
+    public function addJob($tubeName, $tubeData, $tubePriority = Pheanstalk::DEFAULT_PRIORITY, $tubeDelay = Pheanstalk::DEFAULT_DELAY, $tubeTtr = Pheanstalk::DEFAULT_TTR) {
         $this->_client->useTube($tubeName);
         $result = $this->_client->useTube($tubeName)->put($tubeData, $tubePriority, $tubeDelay, $tubeTtr);
 

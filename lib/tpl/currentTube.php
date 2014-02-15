@@ -2,6 +2,7 @@
 $fields = $console->getTubeStatFields();
 $groups = $console->getTubeStatGroups();
 $visible = $console->getTubeStatVisible();
+$sampleJobs = $console->getSampleJobs($tube);
 
 if (!@empty($_COOKIE['tubePauseSeconds'])) {
     $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
@@ -39,19 +40,41 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
     </table>
 </section>
 
-<p>
-    <b>Actions:</b>&nbsp;
-    <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="icon-forward"></i> Kick 1 job</a>
-    <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10" title="To kick more jobs, edit the `count` parameter"><i class="icon-fast-forward"></i> Kick 10 job</a>
-    <?php
-    if (empty($tubeStats['pause-time-left'])) {
-        ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1" title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="icon-pause"></i> Pause tube</a><?php
-    } else {
-        ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0" title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="icon-play"></i> Unpause tube</a><?php
-    }
-    ?>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
-</p>
+
+<b>Actions:</b>&nbsp;
+<a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="icon-forward"></i> Kick 1 job</a>
+<a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10" title="To kick more jobs, edit the `count` parameter"><i class="icon-fast-forward"></i> Kick 10 job</a>
+<?php
+if (empty($tubeStats['pause-time-left'])) {
+    ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1" title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="icon-pause"></i> Pause tube</a><?php
+} else {
+    ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0" title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="icon-play"></i> Unpause tube</a><?php
+}
+?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<div class="btn-group">
+    <a data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
+    <button class="btn btn-success btn-small dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+
+        <?php
+        if (is_array($sampleJobs) && count($sampleJobs)) {
+            foreach ($sampleJobs as $key => $name) {
+                ?>
+                <li>
+                    <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=loadSample&key=<?php echo $key; ?>"><?php echo htmlspecialchars($name); ?></a>
+                </li>
+            <?php }
+        } else {
+            ?>
+            <li>
+                There are no sample jobs
+            </li>
+<?php } ?>
+    </ul>
+</div>
 
 <?php foreach ($peek as $state => $job): ?>
     <hr>
@@ -71,12 +94,12 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($job['stats'] as $key => $value): ?>
+        <?php foreach ($job['stats'] as $key => $value): ?>
                             <tr>
                                 <td><?php echo $key ?></td>
                                 <td><?php echo $value ?></td>
                             </tr>
-                        <?php endforeach ?>
+        <?php endforeach ?>
                     </tbody>
                 </table>
             </div>
@@ -85,15 +108,15 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
                     <div class="pull-left">
                         <b>Job data:</b>
                     </div>
-                    <?php if ($job): ?>
-                    <div class="pull-right">
-                            <div class="btn-group" style="margin-bottom: 3px;">
-                                <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash"></i> Delete all <?php echo $state ?> jobs</a>
-                                <a class="btn btn-small addSample" data-state="<?php echo $state ?>" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="icon-plus"></i> Add to samples</a>
-                                <a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i class="icon-remove"></i> Delete</a>
+        <?php if ($job): ?>
+                        <div class="pull-right">
+                            <div style="margin-bottom: 3px;">
+                                <a class="btn btn-small btn-info addSample" data-state="<?php echo $state ?>" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="icon-plus icon-white"></i> Add to samples</a>
+                                <a class="btn btn-small btn-danger" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash icon-white"></i> Delete all <?php echo $state ?> jobs</a>
+                                <a class="btn btn-small btn-danger" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i class="icon-remove icon-white"></i> Delete</a>
                             </div>
                         </div>
-                    <?php endif; ?>
+        <?php endif; ?>
 
                 </div>
                 <pre><code><?php echo htmlspecialchars(trim(var_export($job['data'], true), "'"), ENT_COMPAT) ?></code></pre>

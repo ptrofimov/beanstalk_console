@@ -11,6 +11,7 @@ function __autoload($class) {
 
 require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
+require_once dirname(__FILE__) . '/../src/Storage.php';
 
 $server = !empty($_GET['server']) ? $_GET['server'] : '';
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
@@ -416,7 +417,7 @@ class Console {
                         break;
                 }
                 if ($job) {
-                    $res = $this->storeSampleJob($_POST, $job->getData());
+                    $res = $this->_storeSampleJob($_POST, $job->getData());
                     if ($res === true) {
                         $success = true;
                     } else {
@@ -427,7 +428,7 @@ class Console {
                 }
             } catch (Exception $e) {
                 // there might be no jobs to peek at, and peekReady raises exception in this situation
-                $error = 'The job no longer exists.';
+                $error = $e->getMessage();
             }
         } else {
             $error = 'Required fields are not set';
@@ -436,8 +437,35 @@ class Console {
         exit();
     }
 
-    public function storeSampleJob($arr, $jobData) {
-        return 'folder not writable';
+    protected function _actionLoadSample() {
+        $key = $_GET['key'];
+        if (!empty($key)) {
+            $storage = new Storage($this->_globalVar['config']['storage']);
+            $job = $storage->load($key);
+            if ($job) {
+                $this->interface->addJob($this->_globalVar['tube'], $job['data']);
+            }
+        }
+        header(sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        exit();
+    }
+
+    private function _storeSampleJob($post, $jobData) {
+        $storage = new Storage($this->_globalVar['config']['storage']);
+        $job_array = array();
+        $job_array['name'] = trim($post['addsamplename']);
+        $job_array['tubes'] = $post['tubes'];
+        $job_array['data'] = $jobData;
+        if ($storage->saveJob($job_array)) {
+            return true;
+        } else {
+            return $storage->getError();
+        }
+    }
+
+    public function getSampleJobs($tube) {
+        $storage = new Storage($this->_globalVar['config']['storage']);
+        return $storage->getJobsForTube($tube);
     }
 
 }

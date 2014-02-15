@@ -311,7 +311,7 @@ $(document).ready(
                     'type': 'POST',
                     'dataType': 'json',
                     'error': function() {
-                        console.log('error ajax...');
+                        alert('error ajax...');
                     }
                 });
             }
