@@ -77,6 +77,11 @@ class Storage implements IStorage {
         file_put_contents($this->file, json_encode($collection));
     }
 
+    public function getJobs() {
+        $collection = $this->readCollection();
+        return @$collection[self::VERSION]['jobs'];
+    }
+
     public function getJobsForTube($tubename) {
         $collection = $this->readCollection();
         $result = array();
@@ -95,6 +100,20 @@ class Storage implements IStorage {
         $collection = $this->readCollection();
         if (isset($collection[self::VERSION]['jobs'][$key])) {
             return $collection[self::VERSION]['jobs'][$key];
+        }
+        return false;
+    }
+
+    public function delete($key) {
+        $collection = $this->readCollection();
+        if (isset($collection[self::VERSION]['jobs'][$key])) {
+            if (is_array($collection[self::VERSION]['jobs'][$key]['tubes'])) {
+                foreach ($collection[self::VERSION]['jobs'][$key]['tubes'] as $tubename => $val) {
+                    unset($collection[self::VERSION]['tubes'][$tubename][$key]);
+                }
+            }
+            unset($collection[self::VERSION]['jobs'][$key]);
+            $this->writeCollection($collection);
         }
         return false;
     }

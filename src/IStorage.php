@@ -8,7 +8,11 @@ interface IStorage {
 
     public function getError();
 
+    public function getJobs();
+
     public function getJobsForTube($tube);
 
     public function load($key);
+
+    public function delete($key);
 }

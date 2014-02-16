@@ -9,6 +9,7 @@ function __autoload($class) {
     require_once str_replace('_', '/', $class) . '.php';
 }
 
+session_start();
 require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
@@ -253,7 +254,7 @@ class Console {
 
         if (!isset($_GET['server'])) {
             // execute methods without a server
-            if (isset($_GET['action']) && in_array($_GET['action'], array('serversRemove'))) {
+            if (isset($_GET['action']) && in_array($_GET['action'], array('serversRemove', 'manageSamples', 'deleteSample', 'editSample', 'newSample'))) {
                 $funcName = "_action" . ucfirst($this->_globalVar['action']);
                 if (method_exists($this, $funcName)) {
                     $this->$funcName();
@@ -446,7 +447,132 @@ class Console {
                 $this->interface->addJob($this->_globalVar['tube'], $job['data']);
             }
         }
-        header(sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        if (isset($_GET['redirect'])) {
+            $_SESSION['info'] = 'Job placed on tube';
+            header(sprintf('Location: %s', $_GET['redirect']));
+        } else {
+            header(sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        }
+        exit();
+    }
+
+    protected function _actionManageSamples() {
+        $this->_tplVars['_tplMain'] = 'main';
+        $this->_tplVars['_tplPage'] = 'sampleJobsManage';
+    }
+
+    protected function _actionEditSample() {
+        $this->_tplVars['_tplMain'] = 'main';
+        $this->_tplVars['_tplPage'] = 'sampleJobsEdit';
+        $key = $_GET['key'];
+        if (!empty($key)) {
+            $storage = new Storage($this->_globalVar['config']['storage']);
+            $job = $storage->load($key);
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                if (isset($_POST['jobdata']) && isset($_POST['name']) && isset($_POST['tubes'])) {
+                    $oldjob = $job;
+                    $storage->delete($key);
+                    $job['name'] = $_POST['name'];
+                    $job['tubes'] = $_POST['tubes'];
+                    $job['data'] = htmlspecialchars_decode($_POST['jobdata']);
+                    if ($storage->saveJob($job)) {
+                        header('Location: index.php?action=manageSamples');
+                    } else {
+                        $storage->saveJob($oldjob);
+                        $this->_tplVars['error'] = $storage->getError();
+                    }
+                } else {
+                    $job['name'] = @$_POST['name'];
+                    $job['data'] = @$_POST['jobdata'];
+                    $job['tubes'] = @$_POST['tubes'];
+                    $this->_tplVars['error'] = 'Required fields are not set';
+                }
+            }
+            if ($job) {
+                $this->_tplVars['job'] = $job;
+            } else {
+                $this->_errors[] = 'Cannot locate job';
+                return;
+            }
+        } else {
+            $this->_errors[] = 'The requested key is invalid';
+            return;
+        }
+        $serverTubes = array();
+        if (is_array($this->servers)) {
+            foreach ($this->servers as $server) {
+                try {
+                    $interface = new BeanstalkInterface($server);
+                    $tubes = $interface->getTubes();
+                    if (is_array($tubes)) {
+                        $serverTubes[$server] = $tubes;
+                    }
+                } catch (Exception $e) {
+                    
+                }
+            }
+        }
+        if (empty($serverTubes)) {
+            $this->_errors[] = 'No tubes were found, please connect a server.';
+            return;
+        }
+        $this->_tplVars['serverTubes'] = $serverTubes;
+    }
+
+    protected function _actionNewSample() {
+        $this->_tplVars['_tplMain'] = 'main';
+        $this->_tplVars['_tplPage'] = 'sampleJobsEdit';
+        $this->_tplVars['isNewRecord'] = true;
+        $storage = new Storage($this->_globalVar['config']['storage']);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (isset($_POST['jobdata']) && isset($_POST['name']) && isset($_POST['tubes'])) {
+                $job['name'] = $_POST['name'];
+                $job['tubes'] = $_POST['tubes'];
+                $job['data'] = htmlspecialchars_decode($_POST['jobdata']);
+                if ($storage->saveJob($job)) {
+                    header('Location: index.php?action=manageSamples');
+                } else {
+                    $this->_tplVars['error'] = $storage->getError();
+                }
+            } else {
+                $job['name'] = @$_POST['name'];
+                $job['data'] = @$_POST['jobdata'];
+                $job['tubes'] = @$_POST['tubes'];
+                $this->_tplVars['error'] = 'Required fields are not set';
+            }
+        }
+
+        $serverTubes = array();
+        if (is_array($this->servers)) {
+            foreach ($this->servers as $server) {
+                try {
+                    $interface = new BeanstalkInterface($server);
+                    $tubes = $interface->getTubes();
+                    if (is_array($tubes)) {
+                        $serverTubes[$server] = $tubes;
+                    }
+                } catch (Exception $e) {
+                    
+                }
+            }
+        }
+        if (empty($serverTubes)) {
+            $this->_errors[] = 'No tubes were found, please connect a server.';
+            return;
+        }
+        $this->_tplVars['serverTubes'] = $serverTubes;
+    }
+
+    protected function _actionDeleteSample() {
+        $key = $_GET['key'];
+        if (!empty($key)) {
+            $storage = new Storage($this->_globalVar['config']['storage']);
+            $job = $storage->load($key);
+            if ($job) {
+                $storage->delete($key);
+            }
+        }
+        header('Location: index.php?action=manageSamples');
         exit();
     }
 
@@ -463,9 +589,13 @@ class Console {
         }
     }
 
-    public function getSampleJobs($tube) {
+    public function getSampleJobs($tube = null) {
         $storage = new Storage($this->_globalVar['config']['storage']);
-        return $storage->getJobsForTube($tube);
+        if ($tube) {
+            return $storage->getJobsForTube($tube);
+        } else {
+            return $storage->getJobs();
+        }
     }
 
 }

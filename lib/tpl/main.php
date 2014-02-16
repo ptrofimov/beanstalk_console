@@ -87,38 +87,24 @@ $servers = $console->getServers();
                                             </ul>
                                         </li>
                                     <?php endif ?>
-                                    <!--<li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something                                 <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li class="nav-header">Nav header</li>
-                                            <li><a href="#">Separated link</a></li>
-                                            <li><a href="#">One more separated link</a></li>
-                                        </ul>
-                                    </li>-->
                                 </ul>
-                                <!--<form class="navbar-search pull-left" action="">
-                                    <input type="text" class="search-query span2" placeholder="Search">
-                                </form>-->
                                 <ul class="nav pull-right">
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Toolbox <b class="caret"></b></a>
                                         <ul class="dropdown-menu">
-                                            <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
-                                            <?php if ($server && !$tube) { ?>
+                                            <?php if (!isset($_tplPage)) { ?>
+                                                <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
+                                                <?php
+                                            }
+                                            if ($server && !$tube) {
+                                                ?>
                                                 <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
                                             <?php } ?> 
+                                            <li><a href="index.php?action=manageSamples" role="button">Manage samples</a></li>
                                             <li class="divider"></li>
                                             <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
                                         </ul>
                                     </li>
-
-
-                                    <!--<li><a href="#">Link</a></li>
-                                    <li class="divider-vertical"></li>-->
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <b class="caret"></b></a>
                                         <ul class="dropdown-menu">
@@ -142,7 +128,9 @@ $servers = $console->getServers();
                     <p class="alert alert-error"><span class="label label-important">Error</span> <?php echo $item ?></p>
                 <?php endforeach; ?>
             <?php else: ?>
-                <?php if (!$server): ?>
+                <?php if (isset($_tplPage)): ?>
+                    <?php include(dirname(__FILE__) . '/' . $_tplPage . '.php') ?>
+                <?php elseif (!$server): ?>
                     <?php include(dirname(__FILE__) . '/serversList.php') ?>
                 <?php elseif (!$tube): ?>
                     <div id="idAllTubes">
@@ -155,10 +143,12 @@ $servers = $console->getServers();
                     <br><br><a href="./?server=<?php echo $server ?>"> << back </a>
                 <?php else: ?>
                     <?php require_once '../lib/tpl/currentTube.php'; ?>
-                        <?php require_once '../lib/tpl/modalAddJob.php'; ?>
-                        <?php require_once '../lib/tpl/modalAddSample.php'; ?>
+                    <?php require_once '../lib/tpl/modalAddJob.php'; ?>
+                    <?php require_once '../lib/tpl/modalAddSample.php'; ?>
                 <?php endif; ?>
-                <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
+                <?php if (!isset($_tplPage)) { ?>
+                    <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
+                <?php } ?>
                 <?php require_once '../lib/tpl/modalSettings.php'; ?>
             <?php endif; ?>
         </div>

@@ -17,7 +17,10 @@
 - You can add/kick/delete jobs in every tube
 - You can select multiple tubes by regExp and clear them
 - Ability to Pause tubes
+- Saved jobs (store sample jobs as a template, kick/edit them, very useful for development)
 - Customizable UI (code highlighter, choose columns, edit auto refresh seconds, pause tube seconds)
+
+Change log on [Releases](https://github.com/ptrofimov/beanstalk_console/releases).
 
 **Installation**
 

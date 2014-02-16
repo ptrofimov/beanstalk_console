@@ -12,14 +12,14 @@
             </div>
             <input type="hidden" name="addsamplestate" id="addsamplestate">
             <div class="control-group">
-                <label class="control-label" for="addsamplename" title="You can highlight text inside the job, then hit the Add button, it will be automatically populated here."><b>Name*</b> <i>(highlighted text is auto populated)</i></label>
+                <label class="control-label" for="addsamplename" title="You can highlight text inside the job, then hit the Add button, it will be automatically populated here."><b>Name *</b> <i>(highlighted text is auto populated)</i></label>
                 <div class="controls">
                     <input class="input-xlarge focused" id="addsamplename" name="addsamplename" type="text" value="" autocomplete="off">
                 </div>
             </div>
         </fieldset>
         <div>
-            <label class="control-label" for="focusedInput"><b>Available on tubes*</label>
+            <label class="control-label" for="focusedInput"><b>Available on tubes *</label>
             <?php
             foreach ($tubes as $t):
                 $checked = '';

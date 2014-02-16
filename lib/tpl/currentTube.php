@@ -67,10 +67,14 @@ if (empty($tubeStats['pause-time-left'])) {
                     <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=loadSample&key=<?php echo $key; ?>"><?php echo htmlspecialchars($name); ?></a>
                 </li>
             <?php }
+            ?>
+                <li class="divider"></li>
+                <li><a href="?action=manageSamples">Manage samples</a></li>
+                <?php 
         } else {
             ?>
             <li>
-                There are no sample jobs
+                <a href="#">There are no sample jobs</a>
             </li>
 <?php } ?>
     </ul>
