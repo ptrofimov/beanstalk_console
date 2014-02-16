@@ -207,6 +207,11 @@ class Console {
                 $this->servers[] = $server;
             }
         }
+        try {
+            $storage = new Storage($config['storage']);
+        } catch (Exception $ex) {
+            $this->_errors[] = $ex->getMessage();
+        }
     }
 
     public function getErrors() {
