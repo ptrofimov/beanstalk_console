@@ -58,7 +58,7 @@ $(document).ready(
                 });
 
                 if (contentType == 'json') {
-                    $('pre code').each(function(index, value) {
+                    $('pre code').each(function() {
                         var cn = $(this).html();
                         var jn = formatJson(cn);
                         $(this).html(jn);
