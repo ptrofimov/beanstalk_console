@@ -58,9 +58,11 @@ $(document).ready(
                 });
 
                 if (contentType == 'json') {
-                    var cn = $('pre code').html();
-                    var jn = formatJson(cn);
-                    $('pre code').html(jn);
+                    $('pre code').each(function(index, value) {
+                        var cn = $(this).html();
+                        var jn = formatJson(cn);
+                        $(this).html(jn);
+                    });
                 }
 
                 $('#clearTubesSelect').on('click', function() {
