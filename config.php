@@ -12,5 +12,5 @@ $config = array(
     /**
      * Version number
      */
-    'version' => '1.4',
+    'version' => '1.4.1',
 );
