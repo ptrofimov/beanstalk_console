@@ -158,7 +158,7 @@ $servers = $console->getServers();
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.regexp.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <?php if (@$_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+        <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
             <script src="highlight/highlight.pack.js"></script>
             <script>hljs.initHighlightingOnLoad();</script><?php } ?>
         <script src="js/customer.js"></script>
