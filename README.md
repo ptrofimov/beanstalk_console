@@ -16,6 +16,7 @@
 - You can view jobs in ready/delayed/buried states in every tube
 - You can add/kick/delete jobs in every tube
 - You can select multiple tubes by regExp and clear them
+- You can move jobs between tubes
 - Ability to Pause tubes
 - Saved jobs (store sample jobs as a template, kick/edit them, very useful for development)
 - Customizable UI (code highlighter, choose columns, edit auto refresh seconds, pause tube seconds)
