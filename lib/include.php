@@ -581,6 +581,18 @@ class Console {
         exit();
     }
 
+    protected function _actionMoveJobsTo() {
+        global $server, $tube, $state;
+        $destTube = (isset($_GET['destTube'])) ? $_GET['destTube'] : null;
+        $destState = (isset($_GET['destState'])) ? $_GET['destState'] : null;
+        if (!empty($destTube) && in_array($state, array('ready', 'delayed', 'buried'))) {
+            $this->moveJobsFromTo($server, $tube, $state, $destTube);
+        }
+        if (!empty($destState)) {
+            $this->moveJobsToState($server, $tube, $state, $destState);
+        }
+    }
+
     private function _storeSampleJob($post, $jobData) {
         $storage = new Storage($this->_globalVar['config']['storage']);
         $job_array = array();
@@ -601,6 +613,62 @@ class Console {
         } else {
             return $storage->getJobs();
         }
+    }
+
+    private function moveJobsFromTo($server, $tube, $state, $destTube) {
+        try {
+            do {
+                switch ($state) {
+                    case 'ready':
+                        $job = $this->interface->_client->useTube($tube)->peekReady();
+                        break;
+                    case 'delayed':
+                        $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                        break;
+                    case 'buried':
+                        $job = $this->interface->_client->useTube($tube)->peekBuried();
+                        break;
+                }
+
+                if ($job) {
+                    $this->interface->addJob($destTube, $job->getData());
+                    $this->interface->_client->delete($job);
+                    set_time_limit(5);
+                }
+            } while (!empty($job));
+        } catch (Exception $e) {
+            // there might be no jobs to peek at, and peekReady raises exception in this situation
+        }
+        header(sprintf('Location: index.php?server=%s&tube=%s', $server, $destTube));
+    }
+
+    private function moveJobsToState($server, $tube, $state, $destState) {
+        try {
+            do {
+                $job = null;
+                switch ($state) {
+                    case 'ready':
+                        $job = $this->interface->_client->watch($tube)->reserve(0);
+                        break;
+                    default:
+                        return;
+                }
+
+                if ($job) {
+                    switch ($destState) {
+                        case 'buried':
+                            $this->interface->_client->bury($job);
+                            break;
+                        default:
+                            return;
+                    }
+                    set_time_limit(5);
+                }
+            } while (!empty($job));
+        } catch (Exception $e) {
+            // there might be no jobs to peek at, and peekReady raises exception in this situation
+        }
+        header(sprintf('Location: index.php?server=%s&tube=%s', $server, $tube));
     }
 
 }

@@ -68,15 +68,15 @@ if (empty($tubeStats['pause-time-left'])) {
                 </li>
             <?php }
             ?>
-                <li class="divider"></li>
-                <li><a href="?action=manageSamples">Manage samples</a></li>
-                <?php 
+            <li class="divider"></li>
+            <li><a href="?action=manageSamples">Manage samples</a></li>
+            <?php
         } else {
             ?>
             <li>
                 <a href="#">There are no sample jobs</a>
             </li>
-<?php } ?>
+        <?php } ?>
     </ul>
 </div>
 
@@ -98,12 +98,12 @@ if (empty($tubeStats['pause-time-left'])) {
                         </tr>
                     </thead>
                     <tbody>
-        <?php foreach ($job['stats'] as $key => $value): ?>
+                        <?php foreach ($job['stats'] as $key => $value): ?>
                             <tr>
                                 <td><?php echo $key ?></td>
                                 <td><?php echo $value ?></td>
                             </tr>
-        <?php endforeach ?>
+                        <?php endforeach ?>
                     </tbody>
                 </table>
             </div>
@@ -112,15 +112,42 @@ if (empty($tubeStats['pause-time-left'])) {
                     <div class="pull-left">
                         <b>Job data:</b>
                     </div>
-        <?php if ($job): ?>
+                    <?php if ($job): ?>
                         <div class="pull-right">
                             <div style="margin-bottom: 3px;">
                                 <a class="btn btn-small btn-info addSample" data-state="<?php echo $state ?>" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="icon-plus icon-white"></i> Add to samples</a>
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-small dropdown-toggle" data-toggle="dropdown">
+                                        <i class="icon-arrow-right icon-white"></i> Move all <?php echo $state ?> to
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><input class="moveJobsNewTubeName" type="text" class="input-medium" data-href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&state=<?php echo $state; ?>&destTube=" placeholder="New tube name"/></li>
+                                        <?php
+                                        if (isset($tubes) && is_array($tubes) && count($tubes)) {
+                                            foreach ($tubes as $key => $name) {
+                                                ?>
+                                                <li>
+                                                    <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destTube=<?php echo $name; ?>&state=<?php echo $state; ?>"><?php echo htmlspecialchars($name); ?></a>
+                                                </li>
+                                            <?php }
+                                            ?>
+                                        <?php }
+                                        ?>
+                                        <?php
+                                        if ($state == 'ready') {
+                                            ?>
+                                            <li class="divider"></li>
+                                            <li><a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destState=buried&state=<?php echo $state; ?>">Buried</a></li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                </div>
                                 <a class="btn btn-small btn-danger" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1" onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i class="icon-trash icon-white"></i> Delete all <?php echo $state ?> jobs</a>
                                 <a class="btn btn-small btn-danger" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i class="icon-remove icon-white"></i> Delete</a>
                             </div>
                         </div>
-        <?php endif; ?>
+                    <?php endif; ?>
 
                 </div>
                 <pre><code><?php echo htmlspecialchars(trim(var_export($job['data'], true), "'"), ENT_COMPAT) ?></code></pre>
