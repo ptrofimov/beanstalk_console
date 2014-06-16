@@ -119,6 +119,21 @@ $(document).ready(
                     addSampleJob();
                     return false;
                 });
+
+                $('.moveJobsNewTubeName').click(function(e) {
+                    e.stopPropagation();
+                });
+
+                $('.moveJobsNewTubeName').keypress(function(e)
+                {
+                    if (e.which == 13)
+                    {
+                        if ($(this).val().length > 0) {
+                            console.log($(this).data('href') + encodeURIComponent($(this).val()));
+                        }
+                        document.location.replace($(this).data('href') + ($(this).val()));
+                    }
+                });
             }
 
             function addServer(host, port) {
