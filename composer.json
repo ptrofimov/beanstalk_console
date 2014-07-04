@@ -19,7 +19,8 @@
     },
     "license": "MIT",
     "require": {
-        "php": ">=5.2.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "pda/pheanstalk": "v3.0.0",
+        "php": ">=5.2.0"
     }
 }
