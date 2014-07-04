@@ -108,7 +108,7 @@ if ($json) {
             <div class="control-group">
                 <label class="control-label" for="port">Port</label>
                 <div class="controls">
-                    <input type="text" id="port" value="<?php echo Pheanstalk::DEFAULT_PORT ?>">
+                    <input type="text" id="port" value="<?php echo \Pheanstalk\Pheanstalk::DEFAULT_PORT ?>">
                 </div>
             </div>
         </form>
