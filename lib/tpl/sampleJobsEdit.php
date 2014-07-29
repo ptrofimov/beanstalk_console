@@ -6,23 +6,23 @@ if (isset($isNewRecord) && $isNewRecord) {
 }
 ?>
 <form name="sampleJobsEdit" action="<?php echo $action; ?>" method="POST">
-    <div class="clearfix">
+    <div class="clearfix form-group">
         <div class="pull-left">
             <?php
             if (isset($isNewRecord) && $isNewRecord) {
                 ?>
                 <h4 class="text-info">New sample job</h4>
-            <?php
+                <?php
             } else {
                 ?>
                 <h4 class="text-info">Edit: <?php echo htmlspecialchars($job['name']); ?></h4>
             <?php } ?>
         </div>
         <div class="pull-right">
-            <a href="?action=manageSamples" class="btn btn-small"><i class="icon-list"></i> Manage samples</a>
+            <a href="?action=manageSamples" class="btn btn-default btn-small"><i class="glyphicon glyphicon-list"></i> Manage samples</a>
         </div>
     </div>
-    <div>
+    <div class=" form-group">
         <fieldset>
             <?php
             if (isset($error)) {
@@ -35,7 +35,7 @@ if (isset($isNewRecord) && $isNewRecord) {
             <div class="control-group">
                 <label class="control-label" for="addsamplename"><b>Name *</b></label>
 
-                <div class="controls">
+                <div class="controls form-group">
                     <input class="input-xlarge focused" id="addsamplename" name="name" type="text" value="<?php echo @htmlspecialchars($job['name']); ?>"
                            autocomplete="off">
                 </div>
@@ -45,7 +45,7 @@ if (isset($isNewRecord) && $isNewRecord) {
             <label class="control-label" for="focusedInput"><b>Available on tubes *</b></label>
             <br/>
             <?php
-            if (is_array($job['tubes'])) {
+            if (isset($job) && is_array($job['tubes'])) {
                 ?>
                 <div class="pull-left" style="padding-right: 35px;">
                     Saved to:
@@ -59,18 +59,18 @@ if (isset($isNewRecord) && $isNewRecord) {
                             ?>
                             <div class="control-group">
                                 <div class="controls">
-                                    <label class="checkbox">
+                                    <label class="checkbox-inline">
                                         <input type="checkbox" autocomplete="off" name="tubes[<?php echo $t ?>]" value="1" <?php echo $checked; ?>>
                                         <?php echo $t ?>
                                     </label>
                                 </div>
                             </div>
-                        <?php
+                            <?php
                         }
                         ?>
                     </blockquote>
                 </div>
-            <?php
+                <?php
             }
             if (is_array($serverTubes)) {
                 foreach ($serverTubes as $server => $tubes) {
@@ -90,18 +90,18 @@ if (isset($isNewRecord) && $isNewRecord) {
                                     ?>
                                     <div class="control-group">
                                         <div class="controls">
-                                            <label class="checkbox">
+                                            <label class="checkbox-inline">
                                                 <input type="checkbox" autocomplete="off" name="tubes[<?php echo $t ?>]" value="1" <?php echo $checked; ?>>
                                                 <?php echo $t ?>
                                             </label>
                                         </div>
                                     </div>
-                                <?php
+                                    <?php
                                 }
                                 ?>
                             </blockquote>
                         </div>
-                    <?php
+                        <?php
                     }
                 }
             }

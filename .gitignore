@@ -1,4 +1,4 @@
 .idea
-vendor/
+/vendor
 .vagrant
 nbproject/
