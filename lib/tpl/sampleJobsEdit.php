@@ -12,7 +12,7 @@ if (isset($isNewRecord) && $isNewRecord) {
             if (isset($isNewRecord) && $isNewRecord) {
                 ?>
                 <h4 class="text-info">New sample job</h4>
-            <?php
+                <?php
             } else {
                 ?>
                 <h4 class="text-info">Edit: <?php echo htmlspecialchars($job['name']); ?></h4>
@@ -65,12 +65,12 @@ if (isset($isNewRecord) && $isNewRecord) {
                                     </label>
                                 </div>
                             </div>
-                        <?php
+                            <?php
                         }
                         ?>
                     </blockquote>
                 </div>
-            <?php
+                <?php
             }
             if (is_array($serverTubes)) {
                 foreach ($serverTubes as $server => $tubes) {
@@ -96,12 +96,12 @@ if (isset($isNewRecord) && $isNewRecord) {
                                             </label>
                                         </div>
                                     </div>
-                                <?php
+                                    <?php
                                 }
                                 ?>
                             </blockquote>
                         </div>
-                    <?php
+                        <?php
                     }
                 }
             }
