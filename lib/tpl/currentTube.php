@@ -13,33 +13,31 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
 <section id="summaryTable">
     <div class="row">
         <div class="col-sm-12">
-            <h2>Jobs in tube <i><?php echo $tube; ?></i> on <?php echo $server; ?></h2>
-            <hr/>
             <table class="table table-striped table-hover">
                 <thead>
-                <tr>
-                    <th>name</th>
-                    <?php
-                    foreach ($fields as $key => $item):
-                        $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
-                        ?>
-                        <th<?php echo $markHidden ?>  name="<?php echo $key ?>" title="<?php echo $item ?>"><?php echo $key ?></th>
-                    <?php endforeach; ?>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach (array($tube) as $tubeItem): ?>
                     <tr>
-                        <td name="<?php echo $key ?>"><?php echo $tubeItem ?></td>
-                        <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
+                        <th>name</th>
                         <?php
                         foreach ($fields as $key => $item):
                             $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
                             ?>
-                            <td<?php echo $markHidden ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
+                            <th<?php echo $markHidden ?>  name="<?php echo $key ?>" title="<?php echo $item ?>"><?php echo $key ?></th>
                         <?php endforeach; ?>
                     </tr>
-                <?php endforeach ?>
+                </thead>
+                <tbody>
+                    <?php foreach (array($tube) as $tubeItem): ?>
+                        <tr>
+                            <td name="<?php echo $key ?>"><?php echo $tubeItem ?></td>
+                            <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
+                            <?php
+                            foreach ($fields as $key => $item):
+                                $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
+                                ?>
+                                <td<?php echo $markHidden ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
+                            <?php endforeach; ?>
+                        </tr>
+                    <?php endforeach ?>
                 </tbody>
             </table>
         </div>
@@ -49,23 +47,23 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
 
 
 <b>Actions:</b>&nbsp;
-<a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="icon-forward"></i> Kick 1 job</a>
-<a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10"
-   title="To kick more jobs, edit the `count` parameter"><i class="icon-fast-forward"></i> Kick 10 job</a>
-<?php
-if (empty($tubeStats['pause-time-left'])) {
-    ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1"
-         title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="icon-pause"></i>
+<a class="btn btn-default btn-sm" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="glyphicon glyphicon-forward"></i> Kick 1 job</a>
+<a class="btn btn-default btn-sm" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10"
+   title="To kick more jobs, edit the `count` parameter"><i class="glyphicon glyphicon-fast-forward"></i> Kick 10 job</a>
+   <?php
+   if (empty($tubeStats['pause-time-left'])) {
+       ?><a class="btn btn-default btn-sm" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1"
+       title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="glyphicon glyphicon-pause"></i>
         Pause tube</a><?php
 } else {
-    ?><a class="btn btn-small" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0"
-         title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="icon-play"></i> Unpause tube</a><?php
-}
-?>
+    ?><a class="btn btn-default btn-sm" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0"
+       title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> Unpause tube</a><?php
+   }
+   ?>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <div class="btn-group">
-    <a data-toggle="modal" class="btn btn-success btn-small" href="#" id="addJob"><i class="icon-plus-sign icon-white"></i> Add job</a>
-    <button class="btn btn-success btn-small dropdown-toggle" data-toggle="dropdown">
+    <a data-toggle="modal" class="btn btn-success btn-sm" href="#" id="addJob"><i class="glyphicon glyphicon-plus-sign glyphicon-white"></i> Add job</a>
+    <button class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
@@ -77,12 +75,12 @@ if (empty($tubeStats['pause-time-left'])) {
                 <li>
                     <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=loadSample&key=<?php echo $key; ?>"><?php echo htmlspecialchars($name); ?></a>
                 </li>
-            <?php
+                <?php
             }
             ?>
             <li class="divider"></li>
             <li><a href="?action=manageSamples">Manage samples</a></li>
-        <?php
+            <?php
         } else {
             ?>
             <li>
@@ -104,18 +102,18 @@ if (empty($tubeStats['pause-time-left'])) {
             <div class="span3">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th>Stats:</th>
-                        <th>&nbsp;</th>
-                    </tr>
+                        <tr>
+                            <th>Stats:</th>
+                            <th>&nbsp;</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($job['stats'] as $key => $value): ?>
-                        <tr>
-                            <td><?php echo $key ?></td>
-                            <td><?php echo $value ?></td>
-                        </tr>
-                    <?php endforeach ?>
+                        <?php foreach ($job['stats'] as $key => $value): ?>
+                            <tr>
+                                <td><?php echo $key ?></td>
+                                <td><?php echo $value ?></td>
+                            </tr>
+                        <?php endforeach ?>
                     </tbody>
                 </table>
             </div>
@@ -127,29 +125,29 @@ if (empty($tubeStats['pause-time-left'])) {
                     <?php if ($job): ?>
                         <div class="pull-right">
                             <div style="margin-bottom: 3px;">
-                                <a class="btn btn-small btn-info addSample" data-state="<?php echo $state ?>"
-                                   href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="icon-plus icon-white"></i> Add to
+                                <a class="btn btn-sm btn-info addSample" data-state="<?php echo $state ?>"
+                                   href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="glyphicon glyphicon-plus glyphicon-white"></i> Add to
                                     samples</a>
 
                                 <div class="btn-group">
-                                    <button class="btn btn-info btn-small dropdown-toggle" data-toggle="dropdown">
-                                        <i class="icon-arrow-right icon-white"></i> Move all <?php echo $state ?> to
+                                    <button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        <i class="glyphicon glyphicon-arrow-right glyphicon-white"></i> Move all <?php echo $state ?> to
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><input class="moveJobsNewTubeName" type="text" class="input-medium"
                                                    data-href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&state=<?php echo $state; ?>&destTube="
                                                    placeholder="New tube name"/></li>
-                                        <?php
-                                        if (isset($tubes) && is_array($tubes) && count($tubes)) {
-                                            foreach ($tubes as $key => $name) {
-                                                ?>
+                                            <?php
+                                            if (isset($tubes) && is_array($tubes) && count($tubes)) {
+                                                foreach ($tubes as $key => $name) {
+                                                    ?>
                                                 <li>
                                                     <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destTube=<?php echo $name; ?>&state=<?php echo $state; ?>"><?php echo htmlspecialchars($name); ?></a>
                                                 </li>
-                                            <?php
+                                                <?php
                                             }
                                             ?>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                         <?php
@@ -159,18 +157,18 @@ if (empty($tubeStats['pause-time-left'])) {
                                             <li>
                                                 <a href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destState=buried&state=<?php echo $state; ?>">Buried</a>
                                             </li>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                     </ul>
                                 </div>
-                                <a class="btn btn-small btn-danger"
+                                <a class="btn btn-sm btn-danger"
                                    href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1"
                                    onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i
-                                            class="icon-trash icon-white"></i> Delete all <?php echo $state ?> jobs</a>
-                                <a class="btn btn-small btn-danger"
+                                        class="glyphicon glyphicon-trash glyphicon-white"></i> Delete all <?php echo $state ?> jobs</a>
+                                <a class="btn btn-sm btn-danger"
                                    href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=delete&count=1"><i
-                                            class="icon-remove icon-white"></i> Delete</a>
+                                        class="glyphicon glyphicon-remove glyphicon-white"></i> Delete</a>
                             </div>
                         </div>
                     <?php endif; ?>

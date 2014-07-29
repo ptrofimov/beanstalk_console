@@ -43,14 +43,14 @@ $(document).ready(
                 });
 
                 $('#autoRefresh').on('click', function () {
-                    if (!$('#autoRefresh').hasClass('refresh-active')) {
+                    if (!$('#autoRefresh').hasClass('btn-success')) {
                         reloader();
-                        $('#autoRefresh').toggleClass('refresh-active');
+                        $('#autoRefresh').toggleClass('btn-success');
                         //$('#autoRefresh i').toggleClass('icon-white');
                     } else {
                         clearTimeout(timer);
                         doAutoRefresh = false;
-                        $('#autoRefresh').toggleClass('refresh-active');
+                        $('#autoRefresh').toggleClass('btn-success');
                         //$('#autoRefresh i').toggleClass('icon-white');
                     }
 

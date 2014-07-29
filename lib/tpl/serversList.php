@@ -4,57 +4,54 @@ if (!empty($_COOKIE['filter'])) {
     $visible = explode(',', $_COOKIE['filter']);
 } else {
     $visible = array(
-            'current-jobs-urgent',
-            'current-jobs-ready',
-            'current-jobs-reserved',
-            'current-jobs-delayed',
-            'current-jobs-buried',
-            'current-tubes',
-            'current-connections',
+        'current-jobs-urgent',
+        'current-jobs-ready',
+        'current-jobs-reserved',
+        'current-jobs-delayed',
+        'current-jobs-buried',
+        'current-tubes',
+        'current-connections',
     );
 }
 ?>
 <?php if (!empty($servers)): ?>
     <div class="row">
         <div class="col-sm-12">
-            <h1>Server list</h1>
-            <hr/>
             <table class="table table-striped table-hover" id="servers-index">
                 <thead>
-                <tr>
-                    <th>name</th>
-                    <?php foreach ($console->getServerStats(reset($servers)) as $key => $item): ?>
-                        <th class="<?php if (!in_array($key, $visible)) echo 'hide' ?>" name="<?php echo $key ?>"
-                            title="<?php echo $item['description'] ?>"><?php echo $key ?></th>
-                    <?php endforeach ?>
-                    <th>&nbsp;</th>
-                </tr>
+                    <tr>
+                        <th>name</th>
+                        <?php foreach ($console->getServerStats(reset($servers)) as $key => $item): ?>
+                            <th class="<?php if (!in_array($key, $visible)) echo 'hide' ?>" name="<?php echo $key ?>"
+                                title="<?php echo $item['description'] ?>"><?php echo $key ?></th>
+                            <?php endforeach ?>
+                        <th>&nbsp;</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <?php
-                foreach ($servers as $server):
-                    $stats = $console->getServerStats($server);
-                    ?>
-                    <tr>
-                        <?php if (empty($stats)): ?>
-                            <td><?php echo $server ?></td>
-                        <?php else: ?>
-                            <td><a href="?server=<?php echo $server ?>"><?php echo $server ?></a></td>
-                        <?php endif ?>
-                        <?php foreach ($stats as $key => $item): ?>
-                            <td class="<?php if (!in_array($key, $visible)) echo 'hide' ?>"
-                                name="<?php echo $key ?>"><?php echo htmlspecialchars($item['value']) ?></td>
-                        <?php endforeach ?>
-                        <?php if (empty($stats)): ?>
-                            <td colspan="<?php echo count($visible) ?>" class="row-full">&nbsp;</td>
-                        <?php endif ?>
-                        <td><a class="btn btn-xs btn-danger" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server ?>"><span
+                    <?php
+                    foreach ($servers as $server):
+                        $stats = $console->getServerStats($server);
+                        ?>
+                        <tr>
+                            <?php if (empty($stats)): ?>
+                                <td><?php echo $server ?></td>
+                            <?php else: ?>
+                                <td><a href="?server=<?php echo $server ?>"><?php echo $server ?></a></td>
+                            <?php endif ?>
+                            <?php foreach ($stats as $key => $item): ?>
+                                <td class="<?php if (!in_array($key, $visible)) echo 'hide' ?>"
+                                    name="<?php echo $key ?>"><?php echo htmlspecialchars($item['value']) ?></td>
+                                <?php endforeach ?>
+                                <?php if (empty($stats)): ?>
+                                <td colspan="<?php echo count($visible) ?>" class="row-full">&nbsp;</td>
+                            <?php endif ?>
+                            <td><a class="btn btn-xs btn-danger" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server ?>"><span
                                         class="glyphicon glyphicon-minus"></span></a></td>
-                    </tr>
-                <?php endforeach ?>
+                        </tr>
+                    <?php endforeach ?>
                 </tbody>
             </table>
-            <hr/>
             <a href="#servers-add" role="button" class="btn btn-info" data-toggle="modal">Add server</a>
         </div>
     </div>
@@ -94,10 +91,10 @@ $ctx = stream_context_create(
         array('http' => array(
                 'timeout' => 2,
                 'header' => "Accept-language: en\r\n" .
-                        "Cookie: foo=bar\r\n" . // check function.stream-context-create on php.net
-                        "User-Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" .
-                        "Accept: application/vnd.github.v3+json\r\n",
-        )
+                "Cookie: foo=bar\r\n" . // check function.stream-context-create on php.net
+                "User-Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" .
+                "Accept: application/vnd.github.v3+json\r\n",
+            )
         ));
 
 $json = @file_get_contents($url, false, $ctx);
@@ -112,7 +109,7 @@ if ($json) {
             <span>A new version is available: <b><?php echo $version; ?></b> Get it from <b><a href="https://github.com/ptrofimov/beanstalk_console"
                                                                                                target="_blank">Github</a></b></span>
         </div>
-    <?php
+        <?php
     }
 }
 ?>

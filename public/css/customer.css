@@ -1,33 +1,41 @@
 html {
-	height: 100%;
+    height: 100%;
 }
 
 body {
-	padding-top: 70px;
+    padding-top: 70px;
 }
 
 body.no-nav {
-	padding-top: 0;
-	height: 100%;
-	min-height: 100%;
+    padding-top: 0;
+    height: 100%;
+    min-height: 100%;
 }
 
 .site-wrapper {
-	display: table;
-	width: 100%;
-	height: 100%;
-	min-height: 100%;
+    display: table;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
 }
 
 .site-wrapper-inner {
-	display: table-cell;
-	vertical-align: middle;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 ol.inside, ul.inside {
-	list-style-position: inside;
+    list-style-position: inside;
 }
 
 .btn.refresh-active span {
-	color: #449d44;
+    color: #449d44;
+}
+
+.navbar-nav > li > a {padding-top:12px !important; padding-bottom:6px !important;}
+.navbar-default {min-height:40px !important}
+.navbar-brand{ padding: 10px 8px;font-size: 22px;line-height: 22px;font-weight: 200;height:40px; }
+
+#autoRefresh {
+    margin-top: 2px;
 }
