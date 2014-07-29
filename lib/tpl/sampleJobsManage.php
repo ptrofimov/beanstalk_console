@@ -22,7 +22,7 @@ if (!empty($sampleJobs)) {
     ?>
     <div class="clearfix">
         <div class="pull-right">
-            <a href="?action=newSample" class="btn btn-small"><i class="icon-plus"></i> Add job to samples</a>
+            <a href="?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> Add job to samples</a>
         </div>
     </div>
     <section id="summaryTable">
@@ -45,15 +45,15 @@ if (!empty($sampleJobs)) {
                             foreach ($job['tubes'] as $tubename => $val) {
                                 if (isset($_server) && !empty($_server)) {
                                     ?>
-                                    <a class="btn btn-small"
+                                    <a class="btn btn-default  btn-sm"
                                        href="?server=<?php echo $_server ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('index.php?action=manageSamples'); ?>"><i
-                                                class="icon-forward"></i> <?php echo $tubename; ?></a>
+                                                class="glyphicon glyphicon-forward"></i> <?php echo $tubename; ?></a>
                                 <?php
                                 } else {
                                     ?>
                                     <div class="btn-group">
-                                        <a class="btn btn-small" href="#" data-toggle="dropdown"><i class="icon-forward"></i> <?php echo $tubename; ?></a>
-                                        <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                                        <a class="btn btn-default  btn-sm" href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-forward"></i> <?php echo $tubename; ?></a>
+                                        <button class="btn btn-default  btn-sm dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
@@ -78,8 +78,8 @@ if (!empty($sampleJobs)) {
                     </td>
                     <td>
                         <div class="pull-right">
-                            <a class="btn btn-small" href="?action=editSample&key=<?php echo $key ?>"><i class="icon-pencil"></i> Edit</a>
-                            <a class="btn btn-small" href="?action=deleteSample&key=<?php echo $key ?>"><i class="icon-trash"></i> Delete</a>
+                            <a class="btn btn-default btn-sm" href="?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                            <a class="btn btn-default btn-sm" href="?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i> Delete</a>
                         </div>
                     </td>
                 </tr>
