@@ -275,7 +275,7 @@ $(document).ready(
                     }
                     var l = td1[i].innerText || td1[i].innerHTML || td1[i].textContent;
                     var r = td2[i].innerText || td2[i].innerHTML || td2[i].textContent;
-                    if (l != r) {
+                    if (l.trim() != r.trim()) {
                         var $td1 = $(td1[i]), color = $td1.css('background-color');
                         $td1.css({
                                      'background-color': '#afa'
