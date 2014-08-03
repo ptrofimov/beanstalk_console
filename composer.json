@@ -20,6 +20,12 @@
     "license": "MIT",
     "require": {
         "php": ">=5.2.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "pda/pheanstalk": "3.*"
+    },
+    "autoload": {
+        "classmap": [
+            "lib"
+        ]
     }
 }

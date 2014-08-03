@@ -8,6 +8,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 
 require_once '../lib/include.php';
+
+require_once '../vendor/autoload.php';
+
 $console = new Console;
 $errors = $console->getErrors();
 $tplVars = $console->getTplVars();

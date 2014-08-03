@@ -137,7 +137,7 @@ if ($json) {
                         <label class="control-label col-sm-2" for="port">Port</label>
 
                         <div class="col-sm-10">
-                            <input type="text" id="port" value="<?php echo Pheanstalk::DEFAULT_PORT ?>" class="form-control">
+                            <input type="text" id="port" value="<?php echo \Pheanstalk\Pheanstalk::DEFAULT_PORT ?>" class="form-control">
                         </div>
                     </div>
 

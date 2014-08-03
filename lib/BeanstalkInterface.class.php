@@ -1,5 +1,7 @@
 <?php
 
+use Pheanstalk\Pheanstalk;
+
 class BeanstalkInterface {
 
     protected $_contentType;
@@ -193,7 +195,7 @@ class BeanstalkInterface {
     /**
      * Pheanstalk class instance
      *
-     * @var Pheanstalk
+     * @var \Pheanstalk\Pheanstalk
      */
     private function _peek($tube, $method) {
         try {
