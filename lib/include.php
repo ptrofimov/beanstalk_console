@@ -5,12 +5,9 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
-function __autoload($class) {
-    require_once str_replace('_', '/', $class) . '.php';
-}
 
 session_start();
-require_once 'BeanstalkInterface.class.php';
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
 
@@ -42,9 +39,9 @@ class Console {
 
     public function getServerStats($server) {
         try {
-            $interface = new BeanstalkInterface($server);
+            $interface = new \BeanstalkInterface($server);
             $stats = $interface->getServerStats();
-        } catch (Pheanstalk_Exception_ConnectionException $e) {
+        } catch (Pheanstalk\Exception\ConnectionException $e) {
             $stats = array();
         }
 
@@ -169,8 +166,8 @@ class Console {
         // make sure, that rapid tube disappearance (eg: anonymous tubes, don't kill the interface, as they might be missing)
         try {
             return $this->interface->_client->statsTube($tube);
-        } catch (Pheanstalk_Exception_ServerException $ex) {
-            if (strpos($ex->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) !== false) {
+        } catch (Pheanstalk\Exception\ServerException $ex) {
+            if (strpos($ex->getMessage(), Pheanstalk\Response::RESPONSE_NOT_FOUND) !== false) {
                 return array();
             } else {
                 throw $ex;
@@ -286,11 +283,11 @@ class Console {
                 }
                 return;
             }
-        } catch (Pheanstalk_Exception_ConnectionException $e) {
+        } catch (Pheanstalk\Exception\ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
-        } catch (Pheanstalk_Exception_ServerException $e) {
+        } catch (Pheanstalk\Exception\ServerException $e) {
             // if we get response not found, we just skip it (as the peekAll reached a tube which no longer existed)
-            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+            if (strpos($e->getMessage(), Pheanstalk\Response::RESPONSE_NOT_FOUND) === false) {
                 $this->_errors[] = $e->getMessage();
             }
         } catch (Exception $e) {
