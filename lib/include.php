@@ -202,6 +202,11 @@ class Console {
         }
 
         $this->servers = $config['servers'];
+        if (isset($_ENV['BEANSTALK_SERVERS'])) {
+            foreach (explode(",", $_ENV["BEANSTALK_SERVERS"]) as $server) {
+                $this->servers[] = $server;
+            }
+        }
         if (isset($_COOKIE['beansServers'])) {
             foreach (explode(';', $_COOKIE['beansServers']) as $server) {
                 $this->servers[] = $server;

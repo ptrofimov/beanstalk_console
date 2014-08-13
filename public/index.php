@@ -10,6 +10,7 @@ ini_set('display_errors', true);
 require_once '../lib/include.php';
 $console = new Console;
 $errors = $console->getErrors();
+$groups = array();
 $tplVars = $console->getTplVars();
 extract($tplVars);
 ?>
