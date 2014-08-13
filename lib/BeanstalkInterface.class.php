@@ -6,8 +6,16 @@ class BeanstalkInterface {
     public $_client;
 
     public function __construct($server) {
-        $list = explode(':', $server);
-        $this->_client = new Pheanstalk($list[0], isset($list[1]) ? $list[1] : '');
+        if (strpos($server, "beanstalk://") === 0) {
+            $url = parse_url($server);
+            $host = $url['host'];
+            $port = $url['port'];
+        } else {
+            $list = explode(':', $server);
+            $host = $list[0];
+            $port = isset($list[1]) ? $list[1] : '';
+        }
+        $this->_client = new Pheanstalk($host, $port);
     }
 
     public function getTubes() {
