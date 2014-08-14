@@ -9,6 +9,7 @@
 **Features**
 
 - Common list of servers in config for all users
+- Global server list can be set via BEANSTALK_SERVERS environment variable
 - Each user can add its own personal Beanstalkd server
 - Full list of available tubes
 - Complete statistics about jobs in tubes
@@ -61,6 +62,7 @@ After provision beanstalk console will be available at [http://localhost:7654](h
 **Возможности**
 
 - Общий список серверов в конфиге для всех пользователей
+- Глобальный список сервер может быть установлен через переменную окружения BEANSTALK_SERVERS
 - Каждый пользователь может добавить свой персональный сервер
 - Полный список доступных труб
 - Полная статистика тасков в трубах
