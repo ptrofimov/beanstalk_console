@@ -349,8 +349,10 @@ class Console {
     protected function _actionServersRemove() {
         $server = $_GET['removeServer'];
         $this->servers = array_diff($this->servers, array($server));
-        if (count($this->servers)) {
-            setcookie('beansServers', implode(';', $this->servers), time() + 86400 * 365);
+        // Servers from cookies save to cookies
+        $cookie_servers = array_intersect($this->servers, explode(';', $_COOKIE['beansServers']));
+        if (count($cookie_servers)) {
+            setcookie('beansServers', implode(';', $cookie_servers), time() + 86400 * 365);
         } else {
             // no servers, clear cookie
             setcookie('beansServers', '', time() - 86400 * 365);
