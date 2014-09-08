@@ -252,7 +252,7 @@ class BeanstalkInterface {
     }
 
     public function exceptions_error_handler($severity, $message, $filename, $lineno) {
-        echo '<span style="color:red">Unserialize got a fatal error, please include the necessary files, or deactivate unserialization from Settings</span></br>';
+        echo '<span style="color:red">Unserialize got a fatal error, please include the necessary files, or deactivate unserialization from Settings (<a href="#" onclick="$(\'#settings\').modal();return false;">click to open</a>)</span></br>';
         return false;
     }
 
