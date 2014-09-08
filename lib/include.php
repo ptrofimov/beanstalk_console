@@ -191,7 +191,7 @@ class Console {
             '_tplBlock' => $tplBlock,
             'config' => $config);
         $this->_tplVars = $this->_globalVar;
-        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes'))) {
+        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes','serversList'))) {
             unset($this->_tplVars['_tplBlock']);
         }
         if (!in_array($this->_tplVars['_tplMain'], array('main', 'ajax'))) {

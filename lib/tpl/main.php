@@ -140,6 +140,12 @@ $servers = $console->getServers();
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
+                            <?php } else if (!$tube) { ?>
+                                <li>
+                                    <button type="button" id="autoRefreshSummary" class="btn btn-default btn-small">
+                                        <span class="glyphicon glyphicon-refresh"></span>
+                                    </button>
+                                </li>
                             <?php } ?>
                         </ul>
 
