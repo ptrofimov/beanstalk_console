@@ -255,7 +255,10 @@ class Console {
             } while (!empty($job));
         } catch (Exception $e) {
             // there might be no jobs to peek at, and peekReady raises exception in this situation
-            echo $e->getMessage();
+            // skip not found exception
+            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+                $this->_errors[] = $e->getMessage();
+            }
         }
     }
 
