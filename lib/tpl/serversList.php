@@ -31,7 +31,7 @@ if (!empty($_COOKIE['filter'])) {
                     </thead>
                     <tbody>
                         <?php
-                        foreach ($servers as $server):
+                        foreach (array_unique($servers) as $server):
                             $stats = $console->getServerStats($server);
                             ?>
                             <tr>
