@@ -36,6 +36,6 @@ ol.inside, ul.inside {
 .navbar-default {min-height:40px !important}
 .navbar-brand{ padding: 10px 8px;font-size: 22px;line-height: 22px;font-weight: 200;height:40px; }
 
-#autoRefresh {
+#autoRefresh, #autoRefreshSummary {
     margin-top: 2px;
 }
