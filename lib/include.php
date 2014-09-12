@@ -28,7 +28,9 @@ class Console {
     protected $_tplVars = array();
     protected $_globalVar = array();
     protected $_errors = array();
-    private $servers = array();
+    private $serversConfig = array();
+    private $serversEnv = array();
+    private $serversCookie = array();
 
     public function __construct() {
         $this->__init();
@@ -37,7 +39,22 @@ class Console {
 
     /** @return array */
     public function getServers() {
-        return $this->servers;
+        return array_merge($this->serversConfig, $this->serversEnv, $this->serversCookie);
+    }
+
+    /** @return array */
+    public function getServersConfig() {
+        return $this->serversConfig;
+    }
+
+    /** @return array */
+    public function getServersEnv() {
+        return $this->serversEnv;
+    }
+
+    /** @return array */
+    public function getServersCookie() {
+        return $this->serversCookie;
     }
 
     public function getServerStats($server) {
@@ -201,15 +218,17 @@ class Console {
             $this->_tplVars['_tplMain'] = 'main';
         }
 
-        $this->servers = $config['servers'];
+        foreach ($config['servers'] as $server) {
+            $this->serversConfig[] = $server;
+        }
         if (isset($_ENV['BEANSTALK_SERVERS'])) {
             foreach (explode(",", $_ENV["BEANSTALK_SERVERS"]) as $server) {
-                $this->servers[] = $server;
+                $this->serversEnv[] = $server;
             }
         }
         if (isset($_COOKIE['beansServers'])) {
             foreach (explode(';', $_COOKIE['beansServers']) as $server) {
-                $this->servers[] = $server;
+                $this->serversCookie[] = $server;
             }
         }
         try {
@@ -351,9 +370,7 @@ class Console {
 
     protected function _actionServersRemove() {
         $server = $_GET['removeServer'];
-        $this->servers = array_diff($this->servers, array($server));
-        // Servers from cookies save to cookies
-        $cookie_servers = array_intersect($this->servers, explode(';', $_COOKIE['beansServers']));
+        $cookie_servers = array_diff($this->getServersCookie(), array($server));
         if (count($cookie_servers)) {
             setcookie('beansServers', implode(';', $cookie_servers), time() + 86400 * 365);
         } else {
@@ -514,8 +531,8 @@ class Console {
             return;
         }
         $serverTubes = array();
-        if (is_array($this->servers)) {
-            foreach ($this->servers as $server) {
+        if (is_array($this->getServers())) {
+            foreach ($this->getServers() as $server) {
                 try {
                     $interface = new BeanstalkInterface($server);
                     $tubes = $interface->getTubes();
@@ -558,8 +575,8 @@ class Console {
         }
 
         $serverTubes = array();
-        if (is_array($this->servers)) {
-            foreach ($this->servers as $server) {
+        if (is_array($this->getServers())) {
+            foreach ($this->getServers() as $server) {
                 try {
                     $interface = new BeanstalkInterface($server);
                     $tubes = $interface->getTubes();

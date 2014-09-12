@@ -1,5 +1,7 @@
 <?php
 $servers = $console->getServers();
+$cookieServers = $console->getServersCookie();
+
 if (!empty($_COOKIE['filter'])) {
     $visible = explode(',', $_COOKIE['filter']);
 } else {
@@ -47,8 +49,11 @@ if (!empty($_COOKIE['filter'])) {
                                     <?php if (empty($stats)): ?>
                                     <td colspan="<?php echo count($visible) ?>" class="row-full">&nbsp;</td>
                                 <?php endif ?>
-                                <td><a class="btn btn-xs btn-danger" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server ?>"><span
-                                            class="glyphicon glyphicon-minus"></span></a></td>
+                                <td><?php if (array_intersect(array($server), $cookieServers)): ?>
+                                    <a class="btn btn-xs btn-danger" title="Remove from list" href="?action=serversRemove&removeServer=<?php echo $server ?>"><span
+                                            class="glyphicon glyphicon-minus"></span></a>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php endforeach ?>
                     </tbody>
