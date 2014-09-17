@@ -169,7 +169,18 @@ $servers = $console->getServers();
                 <?php if (isset($_tplPage)): ?>
                     <?php include(dirname(__FILE__) . '/' . $_tplPage . '.php') ?>
                 <?php elseif (!$server): ?>
-                    <?php include(dirname(__FILE__) . '/serversList.php') ?>
+                    <div id="idServers">
+                        <?php
+                        include(dirname(__FILE__) . '/serversList.php');
+                        ?>
+                    </div>
+                    <div id="idServersCopy" style="display:none"></div>
+                    <?php
+                    if ($tplVars['_tplMain'] != 'ajax') {
+                        require_once '../lib/tpl/modalAddServer.php';
+                        require_once '../lib/tpl/modalFilterServer.php';
+                    }
+                    ?>
                 <?php elseif (!$tube):
                     ?>
                     <div id="idAllTubes">
