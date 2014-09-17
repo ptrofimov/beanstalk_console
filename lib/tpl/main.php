@@ -112,7 +112,11 @@ $servers = $console->getServers();
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Toolbox <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <?php if (!isset($_tplPage)) { ?>
+                                    <?php if (!isset($_tplPage) && !$server) { ?>
+                                        <li><a href="#filterServer" role="button" data-toggle="modal">Filter columns</a></li>
+                                        <?php
+                                    } elseif (!isset($_tplPage) && $server) {
+                                        ?>
                                         <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
                                         <?php
                                     }

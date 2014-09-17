@@ -1,5 +1,5 @@
 $(document).ready(
-        function() {
+        function () {
 
             var timer;
             var doAutoRefresh = false;
@@ -7,30 +7,47 @@ $(document).ready(
             __init();
 
             function __init() {
-                $('#servers-add .btn-info').click(function() {
+                $('#servers-add .btn-info').click(function () {
                     addServer($('#host').val(), $('#port').val());
                     $("#host,#port").val('');
                     $('#servers-add').modal('hide');
                     window.location.href = window.location.href;
                     return false;
                 });
-                $('#addJob').on('click', function() {
+                $('#addJob').on('click', function () {
                     $('#modalAddJob').modal('toggle');
                     return false;
                 });
-                $('#filter input[type=checkbox]').click(function() {
+                $('#filterServer input[type=checkbox]').click(function () {
                     $('table')
                             .find('[name=' + $(this).attr('name') + ']')
                             .toggle($(this).is(':checked'));
                     var names = [];
-                    $('#filter input:checked').each(function() {
+                    $('#filterServer input:checked').each(function () {
                         names.push($(this).attr('name'));
+                    });
+                    names = names.filter(function (itm, i, a) {
+                        return i == a.indexOf(itm);
+                    });
+                    $.cookie($('#filterServer').data('cookie'), names, {expires: 365});
+                    $('.row-full').attr('colspan', names.length);
+                });
+                $('#filter input[type=checkbox]').click(function () {
+                    $('table')
+                            .find('[name=' + $(this).attr('name') + ']')
+                            .toggle($(this).is(':checked'));
+                    var names = [];
+                    $('#filter input:checked').each(function () {
+                        names.push($(this).attr('name'));
+                    });
+                    names = names.filter(function (itm, i, a) {
+                        return i == a.indexOf(itm);
                     });
                     $.cookie($('#filter').data('cookie'), names, {expires: 365});
                     $('.row-full').attr('colspan', names.length);
                 });
 
-                $('#tubeSave').on('click', function() {
+                $('#tubeSave').on('click', function () {
                     var result = addNewJob();
 
                     if (result == 'empty') {
@@ -42,7 +59,7 @@ $(document).ready(
                     return false;
                 });
 
-                $('#autoRefresh').on('click', function() {
+                $('#autoRefresh').on('click', function () {
                     if (!$('#autoRefresh').hasClass('btn-success')) {
                         reloader({
                             'action': 'reloader',
@@ -61,7 +78,7 @@ $(document).ready(
                     }
                     return false;
                 });
-                $('#autoRefreshSummary').on('click', function() {
+                $('#autoRefreshSummary').on('click', function () {
                     if (!$('#autoRefreshSummary').hasClass('btn-success')) {
                         reloader({
                             'action': 'reloader',
@@ -82,14 +99,14 @@ $(document).ready(
                 });
 
                 if (contentType == 'json') {
-                    $('pre code').each(function() {
+                    $('pre code').each(function () {
                         var cn = $(this).html();
                         var jn = formatJson(cn);
                         $(this).html(jn);
                     });
                 }
 
-                $('#clearTubesSelect').on('click', function() {
+                $('#clearTubesSelect').on('click', function () {
                     $('#clear-tubes input[type=checkbox]:regex(name,' + $("#tubeSelector").val() + ')').prop('checked', true);
                     $.cookie("tubeSelector", $("#tubeSelector").val(), {
                         expires: 365
@@ -97,11 +114,11 @@ $(document).ready(
                     $('#clearTubes').text('Clear ' + $('#clear-tubes input[type=checkbox]:checked').length + ' selected tubes');
                 });
 
-                $('#clearTubes').on('click', function() {
+                $('#clearTubes').on('click', function () {
                     clearTubes();
                 });
 
-                $('#settings input').on('change', function() {
+                $('#settings input').on('change', function () {
                     var val;
                     if ($(this).attr('type') == 'checkbox') {
                         if ($(this).is(':checked')) {
@@ -117,7 +134,7 @@ $(document).ready(
                     $.cookie(this.id, val, {expires: 365});
                 });
 
-                $('.addSample').on('click', function() {
+                $('.addSample').on('click', function () {
                     var selectedText = "";
                     if (typeof window.getSelection != "undefined") {
                         var sel = window.getSelection();
@@ -140,16 +157,16 @@ $(document).ready(
                     return false;
                 });
 
-                $('#sampleSave').on('click', function() {
+                $('#sampleSave').on('click', function () {
                     addSampleJob();
                     return false;
                 });
 
-                $('.moveJobsNewTubeName').click(function(e) {
+                $('.moveJobsNewTubeName').click(function (e) {
                     e.stopPropagation();
                 });
 
-                $('.moveJobsNewTubeName').keypress(function(e) {
+                $('.moveJobsNewTubeName').keypress(function (e) {
                     if (e.which == 13) {
                         if ($(this).val().length > 0) {
                             console.log($(this).data('href') + encodeURIComponent($(this).val()));
@@ -157,7 +174,7 @@ $(document).ready(
                         document.location.replace($(this).data('href') + ($(this).val()));
                     }
                 });
-                $(document).on('click', '#addServer', function() {
+                $(document).on('click', '#addServer', function () {
                     $('#servers-add').modal('toggle');
                     return false;
                 });
@@ -196,14 +213,14 @@ $(document).ready(
                 $.ajax({
                     'url': url + '&action=addjob',
                     'data': params,
-                    'success': function(data) {
+                    'success': function (data) {
                         var result = data.result;
                         cleanFormNewJob();
                         location.reload();
                     },
                     'type': 'POST',
                     'dataType': 'json',
-                    'error': function() {
+                    'error': function () {
                         console.log('error ajax...');
                     }
                 });
@@ -261,7 +278,7 @@ $(document).ready(
                 $.ajax({
                     'url': url,
                     'data': params,
-                    'success': function(data) {
+                    'success': function (data) {
                         if (doAutoRefresh) {
                             var ms = 500;
                             if ($.cookie('autoRefreshTimeoutMs')) {
@@ -281,7 +298,7 @@ $(document).ready(
                     },
                     'type': 'GET',
                     'dataType': 'html',
-                    'error': function() {
+                    'error': function () {
                         console.log('error ajax...');
                     }
                 });
@@ -314,12 +331,12 @@ $(document).ready(
                 $.ajax({
                     'url': url + '&action=clearTubes',
                     'data': $('#clear-tubes input[type=checkbox]:checked').serialize(),
-                    'success': function(data) {
+                    'success': function (data) {
                         var result = data.result;
                         location.reload();
                     },
                     'type': 'POST',
-                    'error': function() {
+                    'error': function () {
                         alert('error from ajax (clear might take a while, be patient)...');
                     }
                 });
@@ -335,7 +352,7 @@ $(document).ready(
                 $.ajax({
                     'url': url + '&action=addSample',
                     'data': $('#modalAddSample input').serialize(),
-                    'success': function(data) {
+                    'success': function (data) {
                         console.log(data);
                         if (data.result) {
                             $('#modalAddSample').modal('toggle');
@@ -346,7 +363,7 @@ $(document).ready(
                     },
                     'type': 'POST',
                     'dataType': 'json',
-                    'error': function() {
+                    'error': function () {
                         alert('error ajax...');
                     }
                 });
