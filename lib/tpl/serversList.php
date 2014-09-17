@@ -169,7 +169,7 @@ if ($tplVars['_tplMain'] != 'ajax') {
                     <h3 id="filter-label" class="text-info">Filter columns</h3>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form class="form-group">
                         <div class="tabbable">
                             <ul class="nav nav-tabs">
                                 <?php
@@ -188,11 +188,13 @@ if ($tplVars['_tplMain'] != 'ajax') {
                                         <?php foreach ($fields as $key => $description): ?>
                                             <div class="control-group">
                                                 <div class="controls">
-                                                    <label class="checkbox">
-                                                        <input type="checkbox" name="<?php echo $key ?>" <?php if (in_array($key, $visible)) echo 'checked="checked"' ?>>
-                                                        <b><?php echo $key ?></b>
-                                                        <br/><?php echo $description ?>
-                                                    </label>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="<?php echo $key ?>" <?php if (in_array($key, $visible)) echo 'checked="checked"' ?>>
+                                                            <b><?php echo $key ?></b>
+                                                            <br/><?php echo $description ?>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         <?php endforeach ?>
