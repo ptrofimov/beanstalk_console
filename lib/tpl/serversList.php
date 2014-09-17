@@ -161,7 +161,7 @@ if ($tplVars['_tplMain'] != 'ajax') {
 
     </div>
 
-    <div id="filter" data-cookie="filter" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
+    <div id="filter" data-cookie="filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="servers-add-label" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="filter-label" class="text-info">Filter columns</h3>
