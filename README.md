@@ -48,7 +48,7 @@ After provision beanstalk console will be available at [http://localhost:7654](h
 
 ### Download an Archive File
 
-[Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), unzip files to your *wwww* directory and launch from *public* directory, enjoy!
+[Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), unzip files to your *www* directory and launch from *public* directory, enjoy!
 
 
 **Authors:** Petr Trofimov, Sergey Lysenko, Pentium10
