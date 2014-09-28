@@ -3,6 +3,7 @@ $fields = $console->getTubeStatFields();
 $groups = $console->getTubeStatGroups();
 $visible = $console->getTubeStatVisible();
 $sampleJobs = $console->getSampleJobs($tube);
+$searchResults = $console->getSearchResult();
 
 if (!@empty($_COOKIE['tubePauseSeconds'])) {
     $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
@@ -10,6 +11,43 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
     $tubePauseSeconds = 3600;
 }
 ?>
+
+<form action="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=search" method="post" class="form-search">
+  <input type="text" class="input-medium search-query" name="searchStr">
+  <button type="submit" class="btn">Search</button>
+</form>
+
+<?php if (count($searchResults) > 0) : ?>
+<section id="searchResult">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>state</th>
+                        <th>data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($searchResults as $state => $jobList): ?>
+                        <?php foreach ($jobList as $job): ?>
+                        <tr>
+                            <td><?php echo $job->getId(); ?></td>
+                            <td><?php echo $state; ?></td>
+                            <td><?php echo $job->getData(); ?></td>
+                        </tr>
+                        <?php endforeach ?>
+                    <?php endforeach ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+<?php endif ?>
+
 <section id="summaryTable">
     <div class="row">
         <div class="col-sm-12">
