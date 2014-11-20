@@ -208,7 +208,7 @@ class Console {
             '_tplBlock' => $tplBlock,
             'config' => $config);
         $this->_tplVars = $this->_globalVar;
-        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes','serversList'))) {
+        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes', 'serversList'))) {
             unset($this->_tplVars['_tplBlock']);
         }
         if (!in_array($this->_tplVars['_tplMain'], array('main', 'ajax'))) {
@@ -260,7 +260,37 @@ class Console {
                         $job = $this->interface->_client->useTube($tube)->peekReady();
                         break;
                     case 'delayed':
+                        try {
+                            $ready = $this->interface->_client->useTube($tube)->peekReady();
+                            if ($ready) {
+                                $this->_errors[] = 'Cannot delete Delayed until there are Ready messages on this tube';
+                                return;
+                            }
+                        } catch (Exception $e) {
+                            // there might be no jobs to peek at, and peekReady raises exception in this situation
+                            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+                                throw $e;
+                            }
+                        }
+                        try {
+                            $bury = $this->interface->_client->useTube($tube)->peekBuried();
+                            if ($bury) {
+                                $this->_errors[] = 'Cannot delete Delayed until there are Bury messages on this tube';
+                                return;
+                            }
+                        } catch (Exception $e) {
+                            // there might be no jobs to peek at, and peekReady raises exception in this situation
+                            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+                                throw $e;
+                            }
+                        }
                         $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                        if ($job) {
+                            //when we found job with Delayed, kick all messages, to be ready, so that we can Delete them.
+                            $this->interface->kick($tube, 100000000);
+                            $this->deleteAllFromTube('ready', $tube);
+                            return;
+                        }
                         break;
                     case 'buried':
                         $job = $this->interface->_client->useTube($tube)->peekBuried();
@@ -365,7 +395,9 @@ class Console {
             $tube = $this->_globalVar['tube'];
         }
         $this->deleteAllFromTube($this->_globalVar['state'], $tube);
-        $this->_postDelete();
+        if (empty($this->_errors)) {
+            $this->_postDelete();
+        }
     }
 
     protected function _actionServersRemove() {
