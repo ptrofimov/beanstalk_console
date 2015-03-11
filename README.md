@@ -50,6 +50,20 @@ After provision beanstalk console will be available at [http://localhost:7654](h
 
 [Download](https://github.com/ptrofimov/beanstalk_console/archive/master.zip), unzip files to your *www* directory and launch from *public* directory, enjoy!
 
+### Run as a Docker container
+
+Install [Docker](https://docs.docker.com/installation/) then build and run with the following command (from project root):
+
+    docker build --rm -t beanstalk_console .
+    docker run -d -p "80:80" --name beanstalk_console beanstalk_console
+
+If you would rather just run the existing automated build of this project, run (from project root):
+
+    docker run -d -p "80:80" --name beanstalk_console agaveapi/beanstalkd-console
+
+To spin up a console with a beanstalkd server all at once, install [Fig](http://fig.sh) and run (from project root):
+
+    fig up
 
 **Authors:** Petr Trofimov, Sergey Lysenko, Pentium10
 
