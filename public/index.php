@@ -8,6 +8,25 @@
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
+require_once dirname(__FILE__) . '/../config.php';
+$authenticated = false;
+
+if (
+    isset($_SERVER['PHP_AUTH_USER']) && 
+    isset($_SERVER['PHP_AUTH_PW']) &&
+    $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
+    $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
+    ) {
+    $authenticated = true;
+}
+
+if ( ! $authenticated) {
+    header('WWW-Authenticate: Basic realm="Secure Access"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo 'Authentication required.';
+    exit;
+}
+
 require_once '../lib/include.php';
 $console = new Console;
 $errors = $console->getErrors();
