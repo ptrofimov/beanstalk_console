@@ -14,6 +14,7 @@ $config = array(
      */
     'version' => '1.6.1',
     'auth' => array (
+        'enabled' => false,
         'username' => 'admin',
         'password' => 'bs_password',
     ),

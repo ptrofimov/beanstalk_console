@@ -12,6 +12,9 @@ require_once dirname(__FILE__) . '/../config.php';
 $authenticated = false;
 
 if (
+    isset($config['auth']) && 
+    isset($config['auth']['enabled']) &&
+    $config['auth']['enabled'] &&
     isset($_SERVER['PHP_AUTH_USER']) && 
     isset($_SERVER['PHP_AUTH_PW']) &&
     $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
