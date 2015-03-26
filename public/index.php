@@ -23,6 +23,10 @@ if (
     $authenticated = true;
 }
 
+if ( ! isset($config['auth']) || (isset($config['auth']['enabled']) && $config['auth']['enabled'] == false)) {
+    $authenticated = true;
+}
+
 if ( ! $authenticated) {
     header('WWW-Authenticate: Basic realm="Secure Access"');
     header('HTTP/1.0 401 Unauthorized');
