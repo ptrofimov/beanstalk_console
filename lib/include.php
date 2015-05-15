@@ -5,6 +5,11 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
+$composerAutoload = __DIR__ . '/../vendor/autoload.php';
+if (is_readable($composerAutoload)) {
+    include $composerAutoload;
+}
+
 function __autoload($class) {
     require_once str_replace('_', '/', $class) . '.php';
 }
