@@ -1,5 +1,7 @@
 <?php
 
+use Pheanstalk\Pheanstalk;
+
 class BeanstalkInterface {
 
     protected $_contentType;

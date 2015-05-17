@@ -1,5 +1,9 @@
 <?php
 
+use Pheanstalk\Exception\ConnectionException;
+use Pheanstalk\Exception\ServerException;
+use Pheanstalk\Response;
+
 /**
  * @link https://github.com/ptrofimov/beanstalk_console
  * @link http://kr.github.com/beanstalkd/
@@ -61,7 +65,7 @@ class Console {
         try {
             $interface = new BeanstalkInterface($server);
             $stats = $interface->getServerStats();
-        } catch (Pheanstalk_Exception_ConnectionException $e) {
+        } catch (ConnectionException $e) {
             $stats = array();
         }
 
@@ -186,8 +190,8 @@ class Console {
         // make sure, that rapid tube disappearance (eg: anonymous tubes, don't kill the interface, as they might be missing)
         try {
             return $this->interface->_client->statsTube($tube);
-        } catch (Pheanstalk_Exception_ServerException $ex) {
-            if (strpos($ex->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) !== false) {
+        } catch (ServerException $ex) {
+            if (strpos($ex->getMessage(), Response::RESPONSE_NOT_FOUND) !== false) {
                 return array();
             } else {
                 throw $ex;
@@ -275,7 +279,7 @@ class Console {
         } catch (Exception $e) {
             // there might be no jobs to peek at, and peekReady raises exception in this situation
             // skip not found exception
-            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+            if (strpos($e->getMessage(), Response::RESPONSE_NOT_FOUND) === false) {
                 $this->_errors[] = $e->getMessage();
             }
         }
@@ -313,11 +317,11 @@ class Console {
                 }
                 return;
             }
-        } catch (Pheanstalk_Exception_ConnectionException $e) {
+        } catch (ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
-        } catch (Pheanstalk_Exception_ServerException $e) {
+        } catch (ServerException $e) {
             // if we get response not found, we just skip it (as the peekAll reached a tube which no longer existed)
-            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) === false) {
+            if (strpos($e->getMessage(), Response::RESPONSE_NOT_FOUND) === false) {
                 $this->_errors[] = $e->getMessage();
             }
         } catch (Exception $e) {
@@ -540,7 +544,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
@@ -584,7 +588,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
