@@ -31,6 +31,7 @@ class Console {
     private $serversConfig = array();
     private $serversEnv = array();
     private $serversCookie = array();
+    private $searchResults = array();
 
     public function __construct() {
         $this->__init();
@@ -195,6 +196,11 @@ class Console {
         }
     }
 
+    public function getSearchResult()
+    {
+        return $this->searchResults; 
+    }
+
     protected function __init() {
         global $server, $action, $state, $count, $tube, $config, $tplMain, $tplBlock;
 
@@ -208,7 +214,6 @@ class Console {
             '_tplBlock' => $tplBlock,
             'config' => $config);
         $this->_tplVars = $this->_globalVar;
-        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes', 'serversList'))) {
             unset($this->_tplVars['_tplBlock']);
         }
         if (!in_array($this->_tplVars['_tplMain'], array('main', 'ajax'))) {
@@ -650,6 +655,69 @@ class Console {
         if (!empty($destState)) {
             $this->moveJobsToState($server, $tube, $state, $destState);
         }
+    }
+
+    protected function _actionSearch() {
+        global $server, $tube, $state;
+        $searchStr = (isset($_POST['searchStr'])) ? $_POST['searchStr'] : null;
+        $states = array('ready', 'delayed', 'buried');
+        $jobList = array();
+
+        if($searchStr === null or $searchStr === '') 
+            return false; 
+
+        foreach($states as $state) {
+            $jobList[$state] = $this->findJobsByState($tube, $state, $searchStr);
+        }
+
+        $this->searchResults = $jobList;
+    }
+
+
+    private function findJobsByState($tube, $state, $searchStr)
+    {
+        $jobList = array();
+        $job = null;
+        $total = $this->interface->getTubeStats($tube);
+        $totalJobs = 0;
+
+        try {
+            switch ($state) {
+            case 'ready':
+                $job = $this->interface->_client->useTube($tube)->peekReady();
+                $totalJobs = $total[2]['value'];
+                break;
+            case 'delayed':
+                $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                $totalJobs = $total[4]['value'];
+                break;
+            case 'buried':
+                $job = $this->interface->_client->useTube($tube)->peekBuried();
+                $totalJobs = $total[5]['value'];
+                break;
+            }
+
+        } catch (Exception $e) {
+        }
+
+        if($job === null)
+            return $jobList;
+
+        $jobList = array();
+        $lastId = $job->getId() + $totalJobs;
+
+        for($id = $job->getId(); $id < $lastId; $id++ ) {
+            try{
+                $job = $this->interface->_client->peek($id);
+                if(strpos($job->getData(), $searchStr) !== false) {
+                    $jobList[$id] = $job;
+                }
+
+            }catch(Pheanstalk_Exception_ServerException $e ) {
+            }
+        }
+
+        return $jobList;
     }
 
     private function _storeSampleJob($post, $jobData) {
