@@ -178,7 +178,7 @@ $(document).ready(
                     $('#servers-add').modal('toggle');
                     return false;
                 });
-                $('.ellipsize').on('click', function () {
+                $('.ellipsize').on('dblclick', function () {
                     $(this).toggleClass('ellipsize');
                 });
             }
