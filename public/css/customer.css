@@ -39,3 +39,9 @@ ol.inside, ul.inside {
 #autoRefresh, #autoRefreshSummary {
     margin-top: 2px;
 }
+
+.ellipsize {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

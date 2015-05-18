@@ -63,6 +63,18 @@ class Pheanstalk
 		$this->_dispatch(new Pheanstalk_Command_DeleteCommand($job));
 		return $this;
 	}
+        
+	/**
+	 * Kicks job.
+	 *
+	 * @param object $job Pheanstalk_Job
+	 * @chainable
+	 */
+	public function kickJob($job)
+	{
+		$this->_dispatch(new Pheanstalk_Command_KickJobCommand($job));
+		return $this;
+	}
 
 	/**
 	 * Remove the specified tube from the watchlist

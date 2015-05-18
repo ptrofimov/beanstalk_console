@@ -12,7 +12,7 @@
                         <button type="button" class="close" data-dismiss="alert">×</button>
                         <span><strong>Error!</strong> Required fields are marked *</span>
                     </div>
-                    <input type="hidden" name="addsamplestate" id="addsamplestate">
+                    <input type="hidden" name="addsamplejobid" id="addsamplejobid">
 
                     <div class="form-group">
                         <label for="addsamplename"

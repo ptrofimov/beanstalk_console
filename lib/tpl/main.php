@@ -105,7 +105,6 @@ $servers = $console->getServers();
                                     </ul>
                                 </li>
                             <?php endif ?>
-
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
@@ -152,7 +151,18 @@ $servers = $console->getServers();
                                 </li>
                             <?php } ?>
                         </ul>
-
+                        <?php if (isset($server, $tube) && $server && $tube) { ?>
+                            <form  class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
+                                <input type="hidden" name="server" value="<?php echo $server; ?>"/>
+                                <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
+                                <input type="hidden" name="state" value="<?php echo $state; ?>"/>
+                                <input type="hidden" name="action" value="search"/>
+                                <input type="hidden" name="limit" value="25"/>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
+                                </div>
+                            </form>
+                        <?php } ?>
                     </div>
                     <!--/.nav-collapse -->
                 </div>
