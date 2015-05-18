@@ -5,8 +5,8 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
-error_reporting(E_ALL);
-ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);
+ini_set('display_errors', 1);
 
 require_once '../lib/include.php';
 $console = new Console;
