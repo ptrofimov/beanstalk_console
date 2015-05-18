@@ -3,14 +3,14 @@
     "description": "Admin console for Beanstalk queue server",
     "keywords": ["beanstalk", "beanstalkd", "queue", "console", "gui", "admin", "web admin", "monitoring", "stats", "interface", "php"],
     "type": "project",
-	"authors": [
+    "authors": [
         {
             "name": "Petr Trofimov"
         },
         {
             "name": "Sergey Lysenko"
         },
-		{
+        {
             "name": "Pentium10"
         }
     ],
