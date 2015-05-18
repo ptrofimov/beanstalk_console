@@ -8,7 +8,7 @@
 
 **Features**
 
-- Common list of servers in config for all users
+- Common list of servers in config for all users + optional Basic Auth
 - Global server list can be set via BEANSTALK_SERVERS environment variable
 - Each user can add its own personal Beanstalkd server
 - Full list of available tubes
