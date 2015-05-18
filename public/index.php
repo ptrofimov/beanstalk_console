@@ -8,6 +8,32 @@
 error_reporting(E_ALL & ~E_NOTICE);
 ini_set('display_errors', 1);
 
+require_once dirname(__FILE__) . '/../config.php';
+$authenticated = false;
+
+if (
+    isset($config['auth']) && 
+    isset($config['auth']['enabled']) &&
+    $config['auth']['enabled'] &&
+    isset($_SERVER['PHP_AUTH_USER']) && 
+    isset($_SERVER['PHP_AUTH_PW']) &&
+    $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
+    $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
+    ) {
+    $authenticated = true;
+}
+
+if ( ! isset($config['auth']) || (isset($config['auth']['enabled']) && $config['auth']['enabled'] == false)) {
+    $authenticated = true;
+}
+
+if ( ! $authenticated) {
+    header('WWW-Authenticate: Basic realm="Secure Access"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo 'Authentication required.';
+    exit;
+}
+
 require_once '../lib/include.php';
 $console = new Console;
 $errors = $console->getErrors();
