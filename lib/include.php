@@ -32,6 +32,7 @@ class Console {
     private $serversEnv = array();
     private $serversCookie = array();
     private $searchResults = array();
+    private $actionTimeStart = 0;
 
     public function __construct() {
         $this->__init();
@@ -196,9 +197,8 @@ class Console {
         }
     }
 
-    public function getSearchResult()
-    {
-        return $this->searchResults; 
+    public function getSearchResult() {
+        return $this->searchResults;
     }
 
     protected function __init() {
@@ -214,6 +214,7 @@ class Console {
             '_tplBlock' => $tplBlock,
             'config' => $config);
         $this->_tplVars = $this->_globalVar;
+        if (!in_array($this->_tplVars['_tplBlock'], array('allTubes', 'serversList'))) {
             unset($this->_tplVars['_tplBlock']);
         }
         if (!in_array($this->_tplVars['_tplMain'], array('main', 'ajax'))) {
@@ -367,6 +368,16 @@ class Console {
         exit();
     }
 
+    protected function _actionKickJob() {
+        $job = $this->interface->_client->peek(intval($_GET['jobid']));
+        if ($job) {
+            $this->interface->_client->kickJob($job);
+        }
+        header(
+                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+        exit();
+    }
+
     protected function _actionDelete() {
         switch ($this->_globalVar['state']) {
             case 'ready':
@@ -380,6 +391,14 @@ class Console {
                 break;
         }
 
+        $this->_postDelete();
+    }
+
+    protected function _actionDeleteJob() {
+        $job = $this->interface->_client->peek(intval($_GET['jobid']));
+        if ($job) {
+            $this->interface->_client->delete($job);
+        }
         $this->_postDelete();
     }
 
@@ -473,19 +492,9 @@ class Console {
         $success = false;
         $error = '';
         $response = array('result' => &$success, 'error' => &$error);
-        if (isset($_POST['addsamplestate']) && isset($_POST['addsamplename']) && isset($_POST['tube']) && isset($_POST['tubes'])) {
+        if (isset($_POST['addsamplejobid']) && isset($_POST['addsamplename']) && isset($_POST['tube']) && isset($_POST['tubes'])) {
             try {
-                switch ($_POST['addsamplestate']) {
-                    case 'ready':
-                        $job = $this->interface->_client->useTube($_POST['tube'])->peekReady();
-                        break;
-                    case 'delayed':
-                        $job = $this->interface->_client->useTube($_POST['tube'])->peekDelayed();
-                        break;
-                    case 'buried':
-                        $job = $this->interface->_client->useTube($_POST['tube'])->peekBuried();
-                        break;
-                }
+                $job = $this->interface->_client->peek(intval($_POST['addsamplejobid']));
                 if ($job) {
                     $res = $this->_storeSampleJob($_POST, $job->getData());
                     if ($res === true) {
@@ -659,23 +668,29 @@ class Console {
 
     protected function _actionSearch() {
         global $server, $tube, $state;
-        $searchStr = (isset($_POST['searchStr'])) ? $_POST['searchStr'] : null;
+        $this->actionTimeStart = microtime(true);
+        $timelimit_in_seconds = 10;
+        $searchStr = (isset($_GET['searchStr'])) ? $_GET['searchStr'] : null;
         $states = array('ready', 'delayed', 'buried');
         $jobList = array();
+        $limit = null;
 
-        if($searchStr === null or $searchStr === '') 
-            return false; 
+        if ($searchStr === null or $searchStr === '')
+            return false;
 
-        foreach($states as $state) {
-            $jobList[$state] = $this->findJobsByState($tube, $state, $searchStr);
+        if (isset($_GET['limit'])) {
+            $limit = intval($_GET['limit']);
+        }
+
+        foreach ($states as $state) {
+            $jobList[$state] = $this->findJobsByState($tube, $state, $searchStr, $limit);
+            $jobList['total']+=count($jobList[$state]);
         }
 
         $this->searchResults = $jobList;
     }
 
-
-    private function findJobsByState($tube, $state, $searchStr)
-    {
+    private function findJobsByState($tube, $state, $searchStr, $limit = 25) {
         $jobList = array();
         $job = null;
         $total = $this->interface->getTubeStats($tube);
@@ -683,37 +698,42 @@ class Console {
 
         try {
             switch ($state) {
-            case 'ready':
-                $job = $this->interface->_client->useTube($tube)->peekReady();
-                $totalJobs = $total[2]['value'];
-                break;
-            case 'delayed':
-                $job = $this->interface->_client->useTube($tube)->peekDelayed();
-                $totalJobs = $total[4]['value'];
-                break;
-            case 'buried':
-                $job = $this->interface->_client->useTube($tube)->peekBuried();
-                $totalJobs = $total[5]['value'];
-                break;
+                case 'ready':
+                    $job = $this->interface->_client->useTube($tube)->peekReady();
+                    $totalJobs = $total[2]['value'];
+                    break;
+                case 'delayed':
+                    $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                    $totalJobs = $total[4]['value'];
+                    break;
+                case 'buried':
+                    $job = $this->interface->_client->useTube($tube)->peekBuried();
+                    $totalJobs = $total[5]['value'];
+                    break;
             }
-
         } catch (Exception $e) {
+            
         }
 
-        if($job === null)
+        if ($job === null)
             return $jobList;
 
         $jobList = array();
         $lastId = $job->getId() + $totalJobs;
 
-        for($id = $job->getId(); $id < $lastId; $id++ ) {
-            try{
+        $added = 0;
+        for ($id = $job->getId(); $id < $lastId; $id++) {
+            try {
                 $job = $this->interface->_client->peek($id);
-                if(strpos($job->getData(), $searchStr) !== false) {
+                if (strpos($job->getData(), $searchStr) !== false) {
                     $jobList[$id] = $job;
+                    $added++;
                 }
-
-            }catch(Pheanstalk_Exception_ServerException $e ) {
+            } catch (Pheanstalk_Exception_ServerException $e) {
+                
+            }
+            if ($added >= $limit || (microtime(true) - $this->actionTimeStart) > $limit) {
+                break;
             }
         }
 

@@ -152,7 +152,7 @@ $(document).ready(
                         }
                     }
                     $('#addsamplename').val(selectedText);
-                    $('#addsamplestate').val($(this).data('state'));
+                    $('#addsamplejobid').val($(this).data('jobid'));
                     $('#modalAddSample').modal('toggle');
                     return false;
                 });
@@ -177,6 +177,9 @@ $(document).ready(
                 $(document).on('click', '#addServer', function () {
                     $('#servers-add').modal('toggle');
                     return false;
+                });
+                $('.ellipsize').on('click', function () {
+                    $(this).toggleClass('ellipsize');
                 });
             }
 
