@@ -12,22 +12,22 @@ require_once dirname(__FILE__) . '/../config.php';
 $authenticated = false;
 
 if (
-    isset($config['auth']) && 
-    isset($config['auth']['enabled']) &&
-    $config['auth']['enabled'] &&
-    isset($_SERVER['PHP_AUTH_USER']) && 
-    isset($_SERVER['PHP_AUTH_PW']) &&
-    $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
-    $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
-    ) {
+        isset($config['auth']) &&
+        isset($config['auth']['enabled']) &&
+        $config['auth']['enabled'] &&
+        isset($_SERVER['PHP_AUTH_USER']) &&
+        isset($_SERVER['PHP_AUTH_PW']) &&
+        $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
+        $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
+) {
     $authenticated = true;
 }
 
-if ( ! isset($config['auth']) || (isset($config['auth']['enabled']) && $config['auth']['enabled'] == false)) {
+if (!isset($config['auth']) || (isset($config['auth']['enabled']) && $config['auth']['enabled'] == false)) {
     $authenticated = true;
 }
 
-if ( ! $authenticated) {
+if (!$authenticated) {
     header('WWW-Authenticate: Basic realm="Secure Access"');
     header('HTTP/1.0 401 Unauthorized');
     echo 'Authentication required.';
@@ -42,6 +42,5 @@ $groups = $console->getTubeStatGroups();
 $visible = $console->getTubeStatVisible();
 $tplVars = $console->getTplVars();
 extract($tplVars);
-?>
 
-<?php require_once "../lib/tpl/{$_tplMain}.php" ?>
+require_once "../lib/tpl/{$_tplMain}.php";
