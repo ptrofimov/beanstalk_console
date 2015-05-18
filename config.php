@@ -10,6 +10,14 @@ $config = array(
      */
     'storage' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'storage.json',
     /**
+     * Optional Basic Authentication
+     */
+    'auth' => array(
+        'enabled' => false,
+        'username' => 'admin',
+        'password' => 'password',
+    ),
+    /**
      * Version number
      */
     'version' => '1.6.1',
