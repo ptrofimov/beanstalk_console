@@ -20,6 +20,7 @@
 - You can move jobs between tubes
 - Ability to Pause tubes
 - Saved jobs (store sample jobs as a template, kick/edit them, very useful for development)
+- Search jobs data field
 - Customizable UI (code highlighter, choose columns, edit auto refresh seconds, pause tube seconds)
 
 Change log on [Releases](https://github.com/ptrofimov/beanstalk_console/releases).
