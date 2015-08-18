@@ -224,17 +224,17 @@ class Console {
             $this->_tplVars['_tplMain'] = 'main';
         }
 
-        foreach ($config['servers'] as $server) {
-            $this->serversConfig[] = $server;
+        foreach ($config['servers'] as $key => $server) {
+            $this->serversConfig[$key] = $server;
         }
         if (null !== getenv('BEANSTALK_SERVERS')) {
-            foreach (explode(',', getenv('BEANSTALK_SERVERS')) as $server) {
-                $this->serversEnv[] = $server;
+            foreach (explode(',', getenv('BEANSTALK_SERVERS')) as $key => $server) {
+                $this->serversEnv[$key] = $server;
             }
         }
         if (isset($_COOKIE['beansServers'])) {
-            foreach (explode(';', $_COOKIE['beansServers']) as $server) {
-                $this->serversCookie[] = $server;
+            foreach (explode(';', $_COOKIE['beansServers']) as $key => $server) {
+                $this->serversCookie[$key] = $server;
             }
         }
         try {

@@ -16,14 +16,17 @@ if (!empty($_COOKIE['filter'])) {
     );
 }
 ?>
-<?php if (!empty($servers)): ?>
+<?php
+if (!empty($servers)):
+    $servers = array_filter(array_unique($servers));
+    ?>
     <div class="row">
         <div class="col-sm-12">
             <table class="table table-striped table-hover" id="servers-index">
                 <thead>
                     <tr>
                         <th>name</th>
-                        <?php foreach ($console->getServerStats(reset($servers)) as $key => $item): ?>
+                        <?php foreach ($console->getServerStats(current($servers)) as $key => $item): ?>
                             <th class="<?php if (!in_array($key, $visible)) echo 'hide' ?>" name="<?php echo $key ?>"
                                 title="<?php echo $item['description'] ?>"><?php echo $key ?></th>
                             <?php endforeach ?>
@@ -32,14 +35,18 @@ if (!empty($_COOKIE['filter'])) {
                 </thead>
                 <tbody>
                     <?php
-                    foreach (array_unique($servers) as $server):
+                    foreach ($servers as $key => $server):
                         $stats = $console->getServerStats($server);
+                        $label = $key;
+                        if (empty($label) || is_numeric($label)) {
+                            $label = $server;
+                        }
                         ?>
                         <tr>
                             <?php if (empty($stats)): ?>
-                                <td><?php echo $server ?></td>
+                                <td style="white-space: nowrap;"><?php echo $label ?></td>
                             <?php else: ?>
-                                <td><a href="?server=<?php echo $server ?>"><?php echo $server ?></a></td>
+                                <td  style="white-space: nowrap;"><a href="?server=<?php echo $server ?>"><?php echo $label; ?></a></td>
                             <?php endif ?>
                             <?php foreach ($stats as $key => $item): ?>
                                 <td class="<?php if (!in_array($key, $visible)) echo 'hide' ?>"

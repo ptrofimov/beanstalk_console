@@ -4,7 +4,7 @@ $config = array(
     /**
      * List of servers available for all users
      */
-    'servers' => array(/* 'beanstalk://localhost:11300', ... */),
+    'servers' => array(/* 'Local Beanstalkd' => 'beanstalk://localhost:11300', ... */),
     /**
      * Saved samples jobs are kept in this file, must be writable
      */
@@ -20,5 +20,5 @@ $config = array(
     /**
      * Version number
      */
-    'version' => '1.7',
+    'version' => '1.7.1',
 );
