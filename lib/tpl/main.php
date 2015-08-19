@@ -87,9 +87,14 @@ $servers = $console->getServers();
                                         All tubes <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <?php foreach ($tubes as $tubeItem): ?>
-                                            <li><a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
-                                        <?php endforeach ?>
+                                        <?php
+                                        if (isset($tubes) && is_array($tubes)) {
+                                            foreach ($tubes as $tubeItem) {
+                                                ?>
+                                                <li><a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
+                                            <?php }
+                                        }
+                                        ?>
                                     </ul>
                                 </li>
                             <?php else:
@@ -101,10 +106,10 @@ $servers = $console->getServers();
                                     <ul class="dropdown-menu">
                                         <?php foreach ($servers as $serverItem): ?>
                                             <li><a href="index.php?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-                                        <?php endforeach ?>
+        <?php endforeach ?>
                                     </ul>
                                 </li>
-                            <?php endif ?>
+    <?php endif ?>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
@@ -122,7 +127,7 @@ $servers = $console->getServers();
                                     if ($server && !$tube) {
                                         ?>
                                         <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
-                                    <?php } ?>
+    <?php } ?>
                                     <li><a href="index.php?action=manageSamples" role="button">Manage samples</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
@@ -137,21 +142,21 @@ $servers = $console->getServers();
                                     <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                 </ul>
                             </li>
-                            <?php if ($server && !$tube) { ?>
+    <?php if ($server && !$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefresh" class="btn btn-default btn-small">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
-                            <?php } else if (!$tube) { ?>
+    <?php } else if (!$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefreshSummary" class="btn btn-default btn-small">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
-                            <?php } ?>
+                        <?php } ?>
                         </ul>
-                        <?php if (isset($server, $tube) && $server && $tube) { ?>
+    <?php if (isset($server, $tube) && $server && $tube) { ?>
                             <form  class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
                                 <input type="hidden" name="server" value="<?php echo $server; ?>"/>
                                 <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
@@ -162,7 +167,7 @@ $servers = $console->getServers();
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
                                 </div>
                             </form>
-                        <?php } ?>
+    <?php } ?>
                     </div>
                     <!--/.nav-collapse -->
                 </div>
@@ -178,7 +183,7 @@ $servers = $console->getServers();
             <?php else: ?>
                 <?php if (isset($_tplPage)): ?>
                     <?php include(dirname(__FILE__) . '/' . $_tplPage . '.php') ?>
-                <?php elseif (!$server): ?>
+                    <?php elseif (!$server): ?>
                     <div id="idServers">
                         <?php
                         include(dirname(__FILE__) . '/serversList.php');
@@ -195,7 +200,7 @@ $servers = $console->getServers();
                     ?>
                     <div id="idAllTubes">
                         <?php require_once '../lib/tpl/allTubes.php'; ?>
-                        <?php require_once '../lib/tpl/modalClearTubes.php'; ?>
+        <?php require_once '../lib/tpl/modalClearTubes.php'; ?>
                     </div>
                     <div id="idAllTubesCopy" style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)):
@@ -212,7 +217,7 @@ $servers = $console->getServers();
                     <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
                 <?php } ?>
                 <?php require_once '../lib/tpl/modalSettings.php'; ?>
-            <?php endif; ?>
+<?php endif; ?>
         </div>
 
         <script src="assets/vendor/jquery/jquery.js"></script>
@@ -220,7 +225,7 @@ $servers = $console->getServers();
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.regexp.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+<?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
             <script src="highlight/highlight.pack.js"></script>
             <script>hljs.initHighlightingOnLoad();</script><?php } ?>
         <script src="js/customer.js"></script>
