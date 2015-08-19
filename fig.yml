@@ -1,0 +1,13 @@
+web:
+  # build: .
+  image: agaveapi/beanstalkd-console
+  ports:
+    - "9080:80"
+  links:
+    - beanstalkd
+beanstalkd:
+  image: agaveapi/beanstalkd
+  # volumes:
+  #   - /var/lib/beanstalkd/binlog:/data
+  ports:
+    - "11300:11300"
