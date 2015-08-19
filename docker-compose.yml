@@ -1,0 +1,38 @@
+##
+# docker-compose.yml
+#
+# author: Rion Dooley <dooley@tacc.utexas.edu>
+#
+# This is a basic Docker Compose file to start the beanstalkd console webapp and a
+# fully functional beanstalkd instance in a single command. The beanstalkd server
+# is accessible on standard port 11300. The beanstalkd console is available at
+# http://<your docker host>:9080.
+#
+# By default, a new image will be built from the the source code in this repository.
+# You may also skip the build step and use the public, automated build of this
+# repository by commenting out the build argument and uncommenting the image argument.
+#
+# If you need a persistent beanstalkd binlog, simply uncomment the last 5 lines.
+#
+#
+
+web:
+  #image: agaveapi/beanstalkd-console
+  build: .
+  ports:
+    - '9080:80'
+  environment:
+    - "BEANSTALKD_HOST=beanstalkd"
+    - "BEANSTALKD_PORT=11300"
+  links:
+    - beanstalkd
+beanstalkd:
+  image: agaveapi/beanstalkd
+  ports:
+    - "11300:11300"
+
+#  volumes_from:
+#    - data
+#data:
+#  image: agaveapi/beanstalkd
+#  command: /bin/true

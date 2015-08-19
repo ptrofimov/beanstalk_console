@@ -9,7 +9,7 @@ KeepAliveTimeout 5
 User www-data
 Group www-data
 HostnameLookups Off
-ErrorLog /proc/self/fd/2
+ErrorLog /dev/stdout
 LogLevel warn
 
 IncludeOptional mods-enabled/*.load
@@ -18,29 +18,28 @@ IncludeOptional mods-enabled/*.conf
 # ports.conf
 Listen 80
 <IfModule ssl_module>
-  Listen 443
+	Listen 443
 </IfModule>
 <IfModule mod_gnutls.c>
-  Listen 443
+	Listen 443
 </IfModule>
 
 <Directory />
-  Options FollowSymLinks
-  AllowOverride None
-  Require all denied
+	Options FollowSymLinks
+	AllowOverride None
+	Require all denied
 </Directory>
 
-<Directory /var/www/html>
-  Options Indexes FollowSymLinks
-  AllowOverride All
-  Require all granted
+<Directory /var/www/>
+	AllowOverride All
+	Require all granted
 </Directory>
 
-DocumentRoot /var/www/html/public
+DocumentRoot /var/www/public
 
 AccessFileName .htaccess
 <FilesMatch "^\.ht">
-  Require all denied
+	Require all denied
 </FilesMatch>
 
 LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
@@ -49,10 +48,10 @@ LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
 
-CustomLog /proc/self/fd/1 combined
+CustomLog /dev/stdout combined
 
 <FilesMatch \.php$>
-  SetHandler application/x-httpd-php
+	SetHandler application/x-httpd-php
 </FilesMatch>
 
 # Multiple DirectoryIndex directives within the same context will add
@@ -60,3 +59,8 @@ CustomLog /proc/self/fd/1 combined
 # https://httpd.apache.org/docs/current/mod/mod_dir.html#directoryindex
 DirectoryIndex disabled
 DirectoryIndex index.php index.html
+
+IncludeOptional conf-enabled/*.conf
+IncludeOptional sites-enabled/*.conf
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
