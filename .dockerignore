@@ -1,0 +1,6 @@
+.git
+.idea
+/vendor
+.vagrant
+nbproject/
+Vagrantfile

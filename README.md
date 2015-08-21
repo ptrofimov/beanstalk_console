@@ -62,9 +62,17 @@ If you would rather just run the existing automated build of this project, run (
 
     docker run -d -p "80:80" --name beanstalk_console agaveapi/beanstalkd-console
 
-To spin up a console with a beanstalkd server all at once, install [Fig](http://fig.sh) and run (from project root):
+To configure webapp with a custom beanstalk server to load at runtime, set the `BEANSTALKD_HOST` and `BEANSTALKD_PORT` environment variables.
 
-    fig up
+    docker run -d -p 80:80 \
+               --name beanstalk_console \
+               -e 'BEANSTALKD_HOST=beanstalkd' \
+               -e 'BEANSTALKD_PORT=11300' \
+               beanstalk_console
+
+To spin up a console with a beanstalkd server all at once, install [Docker Compose](https://docs.docker.com/compose/) and run (from project root):
+
+    docker-compose up
 
 **Authors:** Petr Trofimov, Sergey Lysenko, Pentium10
 
