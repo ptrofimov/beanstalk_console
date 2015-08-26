@@ -192,15 +192,15 @@ $servers = $console->getServers();
                     <div id="idServersCopy" style="display:none"></div>
                     <?php
                     if ($tplVars['_tplMain'] != 'ajax') {
-                        require_once __DIR__ . '/modalAddServer.php';
-                        require_once __DIR__ . '/modalFilterServer.php';
+                        require_once dirname(__FILE__) . '/modalAddServer.php';
+                        require_once dirname(__FILE__) . '/modalFilterServer.php';
                     }
                     ?>
                 <?php elseif (!$tube):
                     ?>
                     <div id="idAllTubes">
-                        <?php require_once __DIR__ . '/allTubes.php'; ?>
-        <?php require_once __DIR__ . '/modalClearTubes.php'; ?>
+                        <?php require_once dirname(__FILE__) . '/allTubes.php'; ?>
+        <?php require_once dirname(__FILE__) . '/modalClearTubes.php'; ?>
                     </div>
                     <div id='idAllTubesCopy' style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)):
@@ -209,14 +209,14 @@ $servers = $console->getServers();
                     <br><br><a href="./?server=<?php echo $server ?>"> << back </a>
                 <?php else:
                     ?>
-                    <?php require_once __DIR__ . '/currentTube.php'; ?>
-                    <?php require_once __DIR__ . '/modalAddJob.php'; ?>
-                    <?php require_once __DIR__ . '/modalAddSample.php'; ?>
+                    <?php require_once dirname(__FILE__) . '/currentTube.php'; ?>
+                    <?php require_once dirname(__FILE__) . '/modalAddJob.php'; ?>
+                    <?php require_once dirname(__FILE__) . '/modalAddSample.php'; ?>
                 <?php endif; ?>
                 <?php if (!isset($_tplPage)) { ?>
-                    <?php require_once __DIR__ . '/modalFilterColumns.php'; ?>
+                    <?php require_once dirname(__FILE__) . '/modalFilterColumns.php'; ?>
                 <?php } ?>
-                <?php require_once __DIR__ . '/modalSettings.php'; ?>
+                <?php require_once dirname(__FILE__) . '/modalSettings.php'; ?>
 <?php endif; ?>
         </div>
 

@@ -1,6 +1,6 @@
 <?php
 
-$config = array(
+$GLOBALS['config'] = array(
     /**
      * List of servers available for all users
      */
