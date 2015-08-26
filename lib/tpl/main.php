@@ -192,35 +192,35 @@ $servers = $console->getServers();
                     <div id="idServersCopy" style="display:none"></div>
                     <?php
                     if ($tplVars['_tplMain'] != 'ajax') {
-                        require_once '../lib/tpl/modalAddServer.php';
-                        require_once '../lib/tpl/modalFilterServer.php';
+                        require_once __DIR__ . '/modalAddServer.php';
+                        require_once __DIR__ . '/modalFilterServer.php';
                     }
                     ?>
                 <?php elseif (!$tube):
                     ?>
                     <div id="idAllTubes">
-                        <?php require_once '../lib/tpl/allTubes.php'; ?>
-        <?php require_once '../lib/tpl/modalClearTubes.php'; ?>
+                        <?php require_once __DIR__ . '/allTubes.php'; ?>
+        <?php require_once __DIR__ . '/modalClearTubes.php'; ?>
                     </div>
-                    <div id="idAllTubesCopy" style="display:none"></div>
+                    <div id='idAllTubesCopy' style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)):
                     ?>
                     <?php echo sprintf('Tube "%s" not found or it is empty', $tube) ?>
                     <br><br><a href="./?server=<?php echo $server ?>"> << back </a>
                 <?php else:
                     ?>
-                    <?php require_once '../lib/tpl/currentTube.php'; ?>
-                    <?php require_once '../lib/tpl/modalAddJob.php'; ?>
-                    <?php require_once '../lib/tpl/modalAddSample.php'; ?>
+                    <?php require_once __DIR__ . '/currentTube.php'; ?>
+                    <?php require_once __DIR__ . '/modalAddJob.php'; ?>
+                    <?php require_once __DIR__ . '/modalAddSample.php'; ?>
                 <?php endif; ?>
                 <?php if (!isset($_tplPage)) { ?>
-                    <?php require_once '../lib/tpl/modalFilterColumns.php'; ?>
+                    <?php require_once __DIR__ . '/modalFilterColumns.php'; ?>
                 <?php } ?>
-                <?php require_once '../lib/tpl/modalSettings.php'; ?>
+                <?php require_once __DIR__ . '/modalSettings.php'; ?>
 <?php endif; ?>
         </div>
 
-        <script src="assets/vendor/jquery/jquery.js"></script>
+        <script src='assets/vendor/jquery/jquery.js'></script>
         <script src="js/jquery.color.js"></script>
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.regexp.js"></script>

@@ -34,7 +34,8 @@ if (!$authenticated) {
     exit;
 }
 
-require_once '../lib/include.php';
+require_once dirname(__FILE__) . '/../lib/include.php';
+
 $console = new Console;
 $errors = $console->getErrors();
 $fields = $console->getTubeStatFields();
@@ -43,4 +44,4 @@ $visible = $console->getTubeStatVisible();
 $tplVars = $console->getTplVars();
 extract($tplVars);
 
-require_once "../lib/tpl/{$_tplMain}.php";
+require_once dirname(__FILE__) . "/../lib/tpl/{$_tplMain}.php";
