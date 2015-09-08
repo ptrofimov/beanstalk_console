@@ -448,8 +448,8 @@ class Console {
 
         $id = $this->interface->addJob($tubeName, $tubeData, $tubePriority, $tubeDelay, $tubeTtr);
 
-        if (!empty($result)) {
-            $result = array('result' => true, 'id' => $result);
+        if (!empty($id)) {
+            $result = array('result' => true, 'id' => $id);
         }
 
         echo json_encode($result);
