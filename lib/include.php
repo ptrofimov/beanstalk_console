@@ -656,13 +656,14 @@ class Console {
 
     protected function _actionMoveJobsTo() {
         global $server, $tube, $state;
+        $destServer = (isset($_GET['server'])) ? $_GET['server'] : $server;
         $destTube = (isset($_GET['destTube'])) ? $_GET['destTube'] : null;
         $destState = (isset($_GET['destState'])) ? $_GET['destState'] : null;
         if (!empty($destTube) && in_array($state, array('ready', 'delayed', 'buried'))) {
-            $this->moveJobsFromTo($server, $tube, $state, $destTube);
+            $this->moveJobsFromTo($destServer, $tube, $state, $destTube);
         }
         if (!empty($destState)) {
-            $this->moveJobsToState($server, $tube, $state, $destState);
+            $this->moveJobsToState($destServer, $tube, $state, $destState);
         }
     }
 
