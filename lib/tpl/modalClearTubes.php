@@ -30,7 +30,7 @@
                     <div>
                         <strong>Tube list</strong>
                         <?php
-                        foreach ($tubes as $tube):
+                        foreach ((is_array($tubes) ? $tubes : array()) as $tube):
                             ?>
                             <div class="checkbox">
                                 <label class="">
