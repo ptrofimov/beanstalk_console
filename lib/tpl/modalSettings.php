@@ -28,6 +28,15 @@
                         ?>">
                     </div>
                     <div class="form-group">
+                        <label for="focusedInput"><b>Search result limits</b> (Default: <i>25</i>)</label>
+                        <input class="form-control focused" id="searchResultLimit" type="text" value="<?php
+                        if (@empty($_COOKIE['searchResultLimit']))
+                            echo 25;
+                        else
+                            echo @intval($_COOKIE['searchResultLimit']);
+                        ?>">
+                    </div>
+                    <div class="form-group">
                         <label for="focusedInput"><b>Preferred way to deal with job data</b></label>
 
                         <div class="checkbox">
