@@ -162,7 +162,7 @@ $servers = $console->getServers();
                                 <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
                                 <input type="hidden" name="state" value="<?php echo $state; ?>"/>
                                 <input type="hidden" name="action" value="search"/>
-                                <input type="hidden" name="limit" value="25"/>
+                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>"/>
                                 <div class="form-group">
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
                                 </div>
