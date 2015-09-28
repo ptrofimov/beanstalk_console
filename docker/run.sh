@@ -26,7 +26,7 @@ elif [[ -n "$BEANSTALKD_PORT_11300_TCP_ADDR" ]]; then
     BEANSTALKD_PORT=11300
   fi
 
-  sed -r "s/'servers'.*$/'servers'=> array('Default Beanstalkd' => 'beanstalk:\/\/$BEANSTALKD_HOST:$BEANSTALKD_PORT'),/g" /var/www/config.php
+  sed -ir "s/'servers'.*$/'servers'=> array('Default Beanstalkd' => 'beanstalk:\/\/$BEANSTALKD_HOST:$BEANSTALKD_PORT'),/g" /var/www/config.php
 
 fi
 
