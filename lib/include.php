@@ -10,17 +10,20 @@ function __autoload($class) {
 }
 
 session_start();
+require_once 'Pheanstalk/ClassLoader.php';
+Pheanstalk_ClassLoader::register(dirname(__FILE__));
+
 require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
 
-$server = !empty($_GET['server']) ? $_GET['server'] : '';
-$action = !empty($_GET['action']) ? $_GET['action'] : '';
-$state = !empty($_GET['state']) ? $_GET['state'] : '';
-$count = !empty($_GET['count']) ? $_GET['count'] : '';
-$tube = !empty($_GET['tube']) ? $_GET['tube'] : '';
-$tplMain = !empty($_GET['tplMain']) ? $_GET['tplMain'] : '';
-$tplBlock = !empty($_GET['tplBlock']) ? $_GET['tplBlock'] : '';
+$GLOBALS['server'] = !empty($_GET['server']) ? $_GET['server'] : '';
+$GLOBALS['action'] = !empty($_GET['action']) ? $_GET['action'] : '';
+$GLOBALS['state'] = !empty($_GET['state']) ? $_GET['state'] : '';
+$GLOBALS['count'] = !empty($_GET['count']) ? $_GET['count'] : '';
+$GLOBALS['tube'] = !empty($_GET['tube']) ? $_GET['tube'] : '';
+$GLOBALS['tplMain'] = !empty($_GET['tplMain']) ? $_GET['tplMain'] : '';
+$GLOBALS['tplBlock'] = !empty($_GET['tplBlock']) ? $_GET['tplBlock'] : '';
 
 class Console {
 
@@ -202,17 +205,15 @@ class Console {
     }
 
     protected function __init() {
-        global $server, $action, $state, $count, $tube, $config, $tplMain, $tplBlock;
-
         $this->_globalVar = array(
-            'server' => $server,
-            'action' => $action,
-            'state' => $state,
-            'count' => $count,
-            'tube' => $tube,
-            '_tplMain' => $tplMain,
-            '_tplBlock' => $tplBlock,
-            'config' => $config);
+            'server' => $GLOBALS['server'],
+            'action' => $GLOBALS['action'],
+            'state' => $GLOBALS['state'],
+            'count' => $GLOBALS['count'],
+            'tube' => $GLOBALS['tube'],
+            '_tplMain' => $GLOBALS['tplMain'],
+            '_tplBlock' => $GLOBALS['tplBlock'],
+            'config' => $GLOBALS['config']);
         $this->_tplVars = $this->_globalVar;
         if (!in_array($this->_tplVars['_tplBlock'], array('allTubes', 'serversList'))) {
             unset($this->_tplVars['_tplBlock']);
@@ -224,7 +225,7 @@ class Console {
             $this->_tplVars['_tplMain'] = 'main';
         }
 
-        foreach ($config['servers'] as $key => $server) {
+        foreach ($GLOBALS['config']['servers'] as $key => $server) {
             $this->serversConfig[$key] = $server;
         }
         if (null !== getenv('BEANSTALK_SERVERS')) {
@@ -238,7 +239,7 @@ class Console {
             }
         }
         try {
-            $storage = new Storage($config['storage']);
+            $storage = new Storage($GLOBALS['config']['storage']);
         } catch (Exception $ex) {
             $this->_errors[] = $ex->getMessage();
         }
@@ -655,22 +656,20 @@ class Console {
     }
 
     protected function _actionMoveJobsTo() {
-        global $server, $tube, $state;
-        $destServer = (isset($_GET['server'])) ? $_GET['server'] : $server;
+        $destServer = (isset($_GET['server'])) ? $_GET['server'] : null;
         $destTube = (isset($_GET['destTube'])) ? $_GET['destTube'] : null;
         $destState = (isset($_GET['destState'])) ? $_GET['destState'] : null;
-        if (!empty($destTube) && in_array($state, array('ready', 'delayed', 'buried'))) {
-            $this->moveJobsFromTo($destServer, $tube, $state, $destTube);
+        if (!empty($destTube) && in_array($GLOBALS['state'], array('ready', 'delayed', 'buried'))) {
+            $this->moveJobsFromTo($destServer, $GLOBALS['tube'], $GLOBALS['state'], $destTube);
         }
         if (!empty($destState)) {
-            $this->moveJobsToState($destServer, $tube, $state, $destState);
+            $this->moveJobsToState($destServer, $GLOBALS['tube'], $GLOBALS['state'], $destState);
         }
     }
 
     protected function _actionSearch() {
-        global $server, $tube, $state;
         $this->actionTimeStart = microtime(true);
-        $timelimit_in_seconds = 10;
+        $timelimit_in_seconds = 15;
         $searchStr = (isset($_GET['searchStr'])) ? $_GET['searchStr'] : null;
         $states = array('ready', 'delayed', 'buried');
         $jobList = array();
@@ -684,7 +683,7 @@ class Console {
         }
 
         foreach ($states as $state) {
-            $jobList[$state] = $this->findJobsByState($tube, $state, $searchStr, $limit);
+            $jobList[$state] = $this->findJobsByState($GLOBALS['tube'], $state, $searchStr, $limit);
             $jobList['total']+=count($jobList[$state]);
         }
 

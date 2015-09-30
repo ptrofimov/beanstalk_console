@@ -1,1 +1,1 @@
-<?php require_once "../lib/tpl/{$_tplBlock}.php";?>
+<?php require_once dirname(__FILE__) . "/{$_tplBlock}.php";?>
