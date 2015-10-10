@@ -1,6 +1,9 @@
 FROM php:5.6-apache
 MAINTAINER Rion Dooley <dooley@tacc.utexas.edu>
 
+# Add php extensions
+RUN docker-php-ext-install mbstring
+
 # Add project from current repo to enable automated build
 ADD . /var/www
 
