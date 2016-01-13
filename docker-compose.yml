@@ -24,6 +24,8 @@ web:
   environment:
     - "BEANSTALKD_HOST=beanstalkd"
     - "BEANSTALKD_PORT=11300"
+    - "APACHE_PORT=80"
+    - "APACHE_SSL_PORT=443"
   links:
     - beanstalkd
 beanstalkd:

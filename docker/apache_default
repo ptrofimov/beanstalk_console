@@ -16,12 +16,12 @@ IncludeOptional mods-enabled/*.load
 IncludeOptional mods-enabled/*.conf
 
 # ports.conf
-Listen 80
+Listen ${APACHE_PORT}
 <IfModule ssl_module>
-	Listen 443
+	Listen ${APACHE_SSL_PORT}
 </IfModule>
 <IfModule mod_gnutls.c>
-	Listen 443
+	Listen ${APACHE_SSL_PORT}
 </IfModule>
 
 <Directory />
