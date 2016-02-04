@@ -13,7 +13,7 @@ $GLOBALS['config'] = array(
      * Optional Basic Authentication
      */
     'auth' => array(
-        'enabled' => false,
+        'enabled' => true,
         'username' => 'admin',
         'password' => 'password',
     ),
