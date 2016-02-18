@@ -60,7 +60,7 @@ Install [Docker](https://docs.docker.com/installation/) then build and run with 
 
 If you would rather just run the existing automated build of this project, run (from project root):
 
-    docker run -d -p "80:80" --name beanstalk_console agaveapi/beanstalkd-console
+    docker run -d -p "80:80" -e APACHE_PORT=80 --name beanstalk_console agaveapi/beanstalkd-console
 
 To configure webapp with a custom beanstalk server to load at runtime, set the `BEANSTALKD_HOST` and `BEANSTALKD_PORT` environment variables.
 
