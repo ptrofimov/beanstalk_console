@@ -27,7 +27,7 @@ class Storage implements IStorage {
             return false;
         }
         if (!is_writable($this->file)) {
-            @chmod($this->file, '0755');
+            @chmod($this->file, 0755);
             if (!is_writable($this->file)) {
                 $this->error = "Please make the storage file writable: $this->file";
                 return false;
