@@ -1,5 +1,5 @@
 <section class="jobsShowcase">
-    <?php foreach ($peek as $state => $job): ?>
+    <?php foreach ((array)$peek as $state => $job): ?>
         <hr>
         <div class="pull-left">
             <h3>Next job in "<?php echo $state ?>" state</h3>
