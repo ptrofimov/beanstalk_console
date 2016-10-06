@@ -22,7 +22,7 @@ if (!empty($sampleJobs)) {
     ?>
     <div class="clearfix">
         <div class="pull-right">
-            <a href="?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> Add job to samples</a>
+            <a href="./?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> Add job to samples</a>
         </div>
     </div>
     <section id="summaryTable">
@@ -38,7 +38,7 @@ if (!empty($sampleJobs)) {
             <?php foreach ($sampleJobs as $key => $job): ?>
                 <tr>
                     <td name="<?php echo $key ?>" style="line-height: 25px !important;"><a
-                                href="?action=editSample&key=<?php echo $key ?>"><?php echo htmlspecialchars($job['name']); ?></a></td>
+                                href="./?action=editSample&key=<?php echo $key ?>"><?php echo htmlspecialchars($job['name']); ?></a></td>
                     <td>
                         <?php
                         if (is_array($job['tubes'])) {
@@ -46,7 +46,7 @@ if (!empty($sampleJobs)) {
                                 if (isset($_server) && !empty($_server)) {
                                     ?>
                                     <a class="btn btn-default  btn-sm"
-                                       href="?server=<?php echo $_server ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('index.php?action=manageSamples'); ?>"><i
+                                       href="./?server=<?php echo $_server ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><i
                                                 class="glyphicon glyphicon-forward"></i> <?php echo $tubename; ?></a>
                                 <?php
                                 } else {
@@ -62,7 +62,7 @@ if (!empty($sampleJobs)) {
                                                 foreach ($_servers as $server2) {
                                                     ?>
                                                     <li>
-                                                        <a href="?server=<?php echo $server2 ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('index.php?action=manageSamples'); ?>"><?php echo $server2; ?></a>
+                                                        <a href="./?server=<?php echo $server2 ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><?php echo $server2; ?></a>
                                                     </li>
                                                 <?php
                                                 }
@@ -78,8 +78,8 @@ if (!empty($sampleJobs)) {
                     </td>
                     <td>
                         <div class="pull-right">
-                            <a class="btn btn-default btn-sm" href="?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
-                            <a class="btn btn-default btn-sm" href="?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+                            <a class="btn btn-default btn-sm" href="./?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                            <a class="btn btn-default btn-sm" href="./?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i> Delete</a>
                         </div>
                     </td>
                 </tr>

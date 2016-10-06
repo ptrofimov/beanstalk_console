@@ -365,7 +365,7 @@ class Console {
     protected function _actionKick() {
         $this->interface->kick($this->_globalVar['tube'], $this->_globalVar['count']);
         header(
-                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         exit();
     }
 
@@ -375,7 +375,7 @@ class Console {
             $this->interface->_client->kickJob($job);
         }
         header(
-                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         exit();
     }
 
@@ -411,7 +411,7 @@ class Console {
             $this->_globalVar['tube'] = null;
         }
         header(
-                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         exit();
     }
 
@@ -434,7 +434,7 @@ class Console {
             // no servers, clear cookie
             setcookie('beansServers', '', time() - 86400 * 365);
         }
-        header('Location: index.php');
+        header('Location: ./?');
         exit();
     }
 
@@ -485,7 +485,7 @@ class Console {
         }
         $this->interface->pauseTube($this->_globalVar['tube'], $this->_globalVar['count']);
         header(
-                sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         exit();
     }
 
@@ -530,7 +530,7 @@ class Console {
             $_SESSION['info'] = 'Job placed on tube';
             header(sprintf('Location: %s', $_GET['redirect']));
         } else {
-            header(sprintf('Location: index.php?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
+            header(sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], $this->_globalVar['tube']));
         }
         exit();
     }
@@ -555,7 +555,7 @@ class Console {
                     $job['tubes'] = $_POST['tubes'];
                     $job['data'] = htmlspecialchars_decode($_POST['jobdata']);
                     if ($storage->saveJob($job)) {
-                        header('Location: index.php?action=manageSamples');
+                        header('Location: ./?action=manageSamples');
                     } else {
                         $storage->saveJob($oldjob);
                         $this->_tplVars['error'] = $storage->getError();
@@ -587,7 +587,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
@@ -609,7 +609,7 @@ class Console {
                 $job['tubes'] = $_POST['tubes'];
                 $job['data'] = htmlspecialchars_decode($_POST['jobdata']);
                 if ($storage->saveJob($job)) {
-                    header('Location: index.php?action=manageSamples');
+                    header('Location: ./?action=manageSamples');
                 } else {
                     $this->_tplVars['error'] = $storage->getError();
                 }
@@ -631,7 +631,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
@@ -651,7 +651,7 @@ class Console {
                 $storage->delete($key);
             }
         }
-        header('Location: index.php?action=manageSamples');
+        header('Location: ./?action=manageSamples');
         exit();
     }
 
@@ -712,7 +712,7 @@ class Console {
                     break;
             }
         } catch (Exception $e) {
-            
+
         }
 
         if ($job === null)
@@ -730,7 +730,7 @@ class Console {
                     $added++;
                 }
             } catch (Pheanstalk_Exception_ServerException $e) {
-                
+
             }
             if ($added >= $limit || (microtime(true) - $this->actionTimeStart) > $limit) {
                 break;
@@ -786,7 +786,7 @@ class Console {
         } catch (Exception $e) {
             // there might be no jobs to peek at, and peekReady raises exception in this situation
         }
-        header(sprintf('Location: index.php?server=%s&tube=%s', $server, $destTube));
+        header(sprintf('Location: ./?server=%s&tube=%s', $server, $destTube));
     }
 
     private function moveJobsToState($server, $tube, $state, $destState) {
@@ -815,7 +815,7 @@ class Console {
         } catch (Exception $e) {
             // there might be no jobs to peek at, and peekReady raises exception in this situation
         }
-        header(sprintf('Location: index.php?server=%s&tube=%s', $server, $tube));
+        header(sprintf('Location: ./?server=%s&tube=%s', $server, $tube));
     }
 
 }
