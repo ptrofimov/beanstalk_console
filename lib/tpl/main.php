@@ -15,7 +15,7 @@ $servers = $console->getServers();
         <link href="css/customer.css" rel="stylesheet">
         <link href="highlight/styles/magula.css" rel="stylesheet">
         <script>
-            var url = "./index.php?server=<?php echo $server ?>";
+            var url = "./?server=<?php echo $server ?>";
             var contentType = "<?php echo isset($contentType) ? $contentType : '' ?>";
         </script>
 
@@ -42,7 +42,7 @@ $servers = $console->getServers();
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="index.php">Beanstalk console</a>
+                        <a class="navbar-brand" href="./?">Beanstalk console</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
@@ -53,9 +53,9 @@ $servers = $console->getServers();
                                         <?php echo $server ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="index.php">All servers</a></li>
+                                        <li><a href="./?">All servers</a></li>
                                         <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="index.php?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -64,9 +64,9 @@ $servers = $console->getServers();
                                         <?php echo $tube ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="index.php?server=<?php echo $server ?>">All tubes</a></li>
+                                        <li><a href="./?server=<?php echo $server ?>">All tubes</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
-                                            <li><a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -76,9 +76,9 @@ $servers = $console->getServers();
                                         <?php echo $server ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="index.php">All servers</a></li>
+                                        <li><a href="./?">All servers</a></li>
                                         <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="index.php?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -91,7 +91,7 @@ $servers = $console->getServers();
                                         if (isset($tubes) && is_array($tubes)) {
                                             foreach ($tubes as $tubeItem) {
                                                 ?>
-                                                <li><a href="index.php?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
+                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
                                             <?php }
                                         }
                                         ?>
@@ -105,7 +105,7 @@ $servers = $console->getServers();
                                     </a>
                                     <ul class="dropdown-menu">
                                         <?php foreach ($servers as $serverItem): ?>
-                                            <li><a href="index.php?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -128,7 +128,7 @@ $servers = $console->getServers();
                                         ?>
                                         <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
     <?php } ?>
-                                    <li><a href="index.php?action=manageSamples" role="button">Manage samples</a></li>
+                                    <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
                                 </ul>

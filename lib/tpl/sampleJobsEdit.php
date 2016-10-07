@@ -19,7 +19,7 @@ if (isset($isNewRecord) && $isNewRecord) {
             <?php } ?>
         </div>
         <div class="pull-right">
-            <a href="?action=manageSamples" class="btn btn-default btn-small"><i class="glyphicon glyphicon-list"></i> Manage samples</a>
+            <a href="./?action=manageSamples" class="btn btn-default btn-small"><i class="glyphicon glyphicon-list"></i> Manage samples</a>
         </div>
     </div>
     <div class=" form-group">
