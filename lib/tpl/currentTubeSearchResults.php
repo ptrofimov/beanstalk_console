@@ -3,7 +3,7 @@ $searchResults = $console->getSearchResult();
 include('currentTubeJobsSummaryTable.php');
 ?>
 <section id="actionsRow">
-    <a class="btn btn-default btn-sm" href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>"><i class="glyphicon glyphicon-backward"></i>  &nbsp;Back to tube</a>
+    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>"><i class="glyphicon glyphicon-backward"></i>  &nbsp;Back to tube</a>
 </section>
 <?php
 if ($searchResults['total'] > 0) {
@@ -36,17 +36,17 @@ if ($searchResults['total'] > 0) {
                                             </button>
                                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                                 <li role="presentation"><a role="menuitem" class="addSample" data-jobid="<?php echo $job->getId(); ?>"
-                                                                           href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample">
+                                                                           href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample">
                                                         <i class="glyphicon glyphicon-plus glyphicon-white"></i>
                                                         Add to samples</a>
                                                 </li>
-                                                <li role="presentation"><a role="menuitem" 
-                                                                           href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteJob&jobid=<?php echo $job->getId(); ?>"><i
+                                                <li role="presentation"><a role="menuitem"
+                                                                           href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteJob&jobid=<?php echo $job->getId(); ?>"><i
                                                             class="glyphicon glyphicon-remove glyphicon-white"></i>
                                                         Delete</a>
                                                 </li>
-                                                <li role="presentation"><a role="menuitem" 
-                                                                           href="?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=kickJob&jobid=<?php echo $job->getId(); ?>"><i
+                                                <li role="presentation"><a role="menuitem"
+                                                                           href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=kickJob&jobid=<?php echo $job->getId(); ?>"><i
                                                             class="glyphicon glyphicon-forward glyphicon-white"></i>
                                                         Kick</a>
                                                 </li>
