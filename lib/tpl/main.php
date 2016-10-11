@@ -92,7 +92,8 @@ $servers = $console->getServers();
                                             foreach ($tubes as $tubeItem) {
                                                 ?>
                                                 <li><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
-                                            <?php }
+                                            <?php
+                                            }
                                         }
                                         ?>
                                     </ul>
@@ -142,6 +143,11 @@ $servers = $console->getServers();
                                     <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                 </ul>
                             </li>
+    <?php if (@$config['auth']['enabled']) { ?>
+                                <li class="dropdown">
+                                    <a target="_blank" href="./?logout=true">logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
+                                </li>
+                            <?php } ?>
     <?php if ($server && !$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefresh" class="btn btn-default btn-small">

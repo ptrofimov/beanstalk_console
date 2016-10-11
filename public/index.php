@@ -11,6 +11,10 @@ ini_set('display_errors', 1);
 require_once dirname(__FILE__) . '/../config.php';
 $authenticated = false;
 
+if( isset($_GET['logout']) && $_GET['logout']){
+    $_SERVER['PHP_AUTH_USER'] = '';
+    $_SERVER['PHP_AUTH_PW'] = '';
+}
 if (
         isset($config['auth']) &&
         isset($config['auth']['enabled']) &&
