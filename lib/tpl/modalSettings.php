@@ -41,6 +41,14 @@
 
                         <div class="checkbox">
                             <label>
+                                <input type="checkbox" id="isDisabledJsonDecode" value="1"
+                                       <?php if (@$_COOKIE['isDisabledJsonDecode'] != 1) { ?>checked="checked"<?php } ?>>
+                                before display: json_decode()
+                            </label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
                                 <input type="checkbox" id="isDisabledUnserialization" value="1"
                                        <?php if (@$_COOKIE['isDisabledUnserialization'] != 1) { ?>checked="checked"<?php } ?>>
                                 before display: unserialize()
@@ -49,9 +57,9 @@
 
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" id="isDisabledJsonDecode" value="1"
-                                       <?php if (@$_COOKIE['isDisabledJsonDecode'] != 1) { ?>checked="checked"<?php } ?>>
-                                before display: json_decode()
+                                <input type="checkbox" id="isEnabledBase64Decode" value="1"
+                                       <?php if (@$_COOKIE['isEnabledBase64Decode'] == 1) { ?>checked="checked"<?php } ?>>
+                                before display: base64_decode()
                             </label>
                         </div>
 
