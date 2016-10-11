@@ -224,6 +224,18 @@ class BeanstalkInterface {
         $out = $pData;
         $data = null;
 
+        if (@$_COOKIE['isEnabledBase64Decode'] == 1) {
+            $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
+            try {
+                $data = base64_decode($pData);
+            } catch (Exception $e) {
+                $data = $e->getMessage();
+            }
+            ob_get_clean();
+            // restore old error handler
+            restore_error_handler();
+        }
+        
         if (@$_COOKIE['isDisabledUnserialization'] != 1) {
             $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
             try {
@@ -252,7 +264,7 @@ class BeanstalkInterface {
     }
 
     public function exceptions_error_handler($severity, $message, $filename, $lineno) {
-        echo '<span style="color:red">Unserialize got a fatal error, please include the necessary files, or deactivate unserialization from Settings (<a href="#" onclick="$(\'#settings\').modal();return false;">click to open</a>)</span></br>';
+        echo '<span style="color:red">Unserialize or Base64decode got a fatal error, please include the necessary files, or deactivate unserialization from Settings (<a href="#" onclick="$(\'#settings\').modal();return false;">click to open</a>)</span></br>';
         return false;
     }
 
