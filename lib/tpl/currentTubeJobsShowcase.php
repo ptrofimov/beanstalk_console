@@ -1,5 +1,5 @@
 <section class="jobsShowcase">
-    <?php foreach ((array)$peek as $state => $job): ?>
+    <?php foreach ((array) $peek as $state => $job): ?>
         <hr>
         <div class="pull-left">
             <h3>Next job in "<?php echo $state ?>" state</h3>
@@ -35,7 +35,7 @@
                             <div class="pull-right">
                                 <div style="margin-bottom: 3px;">
                                     <a class="btn btn-sm btn-info addSample" data-jobid="<?php echo $job['id']; ?>"
-                                       href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=addSample"><i class="glyphicon glyphicon-plus glyphicon-white"></i> Add to
+                                       href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=addSample"><i class="glyphicon glyphicon-plus glyphicon-white"></i> Add to
                                         samples</a>
 
                                     <div class="btn-group">
@@ -44,14 +44,14 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li><input class="moveJobsNewTubeName" type="text" class="input-medium"
-                                                       data-href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&state=<?php echo $state; ?>&destTube="
+                                                       data-href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=moveJobsTo&state=<?php echo $state; ?>&destTube="
                                                        placeholder="New tube name"/></li>
                                                 <?php
                                                 if (isset($tubes) && is_array($tubes) && count($tubes)) {
                                                     foreach ($tubes as $key => $name) {
                                                         ?>
                                                     <li>
-                                                        <a href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destTube=<?php echo $name; ?>&state=<?php echo $state; ?>"><?php echo htmlspecialchars($name); ?></a>
+                                                        <a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=moveJobsTo&destTube=<?php echo $name; ?>&state=<?php echo $state; ?>"><?php echo htmlspecialchars($name); ?></a>
                                                     </li>
                                                     <?php
                                                 }
@@ -64,7 +64,7 @@
                                                 ?>
                                                 <li class="divider"></li>
                                                 <li>
-                                                    <a href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=moveJobsTo&destState=buried&state=<?php echo $state; ?>">Buried</a>
+                                                    <a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=moveJobsTo&destState=buried&state=<?php echo $state; ?>">Buried</a>
                                                 </li>
                                                 <?php
                                             }
@@ -72,11 +72,11 @@
                                         </ul>
                                     </div>
                                     <a class="btn btn-sm btn-danger"
-                                       href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteAll&count=1"
+                                       href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&state=<?php echo $state ?>&action=deleteAll&count=1"
                                        onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i
                                             class="glyphicon glyphicon-trash glyphicon-white"></i> Delete all <?php echo $state ?> jobs</a>
                                     <a class="btn btn-sm btn-danger"
-                                       href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&state=<?php echo $state ?>&action=deleteJob&jobid=<?php echo $job['id'];?>"><i
+                                       href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&state=<?php echo $state ?>&action=deleteJob&jobid=<?php echo $job['id']; ?>"><i
                                             class="glyphicon glyphicon-remove glyphicon-white"></i> Delete</a>
                                 </div>
                             </div>

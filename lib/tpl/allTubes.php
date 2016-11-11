@@ -22,7 +22,7 @@ $visible = $console->getTubeStatVisible();
                 <tbody>
                     <?php foreach ((is_array($tubes) ? $tubes : array()) as $tubeItem): ?>
                         <tr>
-                            <td name="<?php echo $key ?>"><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a>
+                            <td name="<?php echo $key ?>"><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a>
                             </td>
                             <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
                             <?php

@@ -46,7 +46,7 @@ if (!empty($sampleJobs)) {
                                 if (isset($_server) && !empty($_server)) {
                                     ?>
                                     <a class="btn btn-default  btn-sm"
-                                       href="./?server=<?php echo $_server ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><i
+                                       href="./?server=<?php echo $_server ?>&tube=<?php echo urlencode($tubename) ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><i
                                                 class="glyphicon glyphicon-forward"></i> <?php echo $tubename; ?></a>
                                 <?php
                                 } else {
@@ -62,7 +62,7 @@ if (!empty($sampleJobs)) {
                                                 foreach ($_servers as $server2) {
                                                     ?>
                                                     <li>
-                                                        <a href="./?server=<?php echo $server2 ?>&tube=<?php echo $tubename ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><?php echo $server2; ?></a>
+                                                        <a href="./?server=<?php echo $server2 ?>&tube=<?php echo urlencode($tubename) ?>&action=loadSample&key=<?php echo $key; ?>&redirect=<?php echo urlencode('./?action=manageSamples'); ?>"><?php echo $server2; ?></a>
                                                     </li>
                                                 <?php
                                                 }

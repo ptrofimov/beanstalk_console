@@ -9,16 +9,16 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
 ?>
 <section id="actionsRow">
     <b>Actions:</b>&nbsp;
-    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=1"><i class="glyphicon glyphicon-forward"></i> Kick 1 job</a>
-    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=kick&count=10"
+    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=1"><i class="glyphicon glyphicon-forward"></i> Kick 1 job</a>
+    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=10"
        title="To kick more jobs, edit the `count` parameter"><i class="glyphicon glyphicon-fast-forward"></i> Kick 10 job</a>
        <?php
        if (empty($tubeStats['pause-time-left'])) {
-           ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=-1"
+           ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=-1"
            title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="glyphicon glyphicon-pause"></i>
             Pause tube</a><?php
     } else {
-        ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=pause&count=0"
+        ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=0"
            title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> Unpause tube</a><?php
        }
        ?>
@@ -35,7 +35,7 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
                 foreach ($sampleJobs as $key => $name) {
                     ?>
                     <li>
-                        <a href="./?server=<?php echo $server ?>&tube=<?php echo $tube ?>&action=loadSample&key=<?php echo $key; ?>"><?php echo htmlspecialchars($name); ?></a>
+                        <a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=loadSample&key=<?php echo urlencode($key); ?>"><?php echo htmlspecialchars($name); ?></a>
                     </li>
                     <?php
                 }
