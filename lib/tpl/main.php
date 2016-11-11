@@ -66,7 +66,7 @@ $servers = $console->getServers();
                                     <ul class="dropdown-menu">
                                         <li><a href="./?server=<?php echo $server ?>">All tubes</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
-                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -91,7 +91,7 @@ $servers = $console->getServers();
                                         if (isset($tubes) && is_array($tubes)) {
                                             foreach ($tubes as $tubeItem) {
                                                 ?>
-                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo $tubeItem ?>"><?php echo $tubeItem ?></a></li>
+                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                             <?php
                                             }
                                         }
@@ -165,7 +165,7 @@ $servers = $console->getServers();
     <?php if (isset($server, $tube) && $server && $tube) { ?>
                             <form  class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
                                 <input type="hidden" name="server" value="<?php echo $server; ?>"/>
-                                <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
+                                <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>"/>
                                 <input type="hidden" name="state" value="<?php echo $state; ?>"/>
                                 <input type="hidden" name="action" value="search"/>
                                 <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>"/>
