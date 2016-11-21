@@ -30,4 +30,6 @@ elif [[ -n "$BEANSTALKD_PORT_11300_TCP_ADDR" ]]; then
 
 fi
 
+rm -f /var/run/apache2/apache2.pid
+
 source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND
