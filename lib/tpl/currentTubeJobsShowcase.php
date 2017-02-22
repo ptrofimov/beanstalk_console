@@ -20,7 +20,18 @@
                             <?php foreach ($job['stats'] as $key => $value): ?>
                                 <tr>
                                     <td><?php echo $key ?></td>
-                                    <td><?php echo $value ?></td>
+                                    <td>
+                                        <?php
+                                        if($key == 'age'){
+                                          echo 'days: ' . floor($value / 86400) . '<br>';
+                                          echo 'hours: ' . floor($value / 3600 % 24) . '<br>';
+                                          echo 'minutes: ' . floor($value / 60 % 60) . '<br>';
+                                          echo 'seconds: ' . floor($value % 60) . '<br>';
+                                        } else {
+                                          echo $value;
+                                        }
+                                        ?>
+                                    </td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
