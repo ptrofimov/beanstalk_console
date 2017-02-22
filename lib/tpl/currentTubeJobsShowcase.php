@@ -22,11 +22,15 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                        if($key === 'age'){
-                                          echo 'days: ' . floor($value / 86400) . '<br>';
-                                          echo 'hours: ' . floor($value / 3600 % 24) . '<br>';
-                                          echo 'minutes: ' . floor($value / 60 % 60) . '<br>';
-                                          echo 'seconds: ' . floor($value % 60) . '<br>';
+                                        if($key === 'age') {
+                                          $days = floor($value / 86400);
+                                          $hours = floor($value / 3600 % 24);
+                                          $minutes = floor($value / 60 % 60);
+                                          $seconds = floor($value % 60);
+                                          echo $days > 0 ? 'days: ' . $days . '<br>' : '';
+                                          echo $hours > 0 ? 'hours: ' . $hours . '<br>' : '';
+                                          echo $minutes > 0 ? 'minutes: ' . $minutes . '<br>' : '';
+                                          echo $seconds > 0 ? 'seconds: ' . $seconds : '';
                                         } else {
                                           echo $value;
                                         }
