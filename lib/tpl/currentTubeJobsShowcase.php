@@ -22,7 +22,7 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                        if($key == 'age'){
+                                        if($key === 'age'){
                                           echo 'days: ' . floor($value / 86400) . '<br>';
                                           echo 'hours: ' . floor($value / 3600 % 24) . '<br>';
                                           echo 'minutes: ' . floor($value / 60 % 60) . '<br>';
