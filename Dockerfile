@@ -1,11 +1,13 @@
 FROM php:5.6-apache
-MAINTAINER Rion Dooley <dooley@tacc.utexas.edu>
+LABEL maintainer="Rion Dooley <dooley@tacc.utexas.edu>"
 
 # Add php extensions
-RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install mbstring && \
+    a2enmod rewrite
 
 # Add project from current repo to enable automated build
-ADD . /var/www
+WORKDIR /var/www
+ADD . ./
 
 # Add custom default apache virutal host with combined error and access
 # logging to stdout
@@ -18,11 +20,9 @@ ADD docker/php.ini /usr/local/lib/php.ini
 # beanstalk console config
 ADD docker/run.sh /usr/local/bin/run
 
-# Change ownership for apache happiness & install Composer
+# Change ownership for apache happiness
 RUN chmod +x /usr/local/bin/run && \
-    chown -R www-data:www-data /var/www && \
-    a2enmod rewrite
+    chown -R www-data:www-data /var/www
 
-WORKDIR /var/www
 
 CMD ["/usr/local/bin/run"]
