@@ -21,7 +21,11 @@ version: '3'
 
 
 services:
-  web: #image: agaveapi/beanstalkd-console
+  web:
+    ## Optionally; you can use a ready image changing:
+    ## * `build: .`
+    ## into:
+    ## * image: agaveapi/beanstalkd-console
     build: .
     ports:
       - '9080:80'
