@@ -5,9 +5,6 @@ set -e
 # Change ownership for apache happiness
 chown -R www-data:www-data "${APACHE_DOCROOT}"
 
-PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING:-"E_ALL & ~E_DEPRECATED & ~E_NOTICE"}
-echo "error_reporting = $PHP_ERROR_REPORTING" >> /usr/local/lib/php.ini
-
 if [[ -n "$BEANSTALKD_HOST" ]]; then
 
   if [[ -z "$BEANSTALKD_PORT" ]]; then
