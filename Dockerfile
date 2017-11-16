@@ -9,7 +9,6 @@ RUN docker-php-ext-install mbstring && \
 
 # Add custom default apache virutal host with combined error and access
 # logging to stdout
-ADD docker/apache_default /etc/apache2/apache2.conf
 ADD docker/apache_vhost  /etc/apache2/sites-available/000-default.conf
 ADD docker/php.ini /usr/local/etc/php
 
