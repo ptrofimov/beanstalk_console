@@ -30,8 +30,7 @@ services:
     ports:
       - 80:80
     environment:
-      - "BEANSTALKD_HOST=beanstalkd"
-      - "BEANSTALKD_PORT=11300"
+      - BEANSTALKD_HOST=beanstalkd
     links:
       - beanstalkd
   beanstalkd:
