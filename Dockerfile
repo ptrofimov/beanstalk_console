@@ -13,16 +13,14 @@ ADD . ./
 # logging to stdout
 ADD docker/apache_default /etc/apache2/apache2.conf
 ADD docker/apache_vhost  /etc/apache2/sites-available/000-default.conf
-ADD docker/apache_vhost_ssl /etc/apache2/sites-available/default-ssl.conf
 ADD docker/php.ini /usr/local/lib/php.ini
 
 # Add custom entrypoint to inject runtime environment variables into
 # beanstalk console config
-ADD docker/run.sh /usr/local/bin/run
+ADD docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 # Change ownership for apache happiness
-RUN chmod +x /usr/local/bin/run && \
+RUN chmod +x /usr/local/bin/docker-entrypoint && \
     chown -R www-data:www-data /var/www
 
-
-CMD ["/usr/local/bin/run"]
+CMD ["/usr/local/bin/docker-entrypoint"]
