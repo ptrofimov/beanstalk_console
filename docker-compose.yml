@@ -16,25 +16,27 @@
 #
 #
 
-web:
-  #image: agaveapi/beanstalkd-console
-  build: .
-  ports:
-    - '9080:80'
-  environment:
-    - "BEANSTALKD_HOST=beanstalkd"
-    - "BEANSTALKD_PORT=11300"
-    - "APACHE_PORT=80"
-    - "APACHE_SSL_PORT=443"
-  links:
-    - beanstalkd
-beanstalkd:
-  image: agaveapi/beanstalkd
-  ports:
-    - "11300:11300"
+---
+version: '3'
 
-#  volumes_from:
-#    - data
-#data:
-#  image: agaveapi/beanstalkd
-#  command: /bin/true
+
+services:
+  web:
+    ## Optionally; you can use a ready image changing:
+    ## * `build: .`
+    ## into:
+    ## * image: agaveapi/beanstalkd-console
+    build: .
+    ports:
+      - 80:80
+    environment:
+      - BEANSTALKD_HOST=beanstalkd
+    links:
+      - beanstalkd
+  beanstalkd:
+    image: kamilzabielski/docker-alpine-beanstalkd
+    volumes:
+      - beanstalkd_data:/var/lib/beanstald
+
+volumes:
+  beanstalkd_data:
