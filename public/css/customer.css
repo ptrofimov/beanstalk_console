@@ -45,3 +45,13 @@ ol.inside, ul.inside {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+#actionsRow form {
+    display: inline-block;
+    padding: 0 10px;
+}
+
+#actionsRow form input {
+    padding: 5px 0px;
+    width: 80px;
+}

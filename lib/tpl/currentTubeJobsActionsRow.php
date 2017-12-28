@@ -10,9 +10,16 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
 <section id="actionsRow">
     <b>Actions:</b>&nbsp;
     <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=1"><i class="glyphicon glyphicon-forward"></i> Kick 1 job</a>
-    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=10"
-       title="To kick more jobs, edit the `count` parameter"><i class="glyphicon glyphicon-fast-forward"></i> Kick 10 job</a>
-       <?php
+
+    <form method="GET">
+        <input type="hidden" name="server" value="<?php echo $server ?>">
+        <input type="hidden" name="tube" value="<?php echo urlencode($tube) ?>">
+        <input type="hidden" name="action" value="kick">
+        Kick <input type="number" value="10" name="count" min="0" step="1" size="4"> jobs
+        <button type="submit" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-fast-forward"></i></button>
+    </form>
+
+        <?php
        if (empty($tubeStats['pause-time-left'])) {
            ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=-1"
            title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="glyphicon glyphicon-pause"></i>
