@@ -22,7 +22,7 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                        if($key === 'age') {
+                                        if(in_array($key, array('age', 'delay', 'time-left'), true)) {
                                           $days = floor($value / 86400);
                                           $hours = floor($value / 3600 % 24);
                                           $minutes = floor($value / 60 % 60);
