@@ -183,6 +183,16 @@ $(document).ready(
                 $('.ellipsize').on('dblclick', function () {
                     $(this).toggleClass('ellipsize');
                 });
+                $('.kick_jobs_no').on('change', function () {
+                    if (typeof (Storage) != "undefined") {
+                        localStorage.setItem($(this).attr('id'), $(this).val());
+                    }
+                });
+                if (typeof (Storage) != "undefined") {
+                    $('.kick_jobs_no').each(function () {
+                        $(this).val(localStorage.getItem($(this).attr('id')) || 10);
+                    });
+                }
             }
 
             function addServer(host, port) {
