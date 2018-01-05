@@ -1,6 +1,7 @@
 <section class="jobsShowcase">
     <?php foreach ((array) $peek as $state => $job): ?>
         <hr>
+        <a id="current-jobs-<?php echo $state ?>"></a>
         <div class="pull-left">
             <h3>Next job in "<?php echo $state ?>" state</h3>
         </div>
@@ -22,17 +23,17 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
-                                        if(in_array($key, array('age', 'delay', 'time-left'), true)) {
-                                          $days = floor($value / 86400);
-                                          $hours = floor($value / 3600 % 24);
-                                          $minutes = floor($value / 60 % 60);
-                                          $seconds = floor($value % 60);
-                                          echo $days > 0 ? 'days: ' . $days . '<br>' : '';
-                                          echo $hours > 0 ? 'hours: ' . $hours . '<br>' : '';
-                                          echo $minutes > 0 ? 'minutes: ' . $minutes . '<br>' : '';
-                                          echo $seconds > 0 ? 'seconds: ' . $seconds : '';
+                                        if (in_array($key, array('age', 'delay', 'time-left'), true)) {
+                                            $days = floor($value / 86400);
+                                            $hours = floor($value / 3600 % 24);
+                                            $minutes = floor($value / 60 % 60);
+                                            $seconds = floor($value % 60);
+                                            echo $days > 0 ? 'days: ' . $days . '<br>' : '';
+                                            echo $hours > 0 ? 'hours: ' . $hours . '<br>' : '';
+                                            echo $minutes > 0 ? 'minutes: ' . $minutes . '<br>' : '';
+                                            echo $seconds > 0 ? 'seconds: ' . $seconds : '';
                                         } else {
-                                          echo $value;
+                                            echo $value;
                                         }
                                         ?>
                                     </td>

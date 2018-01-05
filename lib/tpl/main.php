@@ -59,12 +59,15 @@ $servers = $console->getServers();
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
+                                <li>
+                                    <a class="" href="./?server=<?php echo $server ?>">All Tubes <span class="caret"></span></a>
+
+                                </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <a href="./?server=<?php echo $server ?>" class="dropdown-toggle" data-toggle="dropdown">
                                         <?php echo $tube ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="./?server=<?php echo $server ?>">All tubes</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
                                             <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
@@ -92,7 +95,7 @@ $servers = $console->getServers();
                                             foreach ($tubes as $tubeItem) {
                                                 ?>
                                                 <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
-                                            <?php
+                                                <?php
                                             }
                                         }
                                         ?>
@@ -107,16 +110,16 @@ $servers = $console->getServers();
                                     <ul class="dropdown-menu">
                                         <?php foreach ($servers as $serverItem): ?>
                                             <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-        <?php endforeach ?>
+                                        <?php endforeach ?>
                                     </ul>
                                 </li>
-    <?php endif ?>
+                            <?php endif ?>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Toolbox <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding:4px !important;"><img src="assets/hamburger.png" width="32px" height="32px"></a>
+                                <ul class="dropdown-menu" role="menu">
                                     <?php if (!isset($_tplPage) && !$server) { ?>
                                         <li><a href="#filterServer" role="button" data-toggle="modal">Filter columns</a></li>
                                         <?php
@@ -128,41 +131,36 @@ $servers = $console->getServers();
                                     if ($server && !$tube) {
                                         ?>
                                         <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
-    <?php } ?>
+                                    <?php } ?>
                                     <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
+                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
+                                    <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
-                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
-                                </ul>
-                            </li>
-    <?php if (@$config['auth']['enabled']) { ?>
+                            <?php if (@$config['auth']['enabled']) { ?>
                                 <li class="dropdown">
                                     <a target="_blank" href="./?logout=true">logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
                                 </li>
                             <?php } ?>
-    <?php if ($server && !$tube) { ?>
+                            <?php if ($server && !$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefresh" class="btn btn-default btn-small">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
-    <?php } else if (!$tube) { ?>
+                            <?php } else if (!$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefreshSummary" class="btn btn-default btn-small">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
-                        <?php } ?>
+                            <?php } ?>
                         </ul>
-    <?php if (isset($server, $tube) && $server && $tube) { ?>
+                        <?php if (isset($server, $tube) && $server && $tube) { ?>
                             <form  class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
                                 <input type="hidden" name="server" value="<?php echo $server; ?>"/>
                                 <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>"/>
@@ -173,7 +171,7 @@ $servers = $console->getServers();
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
                                 </div>
                             </form>
-    <?php } ?>
+                        <?php } ?>
                     </div>
                     <!--/.nav-collapse -->
                 </div>
@@ -189,7 +187,7 @@ $servers = $console->getServers();
             <?php else: ?>
                 <?php if (isset($_tplPage)): ?>
                     <?php include(dirname(__FILE__) . '/' . $_tplPage . '.php') ?>
-                    <?php elseif (!$server): ?>
+                <?php elseif (!$server): ?>
                     <div id="idServers">
                         <?php
                         include(dirname(__FILE__) . '/serversList.php');
@@ -206,7 +204,7 @@ $servers = $console->getServers();
                     ?>
                     <div id="idAllTubes">
                         <?php require_once dirname(__FILE__) . '/allTubes.php'; ?>
-        <?php require_once dirname(__FILE__) . '/modalClearTubes.php'; ?>
+                        <?php require_once dirname(__FILE__) . '/modalClearTubes.php'; ?>
                     </div>
                     <div id='idAllTubesCopy' style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)):
@@ -223,7 +221,7 @@ $servers = $console->getServers();
                     <?php require_once dirname(__FILE__) . '/modalFilterColumns.php'; ?>
                 <?php } ?>
                 <?php require_once dirname(__FILE__) . '/modalSettings.php'; ?>
-<?php endif; ?>
+            <?php endif; ?>
         </div>
 
         <script src='assets/vendor/jquery/jquery.js'></script>
@@ -231,7 +229,7 @@ $servers = $console->getServers();
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.regexp.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-<?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+        <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
             <script src="highlight/highlight.pack.js"></script>
             <script>hljs.initHighlightingOnLoad();</script><?php } ?>
         <script src="js/customer.js"></script>
