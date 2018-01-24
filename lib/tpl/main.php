@@ -135,7 +135,7 @@ $servers = $console->getServers();
                                     <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
                                     <li class="divider"></li>
                                     <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
-                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
+                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt">Protocol Specification</a></li>
                                     <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
