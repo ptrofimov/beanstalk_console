@@ -14,6 +14,7 @@ $servers = $console->getServers();
         <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="css/customer.css" rel="stylesheet">
         <link href="highlight/styles/magula.css" rel="stylesheet">
+        <link rel="shortcut icon" href="assets/favicon.ico">
         <script>
             var url = "./?server=<?php echo $server ?>";
             var contentType = "<?php echo isset($contentType) ? $contentType : '' ?>";
