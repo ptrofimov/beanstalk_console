@@ -8,7 +8,11 @@ $servers = $console->getServers();
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Beanstalk console</title>
+        <title>
+            <?php if ($tube) echo $tube . ' - ' ?>
+            <?php echo $server ? $server : 'All servers' ?> - 
+            Beanstalk console
+        </title>
 
         <!-- Bootstrap core CSS -->
         <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
