@@ -230,7 +230,7 @@ class Console {
         foreach ($GLOBALS['config']['servers'] as $key => $server) {
             $this->serversConfig[$key] = $server;
         }
-        if (null !== getenv('BEANSTALK_SERVERS')) {
+        if (false !== getenv('BEANSTALK_SERVERS')) {
             foreach (explode(',', getenv('BEANSTALK_SERVERS')) as $key => $server) {
                 $this->serversEnv[$key] = $server;
             }

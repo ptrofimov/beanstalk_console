@@ -47,70 +47,60 @@ $servers = $console->getServers();
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
 
-                            <?php if ($server && $tube): ?>
+                            <?php if ($server): ?>
+                                <!-- Server dropdown: current, then All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $server ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="./?">All servers</a></li>
-                                        <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a class="" href="./?server=<?php echo $server ?>">All Tubes <span class="caret"></span></a>
-
-                                </li>
-                                <li class="dropdown">
-                                    <a href="./?server=<?php echo $server ?>" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $tube ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
-                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                            <?php elseif ($server): ?>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $server ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="./?">All servers</a></li>
-                                        <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        All tubes <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
                                         <?php
-                                        if (isset($tubes) && is_array($tubes)) {
-                                            foreach ($tubes as $tubeItem) {
-                                                ?>
-                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
-                                                <?php
-                                            }
-                                        }
+                                        $serverKey = array_search($server, $servers);
+                                        $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
                                         ?>
+                                        <?php echo $serverLabel ?> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="./?">All servers</a></li>
+                                        <?php foreach (array_diff($servers, array($server)) as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
+                                        <?php endforeach ?>
                                     </ul>
                                 </li>
-                            <?php else:
-                                ?>
+                            <?php else: ?>
+                                <!-- Server dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         All servers <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <?php foreach ($servers as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                        <?php foreach ($servers as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
                                         <?php endforeach ?>
+                                    </ul>
+                                </li>
+                            <?php endif ?>
+
+                            <?php if ($tube): ?>
+                                <!-- Tube dropdown: current, then All, then remaining -->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <?php echo $tube ?> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="./?server=<?php echo $server ?>">All Tubes</a></li>
+                                        <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
+                                        <?php endforeach ?>
+                                    </ul>
+                                </li>
+                            <?php elseif ($tubes): ?>
+                                <!-- Tube dropdown: All, then remaining -->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        All tubes <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <?php foreach ($tubes as $tubeItem): ?>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
+                                        <?php endforeach; ?>
                                     </ul>
                                 </li>
                             <?php endif ?>
