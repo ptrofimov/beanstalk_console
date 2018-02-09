@@ -51,12 +51,16 @@ $servers = $console->getServers();
                                 <!-- Server dropdown: current, then All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $server ?> <span class="caret"></span>
+                                        <?php
+                                        $serverKey = array_search($server, $servers);
+                                        $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
+                                        ?>
+                                        <?php echo $serverLabel ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="./?">All servers</a></li>
-                                        <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                        <?php foreach (array_diff($servers, array($server)) as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -67,8 +71,8 @@ $servers = $console->getServers();
                                         All servers <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <?php foreach ($servers as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                        <?php foreach ($servers as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -83,7 +87,7 @@ $servers = $console->getServers();
                                     <ul class="dropdown-menu">
                                         <li><a href="./?server=<?php echo $server ?>">All Tubes</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
-                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
