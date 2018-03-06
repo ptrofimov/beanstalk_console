@@ -29,6 +29,9 @@ $GLOBALS['tplBlock'] = !empty($_GET['tplBlock']) ? $_GET['tplBlock'] : '';
 
 class Console {
 
+    /**
+     * @var BeanstalkInterface
+     */
     public $interface;
     protected $_tplVars = array();
     protected $_globalVar = array();
@@ -695,22 +698,29 @@ class Console {
     private function findJobsByState($tube, $state, $searchStr, $limit = 25) {
         $jobList = array();
         $job = null;
-        $total = $this->interface->getTubeStats($tube);
-        $totalJobs = 0;
+
+        try {
+            $stats = $this->interface->getServerStats();
+        } catch (Exception $e) {
+            return $jobList;
+        }
+
+        $ready = $stats['current-jobs-ready']['value'];
+        $reserved = $stats['current-jobs-reserved']['value'];
+        $delayed = $stats['current-jobs-delayed']['value'];
+        $buried = $stats['current-jobs-buried']['value'];
+        $deleted = $stats['cmd-delete']['value'];
 
         try {
             switch ($state) {
                 case 'ready':
                     $job = $this->interface->_client->useTube($tube)->peekReady();
-                    $totalJobs = $total[2]['value'];
                     break;
                 case 'delayed':
                     $job = $this->interface->_client->useTube($tube)->peekDelayed();
-                    $totalJobs = $total[4]['value'];
                     break;
                 case 'buried':
                     $job = $this->interface->_client->useTube($tube)->peekBuried();
-                    $totalJobs = $total[5]['value'];
                     break;
             }
         } catch (Exception $e) {
@@ -721,15 +731,22 @@ class Console {
             return $jobList;
 
         $jobList = array();
-        $lastId = $job->getId() + $totalJobs;
+        $lastId = $ready + $reserved + $delayed + $buried + $deleted;
 
         $added = 0;
-        for ($id = $job->getId(); $id < $lastId; $id++) {
+        for ($id = $job->getId(); $id <= $lastId; $id++) {
             try {
+                /** @var Pheanstalk_Job $job */
                 $job = $this->interface->_client->peek($id);
-                if (strpos($job->getData(), $searchStr) !== false) {
-                    $jobList[$id] = $job;
-                    $added++;
+                if ($job) {
+                    $jobStats = $this->interface->_client->statsJob($job);
+                    if ($jobStats->tube === $tube &&
+                        $jobStats->state === $state &&
+                        strpos($job->getData(), $searchStr) !== false
+                    ) {
+                        $jobList[$id] = $job;
+                        $added++;
+                    }
                 }
             } catch (Pheanstalk_Exception_ServerException $e) {
                 
