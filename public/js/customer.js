@@ -195,7 +195,7 @@ $(document).ready(
                 }
 
                 if ($.cookie('isEnabledAutoRefreshLoad')) {
-                    $('#autoRefresh').click()
+                    $('#autoRefresh').click();
                 }
             }
 
