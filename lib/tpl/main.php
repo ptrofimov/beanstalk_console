@@ -8,12 +8,17 @@ $servers = $console->getServers();
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Beanstalk console</title>
+        <title>
+            <?php if ($tube) echo $tube . ' - ' ?>
+            <?php echo $server ? $server : 'All servers' ?> - 
+            Beanstalk console
+        </title>
 
         <!-- Bootstrap core CSS -->
         <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="css/customer.css" rel="stylesheet">
         <link href="highlight/styles/magula.css" rel="stylesheet">
+        <link rel="shortcut icon" href="assets/favicon.ico">
         <script>
             var url = "./?server=<?php echo $server ?>";
             var contentType = "<?php echo isset($contentType) ? $contentType : '' ?>";
@@ -47,70 +52,60 @@ $servers = $console->getServers();
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
 
-                            <?php if ($server && $tube): ?>
+                            <?php if ($server): ?>
+                                <!-- Server dropdown: current, then All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $server ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="./?">All servers</a></li>
-                                        <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a class="" href="./?server=<?php echo $server ?>">All Tubes <span class="caret"></span></a>
-
-                                </li>
-                                <li class="dropdown">
-                                    <a href="./?server=<?php echo $server ?>" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $tube ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
-                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                            <?php elseif ($server): ?>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php echo $server ?> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="./?">All servers</a></li>
-                                        <?php foreach (array_diff($servers, array($server)) as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
-                                        <?php endforeach ?>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        All tubes <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
                                         <?php
-                                        if (isset($tubes) && is_array($tubes)) {
-                                            foreach ($tubes as $tubeItem) {
-                                                ?>
-                                                <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
-                                                <?php
-                                            }
-                                        }
+                                        $serverKey = array_search($server, $servers);
+                                        $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
                                         ?>
+                                        <?php echo $serverLabel ?> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="./?">All servers</a></li>
+                                        <?php foreach (array_diff($servers, array($server)) as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
+                                        <?php endforeach ?>
                                     </ul>
                                 </li>
-                            <?php else:
-                                ?>
+                            <?php else: ?>
+                                <!-- Server dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         All servers <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <?php foreach ($servers as $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo $serverItem ?></a></li>
+                                        <?php foreach ($servers as $key => $serverItem): ?>
+                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
                                         <?php endforeach ?>
+                                    </ul>
+                                </li>
+                            <?php endif ?>
+
+                            <?php if ($tube): ?>
+                                <!-- Tube dropdown: current, then All, then remaining -->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <?php echo $tube ?> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="./?server=<?php echo $server ?>">All Tubes</a></li>
+                                        <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
+                                        <?php endforeach ?>
+                                    </ul>
+                                </li>
+                            <?php elseif ($tubes): ?>
+                                <!-- Tube dropdown: All, then remaining -->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        All tubes <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <?php foreach ($tubes as $tubeItem): ?>
+                                            <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
+                                        <?php endforeach; ?>
                                     </ul>
                                 </li>
                             <?php endif ?>
@@ -135,7 +130,7 @@ $servers = $console->getServers();
                                     <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
                                     <li class="divider"></li>
                                     <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
-                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.md">Protocol Specification</a></li>
+                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt">Protocol Specification</a></li>
                                     <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>

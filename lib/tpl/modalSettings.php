@@ -26,6 +26,13 @@
                         else
                             echo @intval($_COOKIE['autoRefreshTimeoutMs']);
                         ?>">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="isEnabledAutoRefreshLoad" value="0"
+                                       <?php if (@$_COOKIE['isEnabledAutoRefreshLoad'] == 1) { ?>checked="checked"<?php } ?>>
+                                auto-refresh on load
+                            </label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="focusedInput"><b>Search result limits</b> (Default: <i>25</i>)</label>
