@@ -131,7 +131,7 @@ $(document).ready(
                     }
                     if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']) >= 0)
                         val = $(this).is(':checked') ? null : 1;
-                    if (jQuery.inArray(this.id, ['isEnabledBase64Decode']) >= 0)
+                    if (jQuery.inArray(this.id, ['isEnabledAutoRefreshLoad', 'isEnabledBase64Decode']) >= 0)
                         val = $(this).is(':checked') ? 1 : null;
                     $.cookie(this.id, val, {expires: 365});
                 });
@@ -192,6 +192,10 @@ $(document).ready(
                     $('.kick_jobs_no').each(function () {
                         $(this).val(localStorage.getItem($(this).attr('id')) || 10);
                     });
+                }
+
+                if ($.cookie('isEnabledAutoRefreshLoad')) {
+                    $('#autoRefresh').click();
                 }
             }
 
