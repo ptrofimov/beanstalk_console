@@ -1,5 +1,9 @@
 <?php
 $servers = $console->getServers();
+if ($server) {
+    $serverKey = array_search($server, $servers);
+    $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
+}
 ?><!DOCTYPE html>
 <html>
 
@@ -10,7 +14,7 @@ $servers = $console->getServers();
 
         <title>
             <?php if ($tube) echo $tube . ' - ' ?>
-            <?php echo $server ? $server : 'All servers' ?> - 
+            <?php echo $serverLabel ? $serverLabel : 'All servers' ?> -
             Beanstalk console
         </title>
 
@@ -56,10 +60,6 @@ $servers = $console->getServers();
                                 <!-- Server dropdown: current, then All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <?php
-                                        $serverKey = array_search($server, $servers);
-                                        $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
-                                        ?>
                                         <?php echo $serverLabel ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
