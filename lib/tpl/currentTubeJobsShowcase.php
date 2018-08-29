@@ -3,7 +3,7 @@
         <hr>
         <a id="current-jobs-<?php echo $state ?>"></a>
         <div class="pull-left">
-            <h3>Next job in "<?php echo $state ?>" state</h3>
+            <h3>کار بعدی در حالت "<?php echo $state ?>" </h3>
         </div>
         <div class="clearfix"></div>
         <?php if ($job): ?>
@@ -13,7 +13,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Stats:</th>
+                                <th>حالت:</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -28,10 +28,10 @@
                                             $hours = floor($value / 3600 % 24);
                                             $minutes = floor($value / 60 % 60);
                                             $seconds = floor($value % 60);
-                                            echo $days > 0 ? 'days: ' . $days . '<br>' : '';
-                                            echo $hours > 0 ? 'hours: ' . $hours . '<br>' : '';
-                                            echo $minutes > 0 ? 'minutes: ' . $minutes . '<br>' : '';
-                                            echo $seconds > 0 ? 'seconds: ' . $seconds : '';
+                                            echo $days > 0 ? 'روز ها: ' . $days . '<br>' : '';
+                                            echo $hours > 0 ? 'ساغت ها: ' . $hours . '<br>' : '';
+                                            echo $minutes > 0 ? 'دقیقه ها: ' . $minutes . '<br>' : '';
+                                            echo $seconds > 0 ? 'ثانیه ها: ' . $seconds : '';
                                         } else {
                                             echo $value;
                                         }
@@ -45,18 +45,17 @@
                 <div class="col-sm-9">
                     <div class="clearfix">
                         <div class="pull-left">
-                            <b>Job data:</b>
+                            <b>اطلاعات کار:</b>
                         </div>
                         <?php if ($job): ?>
                             <div class="pull-right">
                                 <div style="margin-bottom: 3px;">
                                     <a class="btn btn-sm btn-info addSample" data-jobid="<?php echo $job['id']; ?>"
-                                       href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=addSample"><i class="glyphicon glyphicon-plus glyphicon-white"></i> Add to
-                                        samples</a>
+                                       href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=addSample"><i class="glyphicon glyphicon-plus glyphicon-white"></i>اضافه کردن به نمونه ها</a>
 
                                     <div class="btn-group">
                                         <button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="glyphicon glyphicon-arrow-right glyphicon-white"></i> Move all <?php echo $state ?> to
+                                            <i class="glyphicon glyphicon-arrow-right glyphicon-white"></i>  به <?php echo $state ?> انتقال همه
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li><input class="moveJobsNewTubeName" type="text" class="input-medium"
@@ -90,10 +89,10 @@
                                     <a class="btn btn-sm btn-danger"
                                        href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&state=<?php echo $state ?>&action=deleteAll&count=1"
                                        onclick="return confirm('This process might hang a while on tubes with lots of jobs. Are you sure you want to continue?');"><i
-                                            class="glyphicon glyphicon-trash glyphicon-white"></i> Delete all <?php echo $state ?> jobs</a>
+                                            class="glyphicon glyphicon-trash glyphicon-white"></i> کار <?php echo $state ?> پاک کردن همه</a>
                                     <a class="btn btn-sm btn-danger"
                                        href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&state=<?php echo $state ?>&action=deleteJob&jobid=<?php echo $job['id']; ?>"><i
-                                            class="glyphicon glyphicon-remove glyphicon-white"></i> Delete</a>
+                                            class="glyphicon glyphicon-remove glyphicon-white"></i> پاک کردن</a>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -103,7 +102,7 @@
                 </div>
             </div>
         <?php else: ?>
-            <i>empty</i>
+            <i>خالی</i>
         <?php endif ?>
     <?php endforeach ?>
 </section>
