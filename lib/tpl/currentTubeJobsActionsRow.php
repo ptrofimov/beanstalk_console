@@ -28,7 +28,7 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
             متوقف کردن تونل</a><?php
     } else {
         ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=0"
-           title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> Unpause tube</a><?php
+           title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> راه اندازی تونل</a><?php
        }
        ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

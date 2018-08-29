@@ -125,7 +125,7 @@ $servers = $console->getServers();
                                     }
                                     if ($server && !$tube) {
                                         ?>
-                                        <li><a href="#clear-tubes" role="button" data-toggle="modal" >Clear multiple tubes</a></li>
+                                        <li><a href="#clear-tubes" role="button" data-toggle="modal" >پاک کردن تعدادی از تونل ها</a></li>
                                     <?php } ?>
                                     <li><a href="./?action=manageSamples" role="button" >مدیریت نمونه ها</a></li>
                                     <li class="divider"></li>
