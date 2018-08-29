@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="focusedInput"><b>Search result limits</b> (Default: <i>25</i>)</label>
+                        <label for="focusedInput"><b>محدود کردن جواب های جستجو </b> (پیش فرض: <i>25</i>)</label>
                         <input class="form-control focused" id="searchResultLimit" type="text" value="<?php
                         if (@empty($_COOKIE['searchResultLimit']))
                             echo 25;
