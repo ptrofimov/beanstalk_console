@@ -97,3 +97,27 @@ To spin up a console with a beanstalkd server all at once, install [Docker Compo
 - ذخیره سازی کار ها(ذخیره سازی ساده کار ها-اخراج کردن یا تغییر دادن ان ها - ک بسیار مفید برای برنامه نویسی است)
 - جستجو در کار ها
 - شخصی سازی صفحات(براق کردن کد ها - انتخاب ستون ها - تغییر زمان به روز رسانی- متوقف ساختن تونل ها)
+
+**نحوه نصب**
+
+### استفاده composer (*پیشنهاد شده*)
+
+اگر هنوز کمپوزر را نصب نکرده اید از طریق سایت زیر اقدام به نصب ان کنید:
+
+
+http://www.getcomposer.org
+
+همچنین میتوان از طریق دستور زیر اقدام به نصب کرد :
+
+
+    curl -s http://getcomposer.org/installer | php
+
+سپس از دستور زیر برای ایجاد پروژه جدید استفاده کنید
+
+    php composer.phar create-project ptrofimov/beanstalk_console -s dev path/to/install
+
+
+**نحوه نصب نسخه فارسی**:
+فایل را از ادرس زیر دانلود کرده و سپس از حالت فشرده خارج کنید
+
+https://github.com/snip77/Persian_beanstalk_console.git
