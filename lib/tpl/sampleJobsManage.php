@@ -1,4 +1,4 @@
-<?php
+انتقال همه<?php
 $sampleJobs = $console->getSampleJobs();
 if (!empty($sampleJobs)) {
     $_servers = $console->getServers();
@@ -29,8 +29,8 @@ if (!empty($sampleJobs)) {
         <table class="table table-striped table-hover">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Kick job to tubes</th>
+                <th>نام</th>
+                <th>خارج کردن کار به تونل</th>
                 <th></th>
             </tr>
             </thead>
