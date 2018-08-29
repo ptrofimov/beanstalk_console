@@ -22,7 +22,7 @@ if (!empty($sampleJobs)) {
     ?>
     <div class="clearfix">
         <div class="pull-right">
-            <a href="./?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> Add job to samples</a>
+            <a href="./?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i>اضاقه کردن کار به نمونه ها</a>
         </div>
     </div>
     <section id="summaryTable">
@@ -78,8 +78,8 @@ if (!empty($sampleJobs)) {
                     </td>
                     <td>
                         <div class="pull-right">
-                            <a class="btn btn-default btn-sm" href="./?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
-                            <a class="btn btn-default btn-sm" href="./?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+                            <a class="btn btn-default btn-sm" href="./?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i>تغییر دادن</a>
+                            <a class="btn btn-default btn-sm" href="./?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i>حذف کردن</a>
                         </div>
                     </td>
                 </tr>
