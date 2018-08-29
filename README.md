@@ -121,4 +121,4 @@ http://www.getcomposer.org
 
 فایل را از ادرس زیر دانلود کرده و سپس از حالت فشرده خارج کنید
 
-https://github.com/snip77/Persian_beanstalk_console.git
+https://github.com/snip77/Persian_beanstalk_console/archive/master.zip
