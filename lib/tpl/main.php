@@ -1,4 +1,3 @@
-
 <?php
 $servers = $console->getServers();
 ?><!DOCTYPE html>
@@ -91,7 +90,7 @@ $servers = $console->getServers();
                                         <?php echo $tube ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="./?server=<?php echo $server ?>">All Tubes</a></li>
+                                        <li><a href="./?server=<?php echo $server ?>">تمامی تونل ها</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
                                             <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
@@ -101,7 +100,7 @@ $servers = $console->getServers();
                                 <!-- Tube dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        All tubes <span class="caret"></span>
+                                        تمامی تونل ها <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <?php foreach ($tubes as $tubeItem): ?>
