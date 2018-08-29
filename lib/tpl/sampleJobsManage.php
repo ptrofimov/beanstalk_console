@@ -88,5 +88,5 @@ if (!empty($sampleJobs)) {
         </table>
     </section>
 <?php } else { ?>
-    There are no saved jobs.
+    کار ذخیره شده ای موجود نیست
 <?php } ?>
