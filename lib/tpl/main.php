@@ -131,7 +131,7 @@ $servers = $console->getServers();
                                     <li class="divider"></li>
                                     <li><a href="https://github.com/kr/beanstalkd" >سایت ‌Beanstalkd در گیت هاب</a></li>
                                     <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt" >مشخصات پروتکل</a></li>
-                                    <li><a href="https://github.com/ptrofimov/beanstalk_console" >Beanstalkd فارسی در گیت هاب</a></li>
+                                    <li><a href="https://github.com/snip77/Persian_beanstalk_console" >Beanstalkd فارسی در گیت هاب</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#settings" role="button" data-toggle="modal">تغییر تنظیمات</a></li>
                                 </ul>
