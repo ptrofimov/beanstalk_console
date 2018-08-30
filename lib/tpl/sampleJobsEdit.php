@@ -15,7 +15,7 @@ if (isset($isNewRecord) && $isNewRecord) {
                 <?php
             } else {
                 ?>
-                <h4 class="text-info">Edit: <?php echo htmlspecialchars($job['name']); ?></h4>
+                <h4 class="text-info"><?php echo htmlspecialchars($job['name']); ?>تغییر دادن در</h4>
             <?php } ?>
         </div>
         <div class="pull-right">
