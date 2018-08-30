@@ -78,7 +78,7 @@ To spin up a console with a beanstalkd server all at once, install [Docker Compo
 
 --------------------------------------------------
 
-# Beanstalk  ![Persian version](https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg)کنسول 
+#  Beanstalk کنسول 
 
 
 **ویژگی ها**
