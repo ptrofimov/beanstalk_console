@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">بستن</button>
                 <a href="#" class="btn btn-success" id="sampleSave">Save</a>
             </div>
         </div>

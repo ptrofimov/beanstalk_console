@@ -3,9 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="filter-label" class="text-info">Filter columns</h3>
+                <h3 id="filter-label" class="text-info">فیلتر کردن ستون ها</h3>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" >
                 <form class="form-group">
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
@@ -42,7 +42,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">بستن</button>
             </div>
         </div>
     </div>

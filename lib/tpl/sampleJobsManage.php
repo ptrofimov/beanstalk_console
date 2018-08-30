@@ -1,4 +1,4 @@
-<?php
+انتقال همه<?php
 $sampleJobs = $console->getSampleJobs();
 if (!empty($sampleJobs)) {
     $_servers = $console->getServers();
@@ -22,15 +22,15 @@ if (!empty($sampleJobs)) {
     ?>
     <div class="clearfix">
         <div class="pull-right">
-            <a href="./?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> Add job to samples</a>
+            <a href="./?action=newSample" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i>اضاقه کردن کار به نمونه ها</a>
         </div>
     </div>
     <section id="summaryTable">
         <table class="table table-striped table-hover">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Kick job to tubes</th>
+                <th>نام</th>
+                <th>خارج کردن کار به تونل</th>
                 <th></th>
             </tr>
             </thead>
@@ -78,8 +78,8 @@ if (!empty($sampleJobs)) {
                     </td>
                     <td>
                         <div class="pull-right">
-                            <a class="btn btn-default btn-sm" href="./?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
-                            <a class="btn btn-default btn-sm" href="./?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+                            <a class="btn btn-default btn-sm" href="./?action=editSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-pencil"></i>تغییر دادن</a>
+                            <a class="btn btn-default btn-sm" href="./?action=deleteSample&key=<?php echo $key ?>"><i class="glyphicon glyphicon-trash"></i>حذف کردن</a>
                         </div>
                     </td>
                 </tr>
@@ -88,5 +88,5 @@ if (!empty($sampleJobs)) {
         </table>
     </section>
 <?php } else { ?>
-    There are no saved jobs.
+    کار ذخیره شده ای موجود نیست
 <?php } ?>

@@ -7,9 +7,8 @@
             </div>
             <div class="modal-body">
                 <fieldset>
-                    <div class="form-group">
-                        <label for="tubePauseSeconds"><b>Tube pause seconds</b> (<i>-1</i> means the default: <i>3600</i>, <i>0</i> is reserved for
-                            un-pause)</label>
+                    <div class="form-group" dir="rtl">
+                        <label for="tubePauseSeconds"><b>زمان توقف تونل</b> (<i>-1</i> یعنی پیش فرض: <i>3600</i>, <i>0</i> برای توقف نکردن)</label>
 
                         <input class="form-control focused" id="tubePauseSeconds" type="text" value="<?php
                         if (@empty($_COOKIE['tubePauseSeconds']))
@@ -18,24 +17,24 @@
                             echo @intval($_COOKIE['tubePauseSeconds']);
                         ?>">
                     </div>
-                    <div class="form-group">
-                        <label for="focusedInput"><b>Auto-refresh interval in milliseconds</b> (Default: <i>500</i>)</label>
+                    <div class="form-group" dir="rtl">
+                        <label for="focusedInput"><b>به روز رسانی خودکار در میلی ثانیه</b> (پیش فرض: <i>500</i>)</label>
                         <input class="form-control focused" id="autoRefreshTimeoutMs" type="text" value="<?php
                         if (@empty($_COOKIE['autoRefreshTimeoutMs']))
                             echo 500;
                         else
                             echo @intval($_COOKIE['autoRefreshTimeoutMs']);
                         ?>">
-                        <div class="checkbox">
+                        <div class="checkbox" dir="ltr">
                             <label>
                                 <input type="checkbox" id="isEnabledAutoRefreshLoad" value="0"
                                        <?php if (@$_COOKIE['isEnabledAutoRefreshLoad'] == 1) { ?>checked="checked"<?php } ?>>
-                                auto-refresh on load
+                                به روز رسانی به محض بارگزاری
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="focusedInput"><b>Search result limits</b> (Default: <i>25</i>)</label>
+                    <div class="form-group" dir="rtl">
+                        <label for="focusedInput"><b>محدود کردن جواب های جستجو </b> (پیش فرض: <i>25</i>)</label>
                         <input class="form-control focused" id="searchResultLimit" type="text" value="<?php
                         if (@empty($_COOKIE['searchResultLimit']))
                             echo 25;
@@ -50,7 +49,7 @@
                             <label>
                                 <input type="checkbox" id="isDisabledJsonDecode" value="1"
                                        <?php if (@$_COOKIE['isDisabledJsonDecode'] != 1) { ?>checked="checked"<?php } ?>>
-                                before display: json_decode()
+                                قبل نمایش: json_decode()
                             </label>
                         </div>
 
@@ -58,7 +57,7 @@
                             <label>
                                 <input type="checkbox" id="isDisabledUnserialization" value="1"
                                        <?php if (@$_COOKIE['isDisabledUnserialization'] != 1) { ?>checked="checked"<?php } ?>>
-                                before display: unserialize()
+                                قبل نمایش: unserialize()
                             </label>
                         </div>
 
@@ -66,7 +65,7 @@
                             <label>
                                 <input type="checkbox" id="isEnabledBase64Decode" value="1"
                                        <?php if (@$_COOKIE['isEnabledBase64Decode'] == 1) { ?>checked="checked"<?php } ?>>
-                                before display: base64_decode()
+                                قبل نمایش: base64_decode()
                             </label>
                         </div>
 
@@ -74,7 +73,7 @@
                             <label>
                                 <input type="checkbox" id="isDisabledJobDataHighlight" value="1"
                                        <?php if (@$_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>checked="checked"<?php } ?>>
-                                after display: enable highlight
+                                بعد نمایش: enable highlight
                             </label>
                         </div>
 
@@ -82,7 +81,7 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">بستن</button>
             </div>
 
         </div>

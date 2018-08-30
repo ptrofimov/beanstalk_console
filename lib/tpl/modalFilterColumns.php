@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="filter-label">Filter columns</h4>
+                <h4 class="modal-title" id="filter-label">فیلتر کردن ستون ها</h4>
             </div>
             <div class="modal-body">
                 <form>
@@ -45,7 +45,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">بستن</button>
             </div>
         </div>
     </div>

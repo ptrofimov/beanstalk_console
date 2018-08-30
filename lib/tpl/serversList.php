@@ -25,7 +25,7 @@ if (!empty($servers)):
             <table class="table table-striped table-hover" id="servers-index">
                 <thead>
                     <tr>
-                        <th>name</th>
+                        <th>نام</th>
                         <?php foreach ($console->getServerStats(current($servers)) as $key => $item): ?>
                             <th class="<?php if (!in_array($key, $visible)) echo 'hide' ?>" name="<?php echo $key ?>"
                                 title="<?php echo $item['description'] ?>"><?php echo $key ?></th>
@@ -64,29 +64,30 @@ if (!empty($servers)):
                     <?php endforeach ?>
                 </tbody>
             </table>
-            <a href="#servers-add" role="button" class="btn btn-info" id="addServer">Add server</a>
+            <a href="#servers-add" role="button" class="btn btn-info" id="addServer" style="float: right;">ایجاد سرور</a>
         </div>
     </div>
 <?php else: ?>
-    <div class="site-wrapper">
+    <div class="site-wrapper" dir="rtl">
         <div class="site-wrapper-inner">
             <div class="col-sm-8 col-sm-push-2 text-center">
-                <h1>Hello!</h1>
+                <h1>سلام!</h1>
 
                 <p class="lead">
-                    This is Beanstalk console,<br/>web-interface for
-                    <a href="http://kr.github.io/beanstalkd/" target="_blank">simple and fast work queue</a>
+                    داشبورد مدیریت beanstalked<br/>رابط وب برای
+                    <a href="http://kr.github.io/beanstalkd/" target="_blank">راحت تر و با سرعت بودن صف ها</a>
                 </p>
 
                 <p>
-                    Your servers' list is empty. You could fix it in two ways:
+                    لیست سرور های شما خالی است . برای ایجاد سرور یکی از دو راه زیر را امتحان کنید
                 <ol class="inside">
-                    <li>Click the button below to add server just for you and save it in cookies</li>
-                    <li>Edit <b>config.php</b> file and add server for everybody</li>
+                    <li>بر روی دکمه ایجاد سرور کلیک کرده و اطلاعات سرور برای شما در کوکی مرورگر ذخیره میشود</li>
+                    <br>
+                    <li>تغییری در فایل <b>config.php</b> داده و سروری برای همه درست کنید</li>
                 </ol>
                 </p>
                 <p>
-                    <br/><a href="#servers-add" role="button" class="btn btn-lg btn-success" data-toggle="modal">Add server</a>
+                    <br/><a href="#servers-add" role="button" class="btn btn-lg btn-success" data-toggle="modal">ایجاد سرور</a>
                 </p>
             </div>
         </div>

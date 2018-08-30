@@ -10,8 +10,8 @@ $servers = $console->getServers();
 
         <title>
             <?php if ($tube) echo $tube . ' - ' ?>
-            <?php echo $server ? $server : 'All servers' ?> - 
-            Beanstalk console
+            <?php echo $server ? $server : 'تمامی سرور ها' ?> - 
+            داشبور
         </title>
 
         <!-- Bootstrap core CSS -->
@@ -47,7 +47,7 @@ $servers = $console->getServers();
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="./?">Beanstalk console</a>
+                        <a class="navbar-brand" href="./?">مدیریت سرور</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
@@ -63,7 +63,7 @@ $servers = $console->getServers();
                                         <?php echo $serverLabel ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="./?">All servers</a></li>
+                                        <li><a href="./?">تمامی سرور ها</a></li>
                                         <?php foreach (array_diff($servers, array($server)) as $key => $serverItem): ?>
                                             <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
                                         <?php endforeach ?>
@@ -73,7 +73,7 @@ $servers = $console->getServers();
                                 <!-- Server dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        All servers <span class="caret"></span>
+                                        تمامی سرور ها <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <?php foreach ($servers as $key => $serverItem): ?>
@@ -90,7 +90,7 @@ $servers = $console->getServers();
                                         <?php echo $tube ?> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="./?server=<?php echo $server ?>">All Tubes</a></li>
+                                        <li><a href="./?server=<?php echo $server ?>">تمامی تونل ها</a></li>
                                         <?php foreach (array_diff($tubes, array($tube)) as $tubeItem): ?>
                                             <li><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a></li>
                                         <?php endforeach ?>
@@ -100,7 +100,7 @@ $servers = $console->getServers();
                                 <!-- Tube dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        All tubes <span class="caret"></span>
+                                        تمامی تونل ها <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <?php foreach ($tubes as $tubeItem): ?>
@@ -114,31 +114,31 @@ $servers = $console->getServers();
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding:4px !important;"><img src="assets/hamburger.png" width="32px" height="32px"></a>
-                                <ul class="dropdown-menu" role="menu">
+                                <ul class="dropdown-menu" role="menu" dir="rtl">
                                     <?php if (!isset($_tplPage) && !$server) { ?>
-                                        <li><a href="#filterServer" role="button" data-toggle="modal">Filter columns</a></li>
+                                        <li><a href="#filterServer" role="button" data-toggle="modal" >فیلتر کردن ستون ها</a></li>
                                         <?php
                                     } elseif (!isset($_tplPage) && $server) {
                                         ?>
-                                        <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
+                                        <li><a href="#filter" role="button" data-toggle="modal" >فیلتر کردن ستون ها</a></li>
                                         <?php
                                     }
                                     if ($server && !$tube) {
                                         ?>
-                                        <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
+                                        <li><a href="#clear-tubes" role="button" data-toggle="modal" >پاک کردن تعدادی از تونل ها</a></li>
                                     <?php } ?>
-                                    <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
+                                    <li><a href="./?action=manageSamples" role="button" >مدیریت نمونه ها</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
-                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt">Protocol Specification</a></li>
-                                    <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
+                                    <li><a href="https://github.com/kr/beanstalkd" >سایت ‌Beanstalkd در گیت هاب</a></li>
+                                    <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt" >مشخصات پروتکل</a></li>
+                                    <li><a href="https://github.com/snip77/Persian_beanstalk_console" >Beanstalkd فارسی در گیت هاب</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
+                                    <li><a href="#settings" role="button" data-toggle="modal">تغییر تنظیمات</a></li>
                                 </ul>
                             </li>
                             <?php if (@$config['auth']['enabled']) { ?>
                                 <li class="dropdown">
-                                    <a target="_blank" href="./?logout=true">logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
+                                    <a target="_blank" href="./?logout=true">خروج<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
                                 </li>
                             <?php } ?>
                             <?php if ($server && !$tube) { ?>
@@ -150,7 +150,7 @@ $servers = $console->getServers();
                             <?php } else if (!$tube) { ?>
                                 <li>
                                     <button type="button" id="autoRefreshSummary" class="btn btn-default btn-small">
-                                        <span class="glyphicon glyphicon-refresh"></span>
+                                            <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </li>
                             <?php } ?>

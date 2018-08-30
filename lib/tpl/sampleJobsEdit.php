@@ -11,15 +11,15 @@ if (isset($isNewRecord) && $isNewRecord) {
             <?php
             if (isset($isNewRecord) && $isNewRecord) {
                 ?>
-                <h4 class="text-info">New sample job</h4>
+                <h4 class="text-info">کار نمونه جدید</h4>
                 <?php
             } else {
                 ?>
-                <h4 class="text-info">Edit: <?php echo htmlspecialchars($job['name']); ?></h4>
+                <h4 class="text-info"><?php echo htmlspecialchars($job['name']); ?>تغییر دادن در</h4>
             <?php } ?>
         </div>
         <div class="pull-right">
-            <a href="./?action=manageSamples" class="btn btn-default btn-small"><i class="glyphicon glyphicon-list"></i> Manage samples</a>
+            <a href="./?action=manageSamples" class="btn btn-default btn-small"><i class="glyphicon glyphicon-list"></i>مدیریت نمونه ها</a>
         </div>
     </div>
     <div class=" form-group">
@@ -33,7 +33,7 @@ if (isset($isNewRecord) && $isNewRecord) {
                 </div>
             <?php } ?>
             <div class="control-group">
-                <label class="control-label" for="addsamplename"><b>Name *</b></label>
+                <label class="control-label" for="addsamplename"><b>نام *</b></label>
 
                 <div class="controls form-group">
                     <input class="input-xlarge focused" id="addsamplename" name="name" type="text" value="<?php echo @htmlspecialchars($job['name']); ?>"
@@ -42,7 +42,7 @@ if (isset($isNewRecord) && $isNewRecord) {
             </div>
         </fieldset>
         <div class="clearfix">
-            <label class="control-label" for="focusedInput"><b>Available on tubes *</b></label>
+            <label class="control-label" for="focusedInput"><b>موجود در تونل های *</b></label>
             <br/>
             <?php
             if (isset($job) && is_array($job['tubes'])) {
@@ -108,11 +108,11 @@ if (isset($isNewRecord) && $isNewRecord) {
             ?>
         </div>
         <div>
-            <label class="control-label" for="jobdata"><b>Job data *</b></label>
+            <label class="control-label" for="jobdata"><b>اطلاعات کار *</b></label>
             <textarea name="jobdata" id="jobdata" style="width:100%" rows="3"><?php echo @htmlspecialchars($job['data']); ?></textarea>
         </div>
     </div>
     <div>
-        <input type="submit" class="btn btn-success" value="Save"/>
+        <input type="submit" class="btn btn-success" value="ذخیره کردن"/>
     </div>
 </form>
