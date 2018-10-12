@@ -1,5 +1,6 @@
 <?php
 $sampleJobs = $console->getSampleJobs($tube);
+$buriedJobsCount = $allStats['current-jobs-buried'];
 
 if (!@empty($_COOKIE['tubePauseSeconds'])) {
     $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
@@ -20,6 +21,8 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
             <input id="kick_tube_no_<?php echo md5($tube);?>" type="number" value="10" name="count" min="0" step="1" size="4" class="btn btn-default btn-sm kick_jobs_no">
         </div>
     </form>
+
+    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=<?=$buriedJobsCount?>"><i class="glyphicon glyphicon-forward"></i> Kick all jobs</a>
 
     <?php
     if (empty($tubeStats['pause-time-left'])) {
