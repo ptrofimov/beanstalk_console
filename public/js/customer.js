@@ -338,6 +338,12 @@ $(document).ready(
                         }).animate({
                             'background-color': color
                         }, 500);
+                        if (l.trim() != '0') {
+                            $td1.addClass('hasValue');
+                        }
+                        else {
+                            $td1.removeClass('hasValue');
+                        }
                     }
                 }
             }
