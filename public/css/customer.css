@@ -67,3 +67,10 @@ ol.inside, ul.inside {
 .navbar-inverse .a-unstyled:visited { color: inherit; text-decoration: none; }
 .navbar-inverse .a-unstyled:hover { color: inherit; text-decoration: none; }
 .navbar-inverse .a-unstyled:active { color: inherit; text-decoration: none; }
+
+/** Highlight buried jobs */
+#summaryTable * td.td-current-jobs-buried.hasValue, #servers-index * td.td-current-jobs-buried.hasValue {
+    color: darkred;
+    font-weight: bolder;
+    background-color: #ffdddd;
+}
