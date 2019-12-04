@@ -195,7 +195,12 @@ $(document).ready(
                 }
 
                 if ($.cookie('isEnabledAutoRefreshLoad')) {
-                    $('#autoRefresh').click();
+                    if ($('#autoRefresh').length) {
+                        $('#autoRefresh').click();
+                    }
+                    if ($('#autoRefreshSummary').length) {
+                        $('#autoRefreshSummary').click();
+                    }
                 }
             }
 
