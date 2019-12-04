@@ -195,7 +195,12 @@ $(document).ready(
                 }
 
                 if ($.cookie('isEnabledAutoRefreshLoad')) {
-                    $('#autoRefresh').click();
+                    if ($('#autoRefresh').length) {
+                        $('#autoRefresh').click();
+                    }
+                    if ($('#autoRefreshSummary').length) {
+                        $('#autoRefreshSummary').click();
+                    }
                 }
             }
 
@@ -338,6 +343,12 @@ $(document).ready(
                         }).animate({
                             'background-color': color
                         }, 500);
+                        if (l.trim() != '0') {
+                            $td1.addClass('hasValue');
+                        }
+                        else {
+                            $td1.removeClass('hasValue');
+                        }
                     }
                 }
             }

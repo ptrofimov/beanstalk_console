@@ -49,7 +49,20 @@ if (!empty($servers)):
                                 <td  style="white-space: nowrap;"><a href="./?server=<?php echo $server ?>"><?php echo $label; ?></a></td>
                             <?php endif ?>
                             <?php foreach ($stats as $key => $item): ?>
-                                <td class="<?php if (!in_array($key, $visible)) echo 'hide' ?>"
+                                <?php
+                                $classes = array("td-$key");
+                                if (!in_array($key, $visible)) {
+                                    $classes[] = 'hide' ;
+                                }
+                                if (isset($stats[$key]) && $stats[$key] != '0') {
+                                    $classes[] = 'hasValue';
+                                }
+                                $cssClass = '' ;
+                                if (count($classes) > 0) {
+                                    $cssClass = ' class = "' . join(' ', $classes) . '"' ;
+                                }
+                                ?>
+                                <td <?php echo $cssClass; ?>
                                     name="<?php echo $key ?>"><?php echo htmlspecialchars($item['value']) ?></td>
                                 <?php endforeach ?>
                                 <?php if (empty($stats)): ?>

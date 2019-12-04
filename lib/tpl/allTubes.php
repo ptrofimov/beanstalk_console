@@ -27,9 +27,19 @@ $visible = $console->getTubeStatVisible();
                             <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
                             <?php
                             foreach ($fields as $key => $item):
-                                $markHidden = !in_array($key, $visible) ? ' class="hide"' : '';
+                                $classes = array("td-$key");
+                                if (!in_array($key, $visible)) {
+                                    $classes[] = 'hide' ;
+                                }
+                                if (isset($tubeStats[$key]) && $tubeStats[$key] != '0') {
+                                    $classes[] = 'hasValue';
+                                }
+                                $cssClass = '' ;
+                                if (count($classes) > 0) {
+                                    $cssClass = ' class = "' . join(' ', $classes) . '"' ;
+                                }
                                 ?>
-                                <td<?php echo $markHidden ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
+                                <td<?php echo $cssClass ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
                             <?php endforeach; ?>
                         </tr>
                     <?php endforeach ?>
