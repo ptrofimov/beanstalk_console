@@ -3,6 +3,9 @@ LABEL maintainer="Rion Dooley <dooley@tacc.utexas.edu>"
 
 ENV APACHE_DOCROOT "/var/www"
 
+RUN apt-get update
+RUN apt-get install -y
+
 # Add php extensions
 RUN docker-php-ext-install mbstring && \
     a2enmod rewrite
