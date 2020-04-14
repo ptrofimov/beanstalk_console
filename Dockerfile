@@ -4,7 +4,7 @@ LABEL maintainer="Rion Dooley <dooley@tacc.utexas.edu>"
 ENV APACHE_DOCROOT "/var/www"
 
 RUN apt-get update
-RUN apt-get install -y
+RUN apt-get -y upgrade
 
 # Add php extensions
 RUN docker-php-ext-install mbstring && \
