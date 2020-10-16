@@ -74,3 +74,10 @@ ol.inside, ul.inside {
     font-weight: bolder;
     background-color: #ffdddd;
 }
+
+/** Highlight delayed jobs */
+#summaryTable * td.td-current-jobs-delayed.hasValue, #servers-index * td.td-current-jobs-delayed.hasValue {
+    color: #AD532D;
+    font-weight: bolder;
+    background-color: #FFF3DD;
+}
