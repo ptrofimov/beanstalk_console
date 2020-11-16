@@ -81,3 +81,8 @@ ol.inside, ul.inside {
     font-weight: bolder;
     background-color: #FFF3DD;
 }
+
+/** Highlight paused tubes */
+tr.tr-tube-paused {
+    border-left: 6px solid #FFA49A;
+}

@@ -21,10 +21,12 @@ $visible = $console->getTubeStatVisible();
                 </thead>
                 <tbody>
                     <?php foreach ((is_array($tubes) ? $tubes : array()) as $tubeItem): ?>
-                        <tr>
-                            <td name="<?php echo $key ?>"><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a>
+                        <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
+                        <tr class="<?php echo ($tubeStats['pause-time-left'] > '0')? 'tr-tube-paused': ''; ?>"
+                            title="<?php echo ($tubeStats['pause-time-left'] > '0')? 'Pause seconds left: ' . $tubeStats['pause-time-left'] : ''; ?>"
+                            >
+                            <td id="<?php echo 'tube-' . $tubeItem ?>"><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a>
                             </td>
-                            <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
                             <?php
                             foreach ($fields as $key => $item):
                                 $classes = array("td-$key");
