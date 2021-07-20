@@ -34,7 +34,7 @@ services:
     links:
       - beanstalkd
   beanstalkd:
-    image: kamilzabielski/docker-alpine-beanstalkd
+    image: dinamic/docker-alpine-beanstalkd
     volumes:
       - beanstalkd_data:/var/lib/beanstald
 
