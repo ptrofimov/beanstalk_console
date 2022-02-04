@@ -96,7 +96,7 @@ if ($server) {
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
-                            <?php elseif ($tubes): ?>
+                            <?php elseif (isset($tubes)): ?>
                                 <!-- Tube dropdown: All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
