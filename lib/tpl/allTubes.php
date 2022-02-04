@@ -21,22 +21,30 @@ $visible = $console->getTubeStatVisible();
                 </thead>
                 <tbody>
                     <?php foreach ((is_array($tubes) ? $tubes : array()) as $tubeItem): ?>
-                        <tr>
-                            <td name="<?php echo $key ?>"><a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo $tubeItem ?></a>
+                        <?php
+                        $arr_tubeStats = $tplVars['tubesStats'][$tubeItem];
+                        $tubeStats = array();
+                        foreach ($arr_tubeStats as $key => $arr) {
+                            $tubeStats[$key] = $arr['value'];
+                        }
+                        ?>
+                        <tr class="<?php echo ($tubeStats['pause-time-left'] > '0') ? 'tr-tube-paused' : ''; ?>"
+                            title="<?php echo ($tubeStats['pause-time-left'] > '0') ? 'Pause seconds left: ' . $tubeStats['pause-time-left'] : ''; ?>"
+                            >
+                            <td id="<?php echo 'tube-' . htmlspecialchars($tubeItem) ?>"><a href="./?server=<?php echo urlencode($server) ?>&tube=<?php echo urlencode($tubeItem) ?>"><?php echo htmlspecialchars($tubeItem) ?></a>
                             </td>
-                            <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
                             <?php
                             foreach ($fields as $key => $item):
                                 $classes = array("td-$key");
                                 if (!in_array($key, $visible)) {
-                                    $classes[] = 'hide' ;
+                                    $classes[] = 'hide';
                                 }
                                 if (isset($tubeStats[$key]) && $tubeStats[$key] != '0') {
                                     $classes[] = 'hasValue';
                                 }
-                                $cssClass = '' ;
+                                $cssClass = '';
                                 if (count($classes) > 0) {
-                                    $cssClass = ' class = "' . join(' ', $classes) . '"' ;
+                                    $cssClass = ' class = "' . join(' ', $classes) . '"';
                                 }
                                 ?>
                                 <td<?php echo $cssClass ?>><?php echo isset($tubeStats[$key]) ? $tubeStats[$key] : '' ?></td>
