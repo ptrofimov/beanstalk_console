@@ -19,7 +19,7 @@ require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
 
-$GLOBALS['server'] = !empty($_GET['server']) ? $_GET['server'] : '';
+$GLOBALS['server'] = !empty($_GET['server']) ? htmlspecialchars($_GET['server']) : '';
 $GLOBALS['action'] = !empty($_GET['action']) ? $_GET['action'] : '';
 $GLOBALS['state'] = !empty($_GET['state']) ? $_GET['state'] : '';
 $GLOBALS['count'] = !empty($_GET['count']) ? $_GET['count'] : '';
