@@ -94,7 +94,7 @@ class BeanstalkInterface {
     public function getTubesStats() {
         $stats = array();
         foreach ($this->getTubes() as $tube) {
-            $stats[] = $this->getTubeStats($tube);
+            $stats[$tube] = $this->getTubeStats($tube);
         }
         return $stats;
     }
@@ -135,8 +135,8 @@ class BeanstalkInterface {
                 continue;
             }
 
-            $stats[] = array(
-                'key' => $nameTube[$key],
+            $stats[$key] = array(
+                'key' => $key,
                 'value' => $value,
                 'descr' => isset($descr[$key]) ? $descr[$key] : '');
         }
