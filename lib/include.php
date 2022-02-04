@@ -416,7 +416,7 @@ class Console {
             $this->_globalVar['tube'] = null;
         }
         header(
-                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($this->_globalVar['tube'])));
+                sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($this->_globalVar['tube'] ?? '')));
         exit();
     }
 
@@ -689,7 +689,7 @@ class Console {
 
         foreach ($states as $state) {
             $jobList[$state] = $this->findJobsByState($GLOBALS['tube'], $state, $searchStr, $limit);
-            $jobList['total']+=count($jobList[$state]);
+            $jobList['total'] += count($jobList[$state]);
         }
 
         $this->searchResults = $jobList;
@@ -741,8 +741,8 @@ class Console {
                 if ($job) {
                     $jobStats = $this->interface->_client->statsJob($job);
                     if ($jobStats->tube === $tube &&
-                        $jobStats->state === $state &&
-                        strpos($job->getData(), $searchStr) !== false
+                            $jobStats->state === $state &&
+                            strpos($job->getData(), $searchStr) !== false
                     ) {
                         $jobList[$id] = $job;
                         $added++;

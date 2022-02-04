@@ -25,8 +25,8 @@
                                         <?php
                                         if (in_array($key, array('age', 'delay', 'time-left'), true)) {
                                             $days = floor($value / 86400);
-                                            $hours = floor($value / 3600 % 24);
-                                            $minutes = floor($value / 60 % 60);
+                                            $hours = floor($value / 3600) % 24;
+                                            $minutes = floor($value / 60) % 60;
                                             $seconds = floor($value % 60);
                                             echo $days > 0 ? 'days: ' . $days . '<br>' : '';
                                             echo $hours > 0 ? 'hours: ' . $hours . '<br>' : '';
