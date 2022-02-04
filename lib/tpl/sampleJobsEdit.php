@@ -2,7 +2,7 @@
 if (isset($isNewRecord) && $isNewRecord) {
     $action = '?action=newSample';
 } else {
-    $action = '?action=editSample&key=' . $_GET['key'];
+    $action = '?action=editSample&key=' . urlencode($_GET['key']);
 }
 ?>
 <form name="sampleJobsEdit" action="<?php echo $action; ?>" method="POST">
