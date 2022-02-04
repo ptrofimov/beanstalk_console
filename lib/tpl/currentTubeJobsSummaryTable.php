@@ -25,9 +25,11 @@ $visible = $console->getTubeStatVisible();
                 </thead>
                 <tbody>
                     <?php foreach (array($tube) as $tubeItem): ?>
-                        <tr>
-                            <td name="<?php echo $key ?>"><?php echo $tubeItem ?></td>
-                            <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
+                        <?php $tubeStats = $console->getTubeStatValues($tubeItem) ?>
+                        <tr class="<?php echo ($tubeStats['pause-time-left'] > '0')? 'tr-tube-paused': ''; ?>"
+                            title="<?php echo ($tubeStats['pause-time-left'] > '0')? 'Pause seconds left: ' . $tubeStats['pause-time-left'] : ''; ?>"
+                            >
+                            <td id="<?php echo 'tube-' . $tubeItem ?>"><?php echo $tubeItem ?></td>
                             <?php
                             foreach ($fields as $key => $item):
                                 $classes = array("td-$key");
