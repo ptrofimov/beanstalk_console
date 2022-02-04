@@ -60,7 +60,7 @@ if ($searchResults['total'] > 0) {
                 </table>
             </div>
         </div>
-        First <?php echo $_GET['limit']; ?> rows are displayed for each state.
+        First <?php echo intval($_GET['limit']); ?> rows are displayed for each state.
         <br/>
         <br/>
     </section>

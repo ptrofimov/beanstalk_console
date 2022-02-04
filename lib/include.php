@@ -19,13 +19,13 @@ require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
 
-$GLOBALS['server'] = !empty($_GET['server']) ? htmlspecialchars($_GET['server']) : '';
-$GLOBALS['action'] = !empty($_GET['action']) ? $_GET['action'] : '';
-$GLOBALS['state'] = !empty($_GET['state']) ? $_GET['state'] : '';
-$GLOBALS['count'] = !empty($_GET['count']) ? $_GET['count'] : '';
-$GLOBALS['tube'] = !empty($_GET['tube']) ? $_GET['tube'] : '';
-$GLOBALS['tplMain'] = !empty($_GET['tplMain']) ? $_GET['tplMain'] : '';
-$GLOBALS['tplBlock'] = !empty($_GET['tplBlock']) ? $_GET['tplBlock'] : '';
+$GLOBALS['server'] = !empty($_GET['server']) ? filter_input(INPUT_GET, 'server', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['action'] = !empty($_GET['action']) ? filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['state'] = !empty($_GET['state']) ? filter_input(INPUT_GET, 'state', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['count'] = !empty($_GET['count']) ? filter_input(INPUT_GET, 'count', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['tube'] = !empty($_GET['tube']) ? filter_input(INPUT_GET, 'tube', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['tplMain'] = !empty($_GET['tplMain']) ? filter_input(INPUT_GET, 'tplMain', FILTER_SANITIZE_SPECIAL_CHARS) : '';
+$GLOBALS['tplBlock'] = !empty($_GET['tplBlock']) ? filter_input(INPUT_GET, 'tplBlock', FILTER_SANITIZE_SPECIAL_CHARS) : '';
 
 class Console {
 
