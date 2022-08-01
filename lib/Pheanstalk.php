@@ -26,7 +26,7 @@ class Pheanstalk
 	 */
 	public function __construct($host, $port = self::DEFAULT_PORT, $connectTimeout = null)
 	{
-		$this->setConnection(new Pheanstalk_Connection($host, $port, $connectTimeout));
+		$this->setConnection(new Pheanstalk_Connection($host, intval($port), $connectTimeout));
 	}
 
 	/**
