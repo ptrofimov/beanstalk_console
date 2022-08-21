@@ -12,7 +12,7 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
     <b>Actions:</b>&nbsp;
     <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=1"><i class="glyphicon glyphicon-forward"></i> Kick 1 job</a>
 
-    <form method="GET">
+    <form method="GET" style="display:inline">
         <div class="btn-group" role="group">
             <button type="submit" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-fast-forward"></i> Kick more </button>
             <input type="hidden" name="server" value="<?php echo $server ?>">
