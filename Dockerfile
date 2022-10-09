@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7.1-apache
 LABEL maintainer="Rion Dooley <dooley@tacc.utexas.edu>"
 
 ENV APACHE_DOCROOT "/var/www"

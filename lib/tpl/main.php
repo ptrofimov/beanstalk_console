@@ -14,7 +14,7 @@ if ($server) {
 
         <title>
             <?php if ($tube) echo $tube . ' - ' ?>
-            <?php echo $serverLabel ? $serverLabel : 'All servers' ?> -
+            <?php echo !empty($serverLabel) ? $serverLabel : 'All servers' ?> -
             Beanstalk console
         </title>
 
@@ -65,7 +65,7 @@ if ($server) {
                                     <ul class="dropdown-menu">
                                         <li><a href="./?">All servers</a></li>
                                         <?php foreach (array_diff($servers, array($server)) as $key => $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
+                                            <li><a href="./?server=<?php echo htmlspecialchars($serverItem) ?>"><?php echo empty($key) || is_numeric($key) ? htmlspecialchars($serverItem) : $key ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>
@@ -77,7 +77,7 @@ if ($server) {
                                     </a>
                                     <ul class="dropdown-menu">
                                         <?php foreach ($servers as $key => $serverItem): ?>
-                                            <li><a href="./?server=<?php echo $serverItem ?>"><?php echo empty($key) || is_numeric($key) ? $serverItem : $key ?></a></li>
+                                            <li><a href="./?server=<?php echo htmlspecialchars($serverItem) ?>"><?php echo empty($key) || is_numeric($key) ? htmlspecialchars($serverItem) : $key ?></a></li>
                                         <?php endforeach ?>
                                     </ul>
                                 </li>

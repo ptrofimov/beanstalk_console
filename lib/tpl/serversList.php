@@ -44,9 +44,9 @@ if (!empty($servers)):
                         ?>
                         <tr>
                             <?php if (empty($stats)): ?>
-                                <td style="white-space: nowrap;"><?php echo $label ?></td>
+                                <td style="white-space: nowrap;"><?php echo htmlspecialchars($label) ?></td>
                             <?php else: ?>
-                                <td  style="white-space: nowrap;"><a href="./?server=<?php echo $server ?>"><?php echo $label; ?></a></td>
+                                <td  style="white-space: nowrap;"><a href="./?server=<?php echo htmlspecialchars($server) ?>"><?php echo htmlspecialchars($label); ?></a></td>
                             <?php endif ?>
                             <?php foreach ($stats as $key => $item): ?>
                                 <?php
@@ -69,7 +69,7 @@ if (!empty($servers)):
                                 <td colspan="<?php echo count($visible) ?>" class="row-full">&nbsp;</td>
                             <?php endif ?>
                             <td><?php if (array_intersect(array($server), $cookieServers)): ?>
-                                    <a class="btn btn-xs btn-danger" title="Remove from list" href="./?action=serversRemove&removeServer=<?php echo $server ?>"><span
+                                    <a class="btn btn-xs btn-danger" title="Remove from list" href="./?action=serversRemove&removeServer=<?php echo htmlspecialchars($server) ?>"><span
                                             class="glyphicon glyphicon-minus"></span></a>
                                     <?php endif; ?>
                             </td>
