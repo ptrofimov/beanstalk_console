@@ -14,7 +14,7 @@ if ($server) {
 
         <title>
             <?php if ($tube) echo $tube . ' - ' ?>
-            <?php echo $serverLabel ? $serverLabel : 'All servers' ?> -
+            <?php echo !empty($serverLabel) ? $serverLabel : 'All servers' ?> -
             Beanstalk console
         </title>
 
