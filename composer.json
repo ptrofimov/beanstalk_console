@@ -21,7 +21,6 @@
     "require": {
         "php": ">=5.2.0",
         "ext-json": "*",
-        "ext-mbstring": "*",
-        "composer/installers": "~1.0"
+        "ext-mbstring": "*"
     }
 }
