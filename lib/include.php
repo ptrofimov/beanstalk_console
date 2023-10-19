@@ -11,6 +11,7 @@ function autoload_class($class) {
 
 spl_autoload_register('autoload_class');
 
+session_name('beanstalkconsole');
 session_start();
 require_once 'Pheanstalk/ClassLoader.php';
 Pheanstalk_ClassLoader::register(dirname(__FILE__));
