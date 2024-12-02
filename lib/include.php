@@ -267,14 +267,15 @@ class Console {
 
     protected function deleteAllFromTube($state, $tube) {
         try {
+            $this->interface->_client->useTube($tube);
             do {
                 switch ($state) {
                     case 'ready':
-                        $job = $this->interface->_client->useTube($tube)->peekReady();
+                        $job = $this->interface->_client->peekReady();
                         break;
                     case 'delayed':
                         try {
-                            $ready = $this->interface->_client->useTube($tube)->peekReady();
+                            $ready = $this->interface->_client->peekReady();
                             if ($ready) {
                                 $this->_errors[] = 'Cannot delete Delayed until there are Ready messages on this tube';
                                 return;
@@ -286,7 +287,7 @@ class Console {
                             }
                         }
                         try {
-                            $bury = $this->interface->_client->useTube($tube)->peekBuried();
+                            $bury = $this->interface->_client->peekBuried();
                             if ($bury) {
                                 $this->_errors[] = 'Cannot delete Delayed until there are Bury messages on this tube';
                                 return;
@@ -297,7 +298,7 @@ class Console {
                                 throw $e;
                             }
                         }
-                        $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                        $job = $this->interface->_client->peekDelayed();
                         if ($job) {
                             //when we found job with Delayed, kick all messages, to be ready, so that we can Delete them.
                             $this->interface->kick($tube, 100000000);
@@ -306,7 +307,7 @@ class Console {
                         }
                         break;
                     case 'buried':
-                        $job = $this->interface->_client->useTube($tube)->peekBuried();
+                        $job = $this->interface->_client->peekBuried();
                         break;
                 }
 
@@ -784,16 +785,17 @@ class Console {
 
     private function moveJobsFromTo($server, $tube, $state, $destTube) {
         try {
+            $this->interface->_client->useTube($tube);
             do {
                 switch ($state) {
                     case 'ready':
-                        $job = $this->interface->_client->useTube($tube)->peekReady();
+                        $job = $this->interface->_client->peekReady();
                         break;
                     case 'delayed':
-                        $job = $this->interface->_client->useTube($tube)->peekDelayed();
+                        $job = $this->interface->_client->peekDelayed();
                         break;
                     case 'buried':
-                        $job = $this->interface->_client->useTube($tube)->peekBuried();
+                        $job = $this->interface->_client->peekBuried();
                         break;
                 }
 
