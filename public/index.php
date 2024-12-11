@@ -5,24 +5,26 @@
  * @link http://kr.github.com/beanstalkd/
  * @author Petr Trofimov, Sergey Lysenko
  */
-error_reporting(E_ALL & ~E_NOTICE);
-ini_set('display_errors', 1);
 
 require_once dirname(__FILE__) . '/../config.php';
+
+error_reporting(E_ALL & ~E_NOTICE);
+ini_set('display_errors', $config['displayErrors'] ?? true);
+
 $authenticated = false;
 
-if( isset($_GET['logout']) && $_GET['logout']){
+if (isset($_GET['logout']) && $_GET['logout']) {
     $_SERVER['PHP_AUTH_USER'] = '';
     $_SERVER['PHP_AUTH_PW'] = '';
 }
 if (
-        isset($config['auth']) &&
-        isset($config['auth']['enabled']) &&
-        $config['auth']['enabled'] &&
-        isset($_SERVER['PHP_AUTH_USER']) &&
-        isset($_SERVER['PHP_AUTH_PW']) &&
-        $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
-        $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
+    isset($config['auth']) &&
+    isset($config['auth']['enabled']) &&
+    $config['auth']['enabled'] &&
+    isset($_SERVER['PHP_AUTH_USER']) &&
+    isset($_SERVER['PHP_AUTH_PW']) &&
+    $_SERVER['PHP_AUTH_USER'] == $config['auth']['username'] &&
+    $_SERVER['PHP_AUTH_PW'] == $config['auth']['password']
 ) {
     $authenticated = true;
 }
