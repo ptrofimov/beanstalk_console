@@ -27,7 +27,7 @@ $visible = $console->getTubeStatVisible();
                             $arr_tubeStats = $_SESSION['oldTubeStats'][$tubeItem];
                         } else if (!empty($arr_tubeStats)) {
                             if(!isset($_SESSION['oldTubesStats'])) {
-                                $_SESSION['oldTubesStats'] = [];
+                                $_SESSION['oldTubesStats'] = array();
                             }
                             $_SESSION['oldTubeStats'][$tubeItem] = $arr_tubeStats;
                         }
