@@ -342,21 +342,23 @@ class Console {
 
         try {
             $this->interface = new BeanstalkInterface($this->_globalVar['server']);
-
-            $this->_tplVars['tubes'] = $this->interface->getTubes();
-
-            $stats = $this->interface->getTubesStats();
-
-            $this->_tplVars['tubesStats'] = $stats;
-            $this->_tplVars['peek'] = $this->interface->peekAll($this->_globalVar['tube']);
-            $this->_tplVars['contentType'] = $this->interface->getContentType();
-            if (!empty($_GET['action'])) {
-                $funcName = "_action" . ucfirst($this->_globalVar['action']);
-                if (method_exists($this, $funcName)) {
-                    $this->$funcName();
-                }
-                return;
+            $tryCounter = 1;
+            $shouldRetry = isset($this->_globalVar['config']['retry']['shouldRetry']) ? $this->_globalVar['config']['retry']['shouldRetry'] : false;
+            $delay = $this->_globalVar['config']['retry']['delay'] ?? 250;
+            if ($shouldRetry) {
+                $tryCounter = $this->_globalVar['config']['retry']['maxTries'] ?? 1;
             }
+            do {
+                $tryCounter--;
+                try {
+                    $this->_collectBeanstalkData();
+                } catch (Pheanstalk_Exception_ServerException $e) {
+                    if(!$shouldRetry || $tryCounter == 0) {
+                        throw $e;
+                    }
+                    usleep($delay * 1000);
+                }
+            } while ($tryCounter > 0);
         } catch (Pheanstalk_Exception_ConnectionException $e) {
             $this->_errors[] = 'The server is unavailable';
         } catch (Pheanstalk_Exception_ServerException $e) {
@@ -366,6 +368,22 @@ class Console {
             }
         } catch (Exception $e) {
             $this->_errors[] = $e->getMessage();
+        }
+    }
+
+    protected function _collectBeanstalkData() {
+        $this->_tplVars['tubes'] = $this->interface->getTubes();
+        $stats = $this->interface->getTubesStats();
+
+        $this->_tplVars['tubesStats'] = $stats;
+        $this->_tplVars['peek'] = $this->interface->peekAll($this->_globalVar['tube']);
+        $this->_tplVars['contentType'] = $this->interface->getContentType();
+        if (!empty($this->_globalVar['action'])) {
+            $funcName = "_action" . ucfirst($this->_globalVar['action']);
+            if (method_exists($this, $funcName)) {
+                $this->$funcName();
+            }
+            return;
         }
     }
 
@@ -594,7 +612,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
@@ -638,7 +656,7 @@ class Console {
                         $serverTubes[$server] = $tubes;
                     }
                 } catch (Exception $e) {
-                    
+
                 }
             }
         }
@@ -726,7 +744,7 @@ class Console {
                     break;
             }
         } catch (Exception $e) {
-            
+
         }
 
         if ($job === null)
@@ -751,7 +769,7 @@ class Console {
                     }
                 }
             } catch (Pheanstalk_Exception_ServerException $e) {
-                
+
             }
             if ($added >= $limit || (microtime(true) - $this->actionTimeStart) > $limit) {
                 break;
