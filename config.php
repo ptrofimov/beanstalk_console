@@ -18,6 +18,10 @@ $GLOBALS['config'] = array(
         'password' => 'password',
     ),
     /**
+     * Activate/deactive displaying errors
+     */
+    'displayErrors' => true,
+    /**
      * Version number
      */
     'version' => '1.7.21',
