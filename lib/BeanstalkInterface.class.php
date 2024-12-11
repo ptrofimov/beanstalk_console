@@ -3,6 +3,7 @@
 class BeanstalkInterface {
 
     protected $_contentType;
+    protected $_tubes;
     public $_client;
 
     public function __construct($server) {
@@ -21,6 +22,7 @@ class BeanstalkInterface {
     public function getTubes() {
         $tubes = $this->_client->listTubes();
         sort($tubes);
+        $this->_tubes = $tubes;
         return $tubes;
     }
 
@@ -93,7 +95,7 @@ class BeanstalkInterface {
 
     public function getTubesStats() {
         $stats = array();
-        foreach ($this->getTubes() as $tube) {
+        foreach ($this->_tubes ?? $this->getTubes() as $tube) {
             $stats[$tube] = $this->getTubeStats($tube);
         }
         return $stats;
@@ -235,7 +237,7 @@ class BeanstalkInterface {
             // restore old error handler
             restore_error_handler();
         }
-        
+
         if (@$_COOKIE['isDisabledUnserialization'] != 1) {
             $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
             try {
