@@ -86,3 +86,34 @@ ol.inside, ul.inside {
 tr.tr-tube-paused {
     border-left: 6px solid #FFA49A;
 }
+
+/* clear search functionality */
+.search-wrapper {
+    position: relative; /* Needed for absolute positioning of the child span */
+    display: inline-block; /* Or block, depending on layout needs */
+    width: 100%; /* Make wrapper take available width within form-group */
+  }
+  
+  .search-wrapper .form-control.search-query {
+    /* Add padding to the right so text doesn't go under the X */
+    padding-right: 25px; /* Adjust as needed */
+    width: 100%; /* Ensure input takes full width of wrapper */
+    box-sizing: border-box; /* Include padding in the width calculation */
+  }
+  
+  .search-wrapper .clear-search {
+    position: absolute;
+    right: 8px;        /* Position from the right edge of the wrapper */
+    top: 50%;          /* Position vertically centered */
+    transform: translateY(-50%); /* Fine-tune vertical centering */
+    cursor: pointer;   /* Indicate it's clickable */
+    color: #999;      /* Style the X color */
+    font-weight: bold; /* Make it a bit bolder */
+    font-size: 16px;   /* Adjust size if needed */
+    line-height: 1;    /* Ensure consistent height */
+    /* display: none;  <-- Initial state set inline in HTML, managed by JS */
+  }
+  
+  .search-wrapper .clear-search:hover {
+    color: #555; /* Darken on hover */
+  }
