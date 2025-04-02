@@ -202,6 +202,54 @@ $(document).ready(
                         $('#autoRefreshSummary').click();
                     }
                 }
+
+                window.addEventListener("keydown",function (e) {
+                    if (!e.ctrlKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
+                        // Check if a single alphanumeric key was pressed
+                        if (!$('#searchTubes').is(":focus")) {
+                            e.preventDefault();
+                            $('#searchTubes').focus();
+                            // Optionally, append the pressed key to the search field
+                            $('#searchTubes').val($('#searchTubes').val() + e.key);
+                        }
+                }});
+
+                var $searchTubesInput = $('#searchTubes');
+                var $clearSearchBtn = $searchTubesInput.siblings('.clear-search'); // Use siblings() relative to input
+
+                // Function to toggle clear button visibility
+                function toggleClearButton() {
+                    var value = $searchTubesInput.val();
+                    if (value && value.length > 0) {
+                        $clearSearchBtn.show();
+                    } else {
+                        $clearSearchBtn.hide();
+                    }
+                }
+
+                // Show/hide button on input/keyup
+                $searchTubesInput.on('input keyup', function() {
+                    toggleClearButton();
+                });
+
+                // Clear input and hide button on click
+                $clearSearchBtn.on('click', function() {
+                    $searchTubesInput.val('').focus(); // Clear input and refocus
+                    $(this).hide(); // Hide the button itself
+                    // Optionally trigger 'input' event if other scripts depend on it
+                    $('#searchTubes').trigger('keyup');
+                });
+
+                // Initial check in case the input field is pre-filled on page load
+                toggleClearButton();
+
+
+                $('#searchTubes').on('keyup', function() {
+                    var value = $(this).val().toLowerCase();
+                    $('table tbody tr').filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
             }
 
             function addServer(host, port) {
@@ -317,6 +365,7 @@ $(document).ready(
                             $(options.containerClass).html(data);
                             $(options.containerClassCopy).html(html);
                             updateTable(options.containerClass, options.containerClassCopy);
+                            $('#searchTubes').trigger('keyup');
                             timer = setTimeout(reloader, ms, params, options);
                         }
                     },

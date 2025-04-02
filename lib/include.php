@@ -785,8 +785,8 @@ class Console {
 
     private function moveJobsFromTo($server, $tube, $state, $destTube) {
         try {
-            $this->interface->_client->useTube($tube);
             do {
+                $this->interface->_client->useTube($tube);
                 switch ($state) {
                     case 'ready':
                         $job = $this->interface->_client->peekReady();

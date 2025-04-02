@@ -4,40 +4,43 @@ if ($server) {
     $serverKey = array_search($server, $servers);
     $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
 }
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>
-            <?php if ($tube) echo $tube . ' - ' ?>
-            <?php echo !empty($serverLabel) ? $serverLabel : 'All servers' ?> -
-            Beanstalk console
-        </title>
+    <title>
+        <?php if ($tube) echo $tube . ' - ' ?>
+        <?php echo !empty($serverLabel) ? $serverLabel : 'All servers' ?> -
+        Beanstalk console
+    </title>
 
-        <!-- Bootstrap core CSS -->
-        <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/customer.css" rel="stylesheet">
-        <link href="highlight/styles/magula.css" rel="stylesheet">
-        <link rel="shortcut icon" href="assets/favicon.ico">
-        <script>
-            var url = "./?server=<?php echo $server ?>";
-            var contentType = "<?php echo isset($contentType) ? $contentType : '' ?>";
-        </script>
+    <!-- Bootstrap core CSS -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/customer.css" rel="stylesheet">
+    <link href="highlight/styles/magula.css" rel="stylesheet">
+    <link rel="shortcut icon" href="assets/favicon.ico">
+    <script>
+        var url = "./?server=<?php echo $server ?>";
+        var contentType = "<?php echo isset($contentType) ? $contentType : '' ?>";
+    </script>
 
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-    </head>
+</head>
 
-    <?php if (!empty($servers)): ?>
-        <body>
-        <?php else: ?>
+<?php if (!empty($servers)): ?>
+
+    <body>
+    <?php else: ?>
+
         <body class="no-nav">
         <?php endif ?>
 
@@ -84,6 +87,12 @@ if ($server) {
                             <?php endif ?>
 
                             <?php if ($tube): ?>
+                                <li>
+                                    <a href="./?server=<?php echo htmlspecialchars($server); ?>">
+                                        <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <!-- Optional: Icon -->
+                                        All Tubes (<?php echo htmlspecialchars($serverLabel); ?>)
+                                    </a>
+                                </li>
                                 <!-- Tube dropdown: current, then All, then remaining -->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -117,14 +126,14 @@ if ($server) {
                                 <ul class="dropdown-menu" role="menu">
                                     <?php if (!isset($_tplPage) && !$server) { ?>
                                         <li><a href="#filterServer" role="button" data-toggle="modal">Filter columns</a></li>
-                                        <?php
+                                    <?php
                                     } elseif (!isset($_tplPage) && $server) {
-                                        ?>
+                                    ?>
                                         <li><a href="#filter" role="button" data-toggle="modal">Filter columns</a></li>
-                                        <?php
+                                    <?php
                                     }
                                     if ($server && !$tube) {
-                                        ?>
+                                    ?>
                                         <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
                                     <?php } ?>
                                     <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
@@ -156,14 +165,30 @@ if ($server) {
                             <?php } ?>
                         </ul>
                         <?php if (isset($server, $tube) && $server && $tube) { ?>
-                            <form  class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
-                                <input type="hidden" name="server" value="<?php echo $server; ?>"/>
-                                <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>"/>
-                                <input type="hidden" name="state" value="<?php echo $state; ?>"/>
-                                <input type="hidden" name="action" value="search"/>
-                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>"/>
+                            <form class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
+                                <input type="hidden" name="server" value="<?php echo $server; ?>" />
+                                <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>" />
+                                <input type="hidden" name="state" value="<?php echo $state; ?>" />
+                                <input type="hidden" name="action" value="search" />
+                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>" />
                                 <div class="form-group">
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
+                                </div>
+                            </form>
+                        <?php } elseif (isset($server) && $server) { ?>
+                            <form class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
+                                <input type="hidden" name="server" value="<?php echo $server; ?>" />
+                                <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>" />
+                                <input type="hidden" name="state" value="<?php echo $state; ?>" />
+                                <input type="hidden" name="action" value="search" />
+                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>" />
+                                <div class="form-group">
+                                    <!-- Add a wrapper div for positioning -->
+                                    <div class="search-wrapper" style="position: relative;">
+                                        <input type="text" class="form-control input-sm search-query" id="searchTubes" name="searchTubes" placeholder="Search tubes">
+                                        <!-- The Clear Button (initially hidden) -->
+                                        <span class="clear-search" style="display: none;">&times;</span>
+                                    </div>
                                 </div>
                             </form>
                         <?php } ?>
@@ -196,37 +221,41 @@ if ($server) {
                     }
                     ?>
                 <?php elseif (!$tube):
-                    ?>
+                ?>
                     <div id="idAllTubes">
                         <?php require_once dirname(__FILE__) . '/allTubes.php'; ?>
                         <?php require_once dirname(__FILE__) . '/modalClearTubes.php'; ?>
                     </div>
                     <div id='idAllTubesCopy' style="display:none"></div>
                 <?php elseif (!in_array($tube, $tubes)):
-                    ?>
+                ?>
                     <?php echo sprintf('Tube "%s" not found or it is empty', $tube) ?>
-                    <br><br><a href="./?server=<?php echo $server ?>"> << back </a>
-                <?php else:
-                    ?>
-                    <?php require_once dirname(__FILE__) . '/currentTube.php'; ?>
-                    <?php require_once dirname(__FILE__) . '/modalAddJob.php'; ?>
-                    <?php require_once dirname(__FILE__) . '/modalAddSample.php'; ?>
-                <?php endif; ?>
-                <?php if (!isset($_tplPage)) { ?>
-                    <?php require_once dirname(__FILE__) . '/modalFilterColumns.php'; ?>
-                <?php } ?>
-                <?php require_once dirname(__FILE__) . '/modalSettings.php'; ?>
-            <?php endif; ?>
-        </div>
+                    <br><br><a href="./?server=<?php echo $server ?>">
+                        << back </a>
+                        <?php else:
+                        ?>
+                            <?php require_once dirname(__FILE__) . '/currentTube.php'; ?>
+                            <?php require_once dirname(__FILE__) . '/modalAddJob.php'; ?>
+                            <?php require_once dirname(__FILE__) . '/modalAddSample.php'; ?>
+                        <?php endif; ?>
+                        <?php if (!isset($_tplPage)) { ?>
+                            <?php require_once dirname(__FILE__) . '/modalFilterColumns.php'; ?>
+                        <?php } ?>
+                        <?php require_once dirname(__FILE__) . '/modalSettings.php'; ?>
+                    <?php endif; ?>
+            </div>
 
-        <script src='assets/vendor/jquery/jquery.js'></script>
-        <script src="js/jquery.color.js"></script>
-        <script src="js/jquery.cookie.js"></script>
-        <script src="js/jquery.regexp.js"></script>
-        <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
-            <script src="highlight/highlight.pack.js"></script>
-            <script>hljs.initHighlightingOnLoad();</script><?php } ?>
-        <script src="js/customer.js"></script>
-    </body>
+            <script src='assets/vendor/jquery/jquery.js'></script>
+            <script src="js/jquery.color.js"></script>
+            <script src="js/jquery.cookie.js"></script>
+            <script src="js/jquery.regexp.js"></script>
+            <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+                <script src="highlight/highlight.pack.js"></script>
+                <script>
+                    hljs.initHighlightingOnLoad();
+                </script><?php } ?>
+            <script src="js/customer.js"></script>
+        </body>
+
 </html>
