@@ -202,17 +202,19 @@ $(document).ready(
                         $('#autoRefreshSummary').click();
                     }
                 }
-
-                window.addEventListener("keydown",function (e) {
-                    if (!e.ctrlKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
-                        // Check if a single alphanumeric key was pressed
-                        if (!$('#searchTubes').is(":focus")) {
-                            e.preventDefault();
-                            $('#searchTubes').focus();
-                            // Optionally, append the pressed key to the search field
-                            $('#searchTubes').val($('#searchTubes').val() + e.key);
-                        }
-                }});
+                
+                if ($('#searchTubes').is(':visible')) { // Check if the element is visible
+                    window.addEventListener("keydown",function (e) {
+                        if (!e.ctrlKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
+                            // Check if a single alphanumeric key was pressed
+                            if (!$('#searchTubes').is(":focus")) {
+                                e.preventDefault();
+                                $('#searchTubes').focus();
+                                // Optionally, append the pressed key to the search field
+                                $('#searchTubes').val($('#searchTubes').val() + e.key);
+                            }
+                    }});
+                }
 
                 var $searchTubesInput = $('#searchTubes');
                 var $clearSearchBtn = $searchTubesInput.siblings('.clear-search'); // Use siblings() relative to input
