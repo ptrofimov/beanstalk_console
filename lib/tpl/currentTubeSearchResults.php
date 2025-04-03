@@ -6,7 +6,7 @@ include('currentTubeJobsSummaryTable.php');
     <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>"><i class="glyphicon glyphicon-backward"></i>  &nbsp;Back to tube</a>
 </section>
 <?php
-if ($searchResults['total'] > 0) {
+if (array_key_exists('total', $searchResults) && $searchResults['total'] > 0) {
     unset($searchResults['total']);
     ?>
     <section id="searchResult">

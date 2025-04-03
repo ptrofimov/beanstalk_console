@@ -90,7 +90,7 @@ if ($server) {
                                 <li>
                                     <a href="./?server=<?php echo htmlspecialchars($server); ?>">
                                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <!-- Optional: Icon -->
-                                        All Tubes (<?php echo htmlspecialchars($serverLabel); ?>)
+                                        All Tubes
                                     </a>
                                 </li>
                                 <!-- Tube dropdown: current, then All, then remaining -->
