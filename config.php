@@ -20,5 +20,5 @@ $GLOBALS['config'] = array(
     /**
      * Version number
      */
-    'version' => '1.7.22',
+    'version' => '1.7.23',
 );
