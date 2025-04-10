@@ -8,8 +8,8 @@
             <div class="modal-body">
                 <input type="hidden" name="tube" value="<?php echo $tube; ?>"/>
                 <fieldset>
-                    <div class="alert alert-error hide" id="sampleSaveAlert">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
+                    <div class="alert alert-danger hide" id="sampleSaveAlert">
+                        <button type="button" class="close" onclick="$('#sampleSaveAlert').addClass('hide');">×</button>
                         <span><strong>Error!</strong> Required fields are marked *</span>
                     </div>
                     <input type="hidden" name="addsamplejobid" id="addsamplejobid">

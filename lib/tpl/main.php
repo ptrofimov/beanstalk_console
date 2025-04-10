@@ -204,7 +204,7 @@ $jsDefaults = $settings->getAllDefaults();
 
             <?php if (!empty($errors)): ?>
                 <?php foreach ($errors as $item): ?>
-                    <p class="alert alert-error"><span class="label label-important">Error</span> <?php echo $item ?></p>
+                    <p class="alert alert-danger"><span class="label label-important">Error</span> <?php echo $item ?></p>
                 <?php endforeach; ?>
             <?php else: ?>
                 <?php if (isset($_tplPage)): ?>

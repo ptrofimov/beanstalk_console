@@ -8,7 +8,7 @@ if (!empty($sampleJobs)) {
     if (isset($_SESSION['info'])) {
         ?>
         <div class="alert alert-info" id="sampleSaveAlert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
+            <button type="button" class="close" onclick="$('#sampleSaveAlert').addClass('hide');">×</button>
             <span><?php echo $_SESSION['info']; ?></span>
         </div>
         <script>

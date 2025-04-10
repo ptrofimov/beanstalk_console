@@ -8,8 +8,8 @@
             <div class="modal-body">
                 <form class="form-horizontal">
                     <fieldset>
-                        <div class="alert alert-error hide" id="tubeSaveAlert">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        <div class="alert alert-danger hide" id="tubeSaveAlert">
+                            <button type="button" class="close" onclick="$('#tubeSaveAlert').addClass('hide');">×</button>
                             <strong>Error!</strong> Required fields are marked *
                         </div>
 
