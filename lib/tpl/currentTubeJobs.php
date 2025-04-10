@@ -6,9 +6,8 @@ $visible = $console->getTubeStatVisible();
 $sampleJobs = $console->getSampleJobs($tube);
 $allStats = $console->getTubeStatValues($tube);
 
-if (!@empty($_COOKIE['tubePauseSeconds'])) {
-    $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
-} else {
+$tubePauseSeconds = $settings->getTubePauseSeconds();
+if ($tubePauseSeconds === -1) {
     $tubePauseSeconds = 3600;
 }
 
