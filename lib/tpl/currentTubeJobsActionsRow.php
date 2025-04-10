@@ -2,9 +2,8 @@
 $sampleJobs = $console->getSampleJobs($tube);
 $buriedJobsCount = $allStats['current-jobs-buried'];
 
-if (!@empty($_COOKIE['tubePauseSeconds'])) {
-    $tubePauseSeconds = intval($_COOKIE['tubePauseSeconds']);
-} else {
+$tubePauseSeconds = $settings->getTubePauseSeconds();
+if ($tubePauseSeconds === -1) {
     $tubePauseSeconds = 3600;
 }
 ?>
@@ -18,22 +17,22 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
             <input type="hidden" name="server" value="<?php echo $server ?>">
             <input type="hidden" name="tube" value="<?php echo urlencode($tube) ?>">
             <input type="hidden" name="action" value="kick">
-            <input id="kick_tube_no_<?php echo md5($tube);?>" type="number" value="10" name="count" min="0" step="1" size="4" class="btn btn-default btn-sm kick_jobs_no">
+            <input id="kick_tube_no_<?php echo md5($tube); ?>" type="number" value="10" name="count" min="0" step="1" size="4" class="btn btn-default btn-sm kick_jobs_no">
         </div>
     </form>
 
-    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=<?=$buriedJobsCount?>"><i class="glyphicon glyphicon-forward"></i> Kick all jobs</a>
+    <a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=kick&count=<?= $buriedJobsCount ?>"><i class="glyphicon glyphicon-forward"></i> Kick all jobs</a>
 
     <?php
     if (empty($tubeStats['pause-time-left'])) {
-        ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=-1"
-           title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="glyphicon glyphicon-pause"></i>
+    ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=-1"
+            title="Temporarily prevent jobs being reserved from the given tube. Pause for: <?php echo $tubePauseSeconds; ?> seconds"><i class="glyphicon glyphicon-pause"></i>
             Pause tube</a><?php
-    } else {
-        ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=0"
-           title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> Unpause tube</a><?php
-       }
-       ?>
+                        } else {
+                            ?><a class="btn btn-default btn-sm" href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=pause&count=0"
+            title="<?php echo sprintf('Pause seconds left: %d', $tubeStats['pause-time-left']); ?>"><i class="glyphicon glyphicon-play"></i> Unpause tube</a><?php
+                                                                                                                                                            }
+                                                                                                                                                                ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <div class="btn-group">
         <a data-toggle="modal" class="btn btn-success btn-sm" href="#" id="addJob"><i class="glyphicon glyphicon-plus-sign glyphicon-white"></i> Add job</a>
@@ -45,18 +44,18 @@ if (!@empty($_COOKIE['tubePauseSeconds'])) {
             <?php
             if (is_array($sampleJobs) && count($sampleJobs)) {
                 foreach ($sampleJobs as $key => $name) {
-                    ?>
+            ?>
                     <li>
                         <a href="./?server=<?php echo $server ?>&tube=<?php echo urlencode($tube) ?>&action=loadSample&key=<?php echo urlencode($key); ?>"><?php echo htmlspecialchars($name); ?></a>
                     </li>
-                    <?php
+                <?php
                 }
                 ?>
                 <li class="divider"></li>
                 <li><a href="./?action=manageSamples">Manage samples</a></li>
-                <?php
+            <?php
             } else {
-                ?>
+            ?>
                 <li>
                     <a href="#">There are no sample jobs</a>
                 </li>

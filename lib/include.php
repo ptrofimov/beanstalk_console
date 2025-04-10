@@ -19,6 +19,7 @@ Pheanstalk_ClassLoader::register(dirname(__FILE__));
 require_once 'BeanstalkInterface.class.php';
 require_once dirname(__FILE__) . '/../config.php';
 require_once dirname(__FILE__) . '/../src/Storage.php';
+require_once dirname(__FILE__) . '/../src/Settings.php';
 
 $GLOBALS['server'] = !empty($_GET['server']) ? filter_input(INPUT_GET, 'server', FILTER_SANITIZE_SPECIAL_CHARS) : '';
 $GLOBALS['action'] = !empty($_GET['action']) ? filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS) : '';
@@ -483,14 +484,25 @@ class Console {
     }
 
     protected function _actionPause() {
-        if ($this->_globalVar['count'] == -1) {
-            if (!@empty($_COOKIE['tubePauseSeconds'])) {
-                $this->_globalVar['count'] = $_COOKIE['tubePauseSeconds'];
+        $delayParam = $this->_globalVar['count']; // Get delay from URL parameter ('count')
+
+        if ($delayParam === '-1') {
+            // If URL param is -1, get the effective setting (Cookie or Config default)
+            $settings = new Settings();
+            $settingValue = $settings->getTubePauseSeconds();
+
+            // If the setting itself is -1 (meaning use beanstalkd default), set delay to 3600
+            if ($settingValue == -1) {
+                $delay = 3600; // Beanstalkd default pause time (1 hour)
             } else {
-                $this->_globalVar['count'] = 3600;
+                // Otherwise, use the non-negative value from settings (cookie or config)
+                $delay = max(0, $settingValue); // Ensure it's not negative if config/cookie somehow has < 0
             }
+        } else {
+            // Use the value directly from the URL parameter, ensuring it's a non-negative integer
+            $delay = max(0, intval($delayParam));
         }
-        $this->interface->pauseTube($this->_globalVar['tube'], $this->_globalVar['count']);
+        $this->interface->pauseTube($this->_globalVar['tube'], $delay);
         header(
                 sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($this->_globalVar['tube'])));
         exit();

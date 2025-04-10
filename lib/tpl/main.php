@@ -4,6 +4,8 @@ if ($server) {
     $serverKey = array_search($server, $servers);
     $serverLabel = is_numeric($serverKey) || empty($serverKey) ? $server : $serverKey;
 }
+$settings = new Settings();
+$jsDefaults = $settings->getAllDefaults();
 ?>
 <!DOCTYPE html>
 <html>
@@ -170,7 +172,7 @@ if ($server) {
                                 <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>" />
                                 <input type="hidden" name="state" value="<?php echo $state; ?>" />
                                 <input type="hidden" name="action" value="search" />
-                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>" />
+                                <input type="hidden" name="limit" value="<?php echo $settings->getSearchResultLimit() ?? 25 ?>" />
                                 <div class="form-group">
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
                                 </div>
@@ -181,7 +183,7 @@ if ($server) {
                                 <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>" />
                                 <input type="hidden" name="state" value="<?php echo $state; ?>" />
                                 <input type="hidden" name="action" value="search" />
-                                <input type="hidden" name="limit" value="<?php echo empty($_COOKIE['searchResultLimit']) ? 25 : $_COOKIE['searchResultLimit']; ?>" />
+                                <input type="hidden" name="limit" value="<?php echo $settings->getSearchResultLimit() ?? 25 ?>" />
                                 <div class="form-group">
                                     <!-- Add a wrapper div for positioning -->
                                     <div class="search-wrapper" style="position: relative;">
@@ -250,11 +252,18 @@ if ($server) {
             <script src="js/jquery.cookie.js"></script>
             <script src="js/jquery.regexp.js"></script>
             <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-            <?php if (isset($_COOKIE['isDisabledJobDataHighlight']) and $_COOKIE['isDisabledJobDataHighlight'] != 1) { ?>
+            <script>
+                // Use the defaults obtained from the Settings class instance
+                window.beanstalkConsoleDefaults = <?php echo json_encode($jsDefaults, JSON_PRETTY_PRINT); ?>;
+            </script>
+            <?php
+            if ($settings->isJobDataHighlightEnabled()) {
+            ?>
                 <script src="highlight/highlight.pack.js"></script>
                 <script>
                     hljs.initHighlightingOnLoad();
-                </script><?php } ?>
+                </script>
+            <?php } ?>
             <script src="js/customer.js"></script>
         </body>
 

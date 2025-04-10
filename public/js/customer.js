@@ -4,6 +4,24 @@ $(document).ready(
             var timer;
             var doAutoRefresh = false;
 
+            // Helper function to get setting value (Cookie > Default > Fallback)
+            function getSettingValue(key, ultimateFallback) {
+                var cookieVal = $.cookie(key);
+                if (cookieVal !== undefined && cookieVal !== null) {
+                    // Checkbox cookies are '0' or '1', others are numeric strings
+                    if (key.startsWith('enable')) {
+                        return cookieVal == '1'; // Convert '1'/'0' to true/false
+                    } else {
+                        var parsed = parseInt(cookieVal);
+                        return isNaN(parsed) ? ultimateFallback : parsed; // Return parsed int or fallback
+                    }
+                } else if (window.beanstalkConsoleDefaults && window.beanstalkConsoleDefaults[key] !== undefined) {
+                    return window.beanstalkConsoleDefaults[key]; // Use default from PHP (already correct type)
+                } else {
+                    return ultimateFallback; // Ultimate fallback if not in cookie or defaults
+                }
+            }
+
             __init();
 
             function __init() {
@@ -120,20 +138,18 @@ $(document).ready(
 
                 $('#settings input').on('change', function () {
                     var val;
+                    var cookieName = this.id; // Use the input's ID as the cookie name (should match config keys now)
+
                     if ($(this).attr('type') == 'checkbox') {
-                        if ($(this).is(':checked')) {
-                            val = $(this).val();
-                        } else {
-                            val = null;
-                        }
+                        // Standard logic: checked = 1 (enabled), unchecked = 0 (disabled)
+                        val = $(this).is(':checked') ? 1 : 0;
                     } else {
+                        // For text inputs, just use the value
                         val = $(this).val();
                     }
-                    if (jQuery.inArray(this.id, ['isDisabledUnserialization', 'isDisabledJsonDecode', 'isDisabledJobDataHighlight']) >= 0)
-                        val = $(this).is(':checked') ? null : 1;
-                    if (jQuery.inArray(this.id, ['isEnabledAutoRefreshLoad', 'isEnabledBase64Decode']) >= 0)
-                        val = $(this).is(':checked') ? 1 : null;
-                    $.cookie(this.id, val, {expires: 365});
+
+                    // Save the cookie using the input's ID (which matches the new config keys)
+                    $.cookie(cookieName, val, {expires: 365});
                 });
 
                 $('.addSample').on('click', function () {
@@ -194,20 +210,23 @@ $(document).ready(
                     });
                 }
 
-                if ($.cookie('isEnabledAutoRefreshLoad')) {
-                    if ($('#autoRefresh').length) {
-                        $('#autoRefresh').click();
-                    }
-                    if ($('#autoRefreshSummary').length) {
-                        $('#autoRefreshSummary').click();
-                    }
-                }
-                
+                 // Use helper function to get the effective setting (Cookie > Default)
+                 var autoRefreshOnLoad = getSettingValue('enableAutoRefreshLoad', false); // Ultimate fallback is false
+
+                 if (autoRefreshOnLoad) {
+                     if ($('#autoRefresh').length) {
+                         $('#autoRefresh').click();
+                     }
+                     if ($('#autoRefreshSummary').length) {
+                         $('#autoRefreshSummary').click();
+                     }
+                 }
+
                 if ($('#searchTubes').is(':visible')) { // Check if the element is visible
                     window.addEventListener("keydown",function (e) {
-                        if (!e.ctrlKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
+                        if (!e.ctrlKey && !e.altKey && !e.shiftKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
                             // Check if a single alphanumeric key was pressed
-                            if (!$('#searchTubes').is(":focus")) {
+                            if (!$('#searchTubes').is(":focus") && !$('body').hasClass('modal-open')) {
                                 e.preventDefault();
                                 $('#searchTubes').focus();
                                 // Optionally, append the pressed key to the search field
@@ -252,7 +271,7 @@ $(document).ready(
                         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                     });
                 });
-            }
+            } // end __init
 
             function addServer(host, port) {
                 if (host) {
@@ -354,13 +373,10 @@ $(document).ready(
                     'data': params,
                     'success': function (data) {
                         if (doAutoRefresh) {
-                            var ms = 500;
-                            if ($.cookie('autoRefreshTimeoutMs')) {
-                                ms = parseInt($.cookie('autoRefreshTimeoutMs'));
-                            }
-                            if (ms < 200) {
-                                ms = 200;
-                            }
+                            // Use helper function to get effective timeout (Cookie > Default > Fallback 500)
+                            var ms = getSettingValue('autoRefreshTimeoutMs', 500);
+                            ms = Math.max(200, ms); // Enforce minimum 200ms
+
                             // wrapping all of this to prevent last update
                             // after you turn it off
                             var html = $(options.containerClass).html();

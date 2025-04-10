@@ -5,8 +5,15 @@ class BeanstalkInterface {
     protected $_contentType;
     protected $_tubes;
     public $_client;
+    private $settings;
 
-    public function __construct($server) {
+    /**
+     * Constructor
+     *
+     * @param string $server The server connection string (e.g., "localhost:11300" or "beanstalk://host:port").
+     * @param Settings $settings The Settings object instance.
+     */
+    public function __construct($server, $settings = null) {
         if (strpos($server, "beanstalk://") === 0) {
             $url = parse_url($server);
             $host = $url['host'];
@@ -17,6 +24,7 @@ class BeanstalkInterface {
             $port = isset($list[1]) ? $list[1] : '';
         }
         $this->_client = new Pheanstalk($host, $port);
+        $this->settings = $settings ?? new Settings();
     }
 
     public function getTubes() {
@@ -215,18 +223,25 @@ class BeanstalkInterface {
             $peek = array();
         }
         if ($peek) {
-            $peek['data'] = $this->_decodeDate($peek['data']);
+            $peek['data'] = $this->_decodeData($peek['data']);
         }
         return $peek;
     }
 
-    private function _decodeDate($pData) {
-        $this->_contentType = false;
-        $out = $pData;
-        $data = null;
+    /**
+     * Decodes job data based on user settings.
+     *
+     * @param string $pData Raw job data.
+     * @return mixed Decoded data or original data if no decoding applied/successful.
+     */
+    private function _decodeData($pData) { // Renamed from _decodeDate for clarity
+        $this->_contentType = false; // Reset content type flag
+        $out = $pData; // Default output is the raw data
+        $data = null; // Intermediate decoded data
 
-        if (@$_COOKIE['isEnabledBase64Decode'] == 1) {
-            $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
+        // 1. Try Base64 Decode (if enabled in settings)
+        if ($this->settings->isBase64DecodeEnabled()) {
+            set_error_handler(array($this, 'exceptions_error_handler'));
             try {
                 $data = base64_decode($pData);
             } catch (Exception $e) {
@@ -237,8 +252,9 @@ class BeanstalkInterface {
             restore_error_handler();
         }
 
-        if (@$_COOKIE['isDisabledUnserialization'] != 1) {
-            $mixed = set_error_handler(array($this, 'exceptions_error_handler'));
+        // 2. Try Unserialize (if enabled in settings)
+        if ($this->settings->isUnserializationEnabled()) {
+            set_error_handler(array($this, 'exceptions_error_handler'));
             try {
                 $data = unserialize($pData);
             } catch (Exception $e) {
@@ -253,7 +269,8 @@ class BeanstalkInterface {
             $this->_contentType = 'php';
             $out = $data;
         } else {
-            if (@$_COOKIE['isDisabledJsonDecode'] != 1) {
+            // 3. Try JSON Decode (if enabled in settings)
+            if ($this->settings->isJsonDecodeEnabled()) {
                 $data = @json_decode($pData, true);
             }
             if ($data) {
