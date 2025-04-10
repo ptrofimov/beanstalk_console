@@ -455,7 +455,7 @@ $(document).ready(
                             $('#modalAddSample').modal('toggle');
                         } else {
                             $('#sampleSaveAlert span').text(data.error);
-                            $('#sampleSaveAlert').fadeIn('fast');
+                            $('#sampleSaveAlert').removeClass('hide').fadeIn('fast');
                         }
                     },
                     'type': 'POST',

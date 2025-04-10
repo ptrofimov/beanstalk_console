@@ -27,8 +27,8 @@ if (isset($isNewRecord) && $isNewRecord) {
             <?php
             if (isset($error)) {
                 ?>
-                <div class="alert alert-error">
-                    <button type="button" class="close" data-dismiss="alert">×</button>
+                <div class="alert alert-danger" id="sampleSaveAlert2">
+                    <button type="button" class="close" onclick="$('#sampleSaveAlert2').addClass('hide');">×</button>
                     <span> <?php echo $error; ?></span>
                 </div>
             <?php } ?>
