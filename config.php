@@ -14,7 +14,7 @@
  * 1. CREATE A NEW FILE: In this same directory, create a file named:
  *    `config.local.php`
  *
- * 2. DEFINE OVERRIDES: Inside `config.local.php`
+ * 2. COPY BELOW CONFIGURATION + DEFINE OVERRIDES: Inside `config.local.php`
  *
  * =============================================================================
  */
@@ -26,10 +26,12 @@ if (file_exists($localConfigFile) && is_readable($localConfigFile) && basename(_
     $temp_version = $GLOBALS['config']['version'];
     require $localConfigFile;
     $GLOBALS['config']['version'] = $temp_version; // be on the safe side with the version number
-    if (count($GLOBALS['config'], true) < 16) {
+    if (count($GLOBALS['config'], true) != 1 && count($GLOBALS['config'], true) < 16) {
         die('Please update your config.local.php with all new options. You are missing some.');
     }
-    return;
+    if (is_array($GLOBALS['config']['servers'])) {
+        return;
+    }
 }
 /**
  * =============================================================================
