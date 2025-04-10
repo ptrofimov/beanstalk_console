@@ -2,3 +2,4 @@
 /vendor
 .vagrant
 nbproject/
+config.local.php
