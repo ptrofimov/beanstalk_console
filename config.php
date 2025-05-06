@@ -41,6 +41,10 @@ if (file_exists($localConfigFile) && is_readable($localConfigFile) && basename(_
 
 $GLOBALS['config'] = array(
     /**
+     * Version
+     */
+    'version' => '1.8.0',
+    /**
      * List of servers available for all users
      */
     'servers' => array(/* 'Local Beanstalkd' => 'beanstalk://localhost:11300', ... */),
