@@ -6,7 +6,10 @@
  * @author Petr Trofimov, Sergey Lysenko
  */
 function autoload_class($class) {
-    require_once str_replace('_', '/', $class) . '.php';
+    $file = str_replace('_', '/', $class) . '.php';
+    if (stream_resolve_include_path($file)) {
+        require_once $file;
+    }
 }
 
 spl_autoload_register('autoload_class');
@@ -70,6 +73,9 @@ class Console {
     }
 
     public function getServerStats($server) {
+        if (empty($server) || !is_string($server)) {
+            return array();
+        }
         try {
             $interface = new BeanstalkInterface($server);
             $stats = $interface->getServerStats();

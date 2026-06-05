@@ -140,7 +140,16 @@ class BeanstalkInterface {
             'cmd-pause-tube' => 'Pause(cmd)',
             'pause' => 'Pause(sec)',
             'pause-time-left' => 'Pause(left)');
-        foreach ($this->_client->statsTube($tube) as $key => $value) {
+        try {
+            $tubeStats = $this->_client->statsTube($tube);
+        } catch (Pheanstalk_Exception_ServerException $e) {
+            if (strpos($e->getMessage(), Pheanstalk_Response::RESPONSE_NOT_FOUND) !== false) {
+                return array();
+            } else {
+                throw $e;
+            }
+        }
+        foreach ($tubeStats as $key => $value) {
             if (!array_key_exists($key, $nameTube)) {
                 continue;
             }

@@ -1,4 +1,4 @@
-<VirtualHost *:80>
+<VirtualHost *:8080>
   ServerSignature off
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/public

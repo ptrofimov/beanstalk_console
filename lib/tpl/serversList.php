@@ -17,8 +17,10 @@ if (!empty($_COOKIE['filter'])) {
 }
 ?>
 <?php
-if (!empty($servers)):
+if (!empty($servers)) {
     $servers = array_filter(array_unique($servers));
+}
+if (!empty($servers)):
     ?>
     <div class="row">
         <div class="col-sm-12">
