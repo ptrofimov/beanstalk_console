@@ -28,15 +28,16 @@ services:
     ## * image: agaveapi/beanstalkd-console
     build: .
     ports:
-      - 80:80
+      - 80:8080
     environment:
       - BEANSTALKD_HOST=beanstalkd
     links:
       - beanstalkd
   beanstalkd:
-    image: dinamic/docker-alpine-beanstalkd
+    image: dinamic/docker-alpine-beanstalkd:latest
+    command: ["beanstalkd", "-b", "/var/lib/beanstalkd"]
     volumes:
-      - beanstalkd_data:/var/lib/beanstald
+      - beanstalkd_data:/var/lib/beanstalkd
 
 volumes:
   beanstalkd_data:
