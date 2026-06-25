@@ -192,6 +192,16 @@ $(document).ready(
                         document.location.replace($(this).data('href') + ($(this).val()));
                     }
                 });
+
+                // Review batch preparation guard: do not start a review for an empty state.
+                $('#reviewBatchStartSubmit').on('click', function () {
+                    var count = parseInt($('#reviewState option:selected').data('count'), 10) || 0;
+                    if (count === 0) {
+                        alert('The selected state has no jobs to review.');
+                        return false;
+                    }
+                    return true;
+                });
                 $(document).on('click', '#addServer', function () {
                     $('#servers-add').modal('toggle');
                     return false;
@@ -204,6 +214,85 @@ $(document).ready(
                         localStorage.setItem($(this).attr('id'), $(this).val());
                     }
                 });
+
+                // Review table controls: selection, bulk action guards, body expansion, and progress runners.
+                $('#reviewSelectAll').on('change', function () {
+                    $('.reviewJobCheckbox').prop('checked', $(this).is(':checked'));
+                });
+                $('#reviewSelectAllButton').on('click', function () {
+                    $('.reviewJobCheckbox').prop('checked', true);
+                    $('#reviewSelectAll').prop('checked', true);
+                    return false;
+                });
+                $('#reviewSelectNoneButton').on('click', function () {
+                    $('.reviewJobCheckbox').prop('checked', false);
+                    $('#reviewSelectAll').prop('checked', false);
+                    return false;
+                });
+                var lastReviewCheckbox = null;
+                $('.reviewJobCheckbox').on('click', function (e) {
+                    if (e.shiftKey && lastReviewCheckbox) {
+                        clearTextSelection();
+                        selectReviewCheckboxRange(lastReviewCheckbox, this, $(this).is(':checked'));
+                    }
+                    lastReviewCheckbox = this;
+                    updateReviewSelectAllState();
+                    e.stopPropagation();
+                });
+                $('.reviewJobCheckbox').closest('tr').on('click', function (e) {
+                    if ($(e.target).is('a, button, input, label, select, textarea') || $(e.target).closest('a, button, label').length) {
+                        return;
+                    }
+                    if (!e.shiftKey && window.getSelection && String(window.getSelection()).length > 0) {
+                        return;
+                    }
+                    var checkbox = $(this).find('.reviewJobCheckbox').get(0);
+                    if (!checkbox) {
+                        return;
+                    }
+                    if (e.shiftKey) {
+                        e.preventDefault();
+                        clearTextSelection();
+                    }
+                    checkbox.checked = !checkbox.checked;
+                    if (e.shiftKey && lastReviewCheckbox) {
+                        selectReviewCheckboxRange(lastReviewCheckbox, checkbox, checkbox.checked);
+                    }
+                    lastReviewCheckbox = checkbox;
+                    updateReviewSelectAllState();
+                });
+                $('.reviewJobView').on('click', function () {
+                    loadReviewJobBody($(this).data('review-id'), this);
+                    return false;
+                });
+                $('#reviewToggleBodies').on('click', function () {
+                    var $button = $(this);
+                    if ($button.data('expanded')) {
+                        showVisibleReviewPreviews();
+                        $button.data('expanded', 0).text('Show full bodies on this page');
+                    } else {
+                        showVisibleReviewBodies();
+                        $button.data('expanded', 1).text('Show previews');
+                    }
+                    return false;
+                });
+                $('button[data-confirm]').on('click', function () {
+                    if ($(this).data('requires-selection') && $('.reviewJobCheckbox:checked').length === 0) {
+                        alert('No review jobs are selected.');
+                        return false;
+                    }
+                    if ($(this).data('requires-moved') && (parseInt($('#reviewRemainingMovedCount').val(), 10) || 0) === 0) {
+                        alert('There are no remaining moved review jobs to process.');
+                        return false;
+                    }
+                    return confirm($(this).data('confirm'));
+                });
+                if ($('#reviewBatchProgress').length) {
+                    processReviewBatch();
+                }
+                if ($('#reviewBatchOperationProgress').length) {
+                    processReviewBatchOperation();
+                }
                 if (typeof (Storage) != "undefined") {
                     $('.kick_jobs_no').each(function () {
                         $(this).val(localStorage.getItem($(this).attr('id')) || 10);
@@ -224,6 +313,9 @@ $(document).ready(
 
                 if ($('#searchTubes').is(':visible')) { // Check if the element is visible
                     window.addEventListener("keydown",function (e) {
+                        if ($(e.target).is('input, textarea, select') || $(e.target).is('[contenteditable=true]')) {
+                            return;
+                        }
                         if (!e.ctrlKey && !e.altKey && !e.shiftKey && e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)) {
                             // Check if a single alphanumeric key was pressed
                             if (!$('#searchTubes').is(":focus") && !$('body').hasClass('modal-open')) {
@@ -325,6 +417,216 @@ $(document).ready(
                 $('#tubePriority').val('');
                 $('#tubeDelay').val('');
                 $('#tubeTtr').val('');
+            }
+
+            // Continue preparing a review batch one server-side chunk at a time.
+            function processReviewBatch() {
+                var $container = $('#reviewBatchProgress');
+                var batchId = $container.data('batch-id');
+                if (!batchId) {
+                    return;
+                }
+
+                $.ajax({
+                    'url': url + '&action=reviewBatchProcess',
+                    'data': {'batchId': batchId},
+                    'success': function (data) {
+                        if (!data || !data.batch) {
+                            $('#reviewBatchMessage').text('Unexpected response while processing the review batch.');
+                            return;
+                        }
+
+                        var batch = data.batch;
+                        var target = parseInt(batch.target_count, 10) || 0;
+                        var processed = parseInt(batch.processed, 10) || 0;
+                        var pct = target > 0 ? Math.min(100, Math.floor((processed / target) * 100)) : 100;
+
+                        $('#reviewBatchStatus').text(batch.status);
+                        $('#reviewBatchProcessed').text(processed);
+                        $('#reviewBatchTarget').text(target);
+                        $('#reviewBatchProgressBar').css('width', pct + '%');
+
+                        if (batch.status === 'processing') {
+                            setTimeout(processReviewBatch, 200);
+                        } else if (batch.status === 'complete' || batch.status === 'error') {
+                            window.location.href = $container.data('show-url');
+                        } else {
+                            $('#reviewBatchMessage').text(batch.error_message || batch.safety_message || 'Review batch stopped.');
+                        }
+                    },
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'error': function () {
+                        $('#reviewBatchMessage').text('Error while processing the review batch.');
+                    }
+                });
+            }
+
+            // Continue a long-running all-return/all-delete review operation in chunks.
+            function processReviewBatchOperation() {
+                var $container = $('#reviewBatchOperationProgress');
+                var batchId = $container.data('batch-id');
+                if (!batchId) {
+                    return;
+                }
+
+                $.ajax({
+                    'url': url + '&action=reviewBatchOperationProcess',
+                    'data': {'batchId': batchId},
+                    'success': function (data) {
+                        if (!data || !data.operation) {
+                            $('#reviewBatchOperationMessage').text('Unexpected response while processing the review operation.');
+                            return;
+                        }
+
+                        var operation = data.operation;
+                        var target = parseInt(operation.target_count, 10) || 0;
+                        var processed = parseInt(operation.processed, 10) || 0;
+                        var pct = target > 0 ? Math.min(100, Math.floor((processed / target) * 100)) : 100;
+
+                        $('#reviewBatchOperationStatus').text(operation.status);
+                        $('#reviewBatchOperationProcessed').text(processed);
+                        $('#reviewBatchOperationTarget').text(target);
+                        $('#reviewBatchOperationErrors').text(operation.errors || 0);
+                        $('#reviewBatchOperationProgressBar').css('width', pct + '%');
+
+                        if (operation.status === 'processing') {
+                            setTimeout(processReviewBatchOperation, 200);
+                        } else if (operation.status === 'complete') {
+                            window.location.href = $container.data('show-url');
+                        } else {
+                            $('#reviewBatchOperationMessage').text(operation.error_message || 'Review operation stopped.');
+                        }
+                    },
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'error': function () {
+                        $('#reviewBatchOperationMessage').text('Error while processing the review operation.');
+                    }
+                });
+            }
+
+            // Show one already-loaded review-copy body in the inspection modal.
+            function loadReviewJobBody(reviewId, button) {
+                var $button = button ? $(button) : $();
+                var $body = $('.reviewJobBodyFull[data-review-id="' + reviewId + '"]');
+
+                $('#reviewJobBodyContent').text('');
+                $('#reviewJobBodyModal').modal('show');
+
+                if (!$body.length) {
+                    $('#reviewJobBodyStats').html('<tr><td>Error</td><td>Job body is not available on this page.</td></tr>');
+                    return;
+                }
+
+                var rows = '';
+                rows += reviewJobStatRow('Original ID', $button.data('original-id'));
+                rows += reviewJobStatRow('Review ID', reviewId);
+                rows += reviewJobStatRow('Status', $button.data('status'));
+                rows += reviewJobStatRow('Priority', $button.data('pri'));
+                rows += reviewJobStatRow('TTR', $button.data('ttr'));
+                rows += reviewJobStatRow('Age', formatDuration($button.data('age')));
+                rows += reviewJobStatRow('Reserves', $button.data('reserves'));
+                rows += reviewJobStatRow('Buries', $button.data('buries'));
+                rows += reviewJobStatRow('Display', $body.data('content-type') || 'text');
+                $('#reviewJobBodyStats').html(rows);
+                $('#reviewJobBodyContent').text($body.text());
+            }
+
+            // Expand all visible preview cells using the full bodies already loaded with the page.
+            function showVisibleReviewBodies() {
+                $('.reviewJobBodyPreview').each(function () {
+                    var $preview = $(this);
+                    var reviewId = $preview.data('review-id');
+                    var $body = $('.reviewJobBodyFull[data-review-id="' + reviewId + '"]');
+
+                    if ($body.length) {
+                        $preview.text($body.text());
+                    } else {
+                        $preview.text('Job body is not available on this page.');
+                    }
+                });
+            }
+
+            function showVisibleReviewPreviews() {
+                $('.reviewJobBodyPreview').each(function () {
+                    $(this).text($(this).data('preview') || '');
+                });
+            }
+
+            // Render one metadata row in the review body modal.
+            function reviewJobStatRow(label, value) {
+                if (value === undefined || value === null || value === '') {
+                    value = '';
+                }
+                return '<tr><th>' + escapeHtml(label) + '</th><td>' + escapeHtml(String(value)) + '</td></tr>';
+            }
+
+            // Apply shift-click range selection across review job checkboxes.
+            function selectReviewCheckboxRange(first, second, checked) {
+                var boxes = $('.reviewJobCheckbox').toArray();
+                var firstIndex = boxes.indexOf(first);
+                var secondIndex = boxes.indexOf(second);
+                var start;
+                var end;
+
+                if (firstIndex < 0 || secondIndex < 0) {
+                    return;
+                }
+
+                start = Math.min(firstIndex, secondIndex);
+                end = Math.max(firstIndex, secondIndex);
+
+                for (var i = start; i <= end; i++) {
+                    boxes[i].checked = checked;
+                }
+            }
+
+            // Keep the header checkbox in sync with the visible row checkboxes.
+            function updateReviewSelectAllState() {
+                var $boxes = $('.reviewJobCheckbox');
+                var checkedCount = $boxes.filter(':checked').length;
+                $('#reviewSelectAll').prop('checked', $boxes.length > 0 && checkedCount === $boxes.length);
+            }
+
+            // Prevent accidental text highlighting while using shift-click range selection.
+            function clearTextSelection() {
+                if (window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                } else if (document.selection) {
+                    document.selection.empty();
+                }
+            }
+
+            function formatDuration(value) {
+                value = parseInt(value, 10);
+                if (isNaN(value)) {
+                    return '';
+                }
+                var days = Math.floor(value / 86400);
+                var hours = Math.floor(value / 3600) % 24;
+                var minutes = Math.floor(value / 60) % 60;
+                var seconds = Math.floor(value % 60);
+                var parts = [];
+
+                if (days > 0) {
+                    parts.push('days: ' + days);
+                }
+                if (hours > 0) {
+                    parts.push('hours: ' + hours);
+                }
+                if (minutes > 0) {
+                    parts.push('minutes: ' + minutes);
+                }
+                if (seconds > 0 || parts.length === 0) {
+                    parts.push('seconds: ' + seconds);
+                }
+
+                return parts.join(', ');
+            }
+
+            function escapeHtml(value) {
+                return $('<div>').text(value).html();
             }
 
             function formatJson(val) {

@@ -23,6 +23,7 @@
                                     <td><?php echo $key ?></td>
                                     <td>
                                         <?php
+                                        // Refactor target: this block can eventually share formatDuration().
                                         if (in_array($key, array('age', 'delay', 'time-left'), true)) {
                                             $days = floor($value / 86400);
                                             $hours = floor($value / 3600) % 24;

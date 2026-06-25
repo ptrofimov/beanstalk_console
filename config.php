@@ -75,4 +75,30 @@ $GLOBALS['config'] = array(
         'enableUnserialization'     => false, // Default: Job data IS NOT unserialized by default
         'enableBase64Decode'        => false, // Default: Job data IS NOT base64_decoded by default
     ),
+
+    /**
+     * Review batch settings.
+     */
+    'review' => array(
+        // Enables the review batch UI and actions. Set false to disable this feature entirely.
+        'enabled' => false,
+        // Number of jobs processed per AJAX chunk while preparing reviews and while running chunked return/delete operations.
+        'chunkSize' => 200,
+        // Number of characters shown in the review table body preview before truncation.
+        'bodyPreviewLength' => 100,
+        // Allow preparing ready jobs only when stats-tube reports no watchers/waiters for the source tube.
+        'allowReadyWhenUnwatched' => true,
+        // Allow preparing delayed jobs only when stats-tube reports no watchers/waiters for the source tube.
+        'allowDelayedWhenUnwatched' => true,
+        // Dangerous: allow ready job review even when workers may be watching. Requires explicit checkbox in the UI.
+        'allowUnsafeReadyOverride' => false,
+        // Dangerous: allow delayed job review even when workers may be watching. Requires explicit checkbox in the UI.
+        'allowUnsafeDelayedOverride' => false,
+        // If true, the UI never offers body snapshot capture and the backend refuses to create body snapshots.
+        // Body snapshots preserve review-time payloads, but can create large sensitive files and impact review-page/body-load performance.
+        'neverIncludeBodySnapshot' => false,
+        // Directory for review metadata files. null means dirname($config['storage']) . '/review-batches'.
+        // This stores audit JSONL, materialized current summaries, operation metadata, and optional body snapshot JSONL files.
+        'storagePath' => null,
+    ),
 );
