@@ -29,6 +29,17 @@ if ($reviewEnabled) {
 }
 $readyJobsCount = isset($allStats['current-jobs-ready']) ? (int)$allStats['current-jobs-ready'] : 0;
 $delayedJobsCount = isset($allStats['current-jobs-delayed']) ? (int)$allStats['current-jobs-delayed'] : 0;
+$reviewStateCounts = array(
+    'buried' => (int)$buriedJobsCount,
+    'delayed' => $delayedJobsCount,
+    'ready' => $readyJobsCount,
+);
+$defaultReviewState = 'buried';
+foreach ($reviewStateCounts as $reviewState => $reviewStateCount) {
+    if ($reviewStateCount > $reviewStateCounts[$defaultReviewState]) {
+        $defaultReviewState = $reviewState;
+    }
+}
 $bodySnapshotDisabled = !empty($config['review']['neverIncludeBodySnapshot']);
 
 $tubePauseSeconds = $settings->getTubePauseSeconds();
@@ -117,31 +128,42 @@ if ($tubePauseSeconds === -1) {
                             Existing review batches for this tube were prepared from <?php echo htmlspecialchars(implode(', ', array_keys($reviewOwnerIps))); ?>.
                         </p>
                     <?php endif; ?>
-                    <div class="form-group">
+                    <div class="form-inline" style="margin-bottom: 10px;">
                         <label for="reviewState">State</label>
-                        <select id="reviewState" name="state" class="form-control">
-                            <option value="buried" data-count="<?php echo (int)$buriedJobsCount; ?>">Buried (<?php echo (int)$buriedJobsCount; ?>)</option>
-                            <option value="delayed" data-count="<?php echo (int)$delayedJobsCount; ?>">Delayed (<?php echo (int)$delayedJobsCount; ?>)</option>
-                            <option value="ready" data-count="<?php echo (int)$readyJobsCount; ?>">Ready (<?php echo (int)$readyJobsCount; ?>)</option>
+                        <select id="reviewState" name="state" class="form-control" style="margin-right: 15px;">
+                            <?php foreach (array('buried', 'delayed', 'ready') as $reviewState): ?>
+                                <?php $stateSafety = isset($reviewSafety[$reviewState]) ? $reviewSafety[$reviewState] : array('allowed' => false, 'message' => 'Safety check unavailable.'); ?>
+                                <option value="<?php echo $reviewState; ?>"
+                                        data-count="<?php echo (int)$reviewStateCounts[$reviewState]; ?>"
+                                        data-allowed="<?php echo !empty($stateSafety['allowed']) ? 1 : 0; ?>"
+                                        data-force-allowed="<?php echo $console->isUnsafeReviewOverrideEnabled($reviewState) ? 1 : 0; ?>"
+                                        data-message="<?php echo htmlspecialchars($stateSafety['message']); ?>"<?php echo $reviewState === $defaultReviewState ? ' selected="selected"' : ''; ?>>
+                                    <?php echo ucfirst($reviewState); ?> (<?php echo (int)$reviewStateCounts[$reviewState]; ?>)
+                                </option>
+                            <?php endforeach; ?>
                         </select>
+                        <label for="reviewLimit">Jobs to review</label>
+                        <input id="reviewLimit" name="reviewLimit" class="form-control" style="width: 100px;" type="number" min="1" step="1" value="<?php echo (int)$reviewStateCounts[$defaultReviewState]; ?>">
+                        <p class="help-block">Prefilled with the selected state's current count. Lower it to prepare a smaller batch.</p>
                     </div>
                     <div class="form-group">
                         <label for="reviewTube">Review tube</label>
                         <input id="reviewTube" name="reviewTube" class="form-control" value="<?php echo htmlspecialchars(ReviewBatchNaming::defaultReviewTube($tube)); ?>">
                     </div>
-                    <p class="help-block">The batch records the current job count for the selected state and processes up to that number of jobs. Jobs added later are left for a later batch when queue order allows.</p>
+                    <p class="help-block">The batch records the current job count for the selected state and processes up to the requested number of jobs. Jobs added later are left for a later batch when queue order allows.</p>
                     <?php if (!$bodySnapshotDisabled): ?>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="includeBodySnapshot" value="1" checked="checked">
                                 Write body snapshot JSONL during preparation
                             </label>
-                            <p class="help-block">Stores each job body in a local body-snapshot file as it is reviewed. This preserves payloads after review copies are returned or deleted, but can create a large sensitive file and affect review-page/body-load performance.</p>
+                            <p class="help-block">Stores each job body in a local body-snapshot file as it is reviewed. This preserves payloads after review copies are returned or deleted, but can create a large local file and affect review-page/body-load performance.</p>
                         </div>
                     <?php endif; ?>
                     <?php if ($reviewSafetyError): ?>
                         <p class="text-danger">Review safety checks unavailable: <?php echo htmlspecialchars($reviewSafetyError); ?></p>
                     <?php else: ?>
+                        <p id="reviewSafetyMessage" class="alert alert-info"></p>
                         <ul class="list-unstyled">
                             <?php foreach ($reviewSafety as $reviewState => $reviewStateSafety): ?>
                                 <li><strong><?php echo ucfirst($reviewState); ?>:</strong> <?php echo htmlspecialchars($reviewStateSafety['message']); ?></li>
@@ -159,6 +181,9 @@ if ($tubePauseSeconds === -1) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning" id="reviewBatchPauseProceedSubmit" name="pauseAndProceed" value="1">
+                        Pause tube and proceed
+                    </button>
                     <button type="submit" class="btn btn-info" id="reviewBatchStartSubmit">Start review batch</button>
                 </div>
             </form>

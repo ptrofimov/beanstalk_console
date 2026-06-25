@@ -71,6 +71,7 @@ class ReviewBatchPageBuilderFakeInterface {
 
 class ReviewBatchPageBuilderFakeStorage {
     public $updates = array();
+    public $snapshotCalls = 0;
     private $jobs;
     private $snapshots;
 
@@ -107,6 +108,7 @@ class ReviewBatchPageBuilderFakeStorage {
     }
 
     public function getBodySnapshots($batchId, $reviewIds = null) {
+        $this->snapshotCalls++;
         if ($reviewIds === null) {
             return $this->snapshots;
         }
@@ -153,6 +155,18 @@ try {
     assertPageSame(0, $client->peekCalls, 'Snapshot body should not peek the live review job');
 
     $builder = makeReviewPageBuilder(
+        array(array('original_id' => 5, 'review_id' => 105, 'status' => 'moved')),
+        array(105 => array('body' => 'disabled snapshot should not load')),
+        array(105 => 'live body when snapshots disabled'),
+        $storage,
+        $client
+    );
+    $page = $builder->buildShowPage(array('id' => 'batch-1', 'include_body_snapshot' => false), 1, 25, 50);
+    assertPageSame('live', $page['reviewJobBodies'][105]['body_source'], 'Disabled snapshots should use the live review job');
+    assertPageSame(0, $storage->snapshotCalls, 'Disabled snapshots should not read body snapshot storage');
+    assertPageSame(1, $client->peekCalls, 'Disabled snapshots should peek the live review job');
+
+    $builder = makeReviewPageBuilder(
         array(array('original_id' => 2, 'review_id' => 102, 'status' => 'moved')),
         array(),
         array(102 => 'live body abc'),
@@ -189,6 +203,7 @@ try {
     assertPageSame(0, $page['reviewPageSelectableCount'], 'Missing review jobs should refresh selectable counts');
 
     assertPageTrue($builder->reviewJobHasInspectableCopy(array('status' => 'return_delete_error', 'review_id' => 105)), 'Cleanup rows should be inspectable');
+    assertPageTrue($builder->reviewJobHasInspectableCopy(array('status' => 'duplicated', 'review_id' => 107)), 'Duplicated rows should keep their review copy inspectable');
     assertPageTrue(!$builder->reviewJobHasInspectableCopy(array('status' => 'returned', 'review_id' => 106)), 'Returned rows should not be inspectable');
     assertPageSame('abc', $builder->truncateReviewBody('abc', 3), 'Exact-length previews should not be truncated');
     assertPageSame('abc...', $builder->truncateReviewBody('abcdef', 3), 'Long previews should be truncated');

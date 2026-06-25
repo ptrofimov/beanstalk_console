@@ -193,15 +193,55 @@ $(document).ready(
                     }
                 });
 
-                // Review batch preparation guard: do not start a review for an empty state.
-                $('#reviewBatchStartSubmit').on('click', function () {
-                    var count = parseInt($('#reviewState option:selected').data('count'), 10) || 0;
+                // Review batch preparation guard: keep state/count/safety controls aligned.
+                function updateReviewBatchStartState() {
+                    var $option = $('#reviewState option:selected');
+                    var count = parseInt($option.data('count'), 10) || 0;
+                    var forced = $('input[name="forceUnsafe"]').is(':checked') && parseInt($option.data('force-allowed'), 10) === 1;
+                    var allowed = parseInt($option.data('allowed'), 10) === 1 || forced;
+                    var message = $option.data('message') || '';
+                    var $limit = $('#reviewLimit');
+                    var limit = parseInt($limit.val(), 10) || 0;
+                    $limit.attr('max', count);
+                    if (limit < 1 || limit > count) {
+                        $limit.val(count);
+                    }
+                    $('#reviewSafetyMessage')
+                        .toggleClass('alert-info', allowed)
+                        .toggleClass('alert-warning', !allowed)
+                        .text(message);
+                    $('#reviewBatchStartSubmit').prop('disabled', count === 0 || !allowed);
+                    $('#reviewBatchPauseProceedSubmit').toggle(count > 0 && !allowed);
+                }
+                function validateReviewBatchStart(allowUnsafePause) {
+                    var $option = $('#reviewState option:selected');
+                    var count = parseInt($option.data('count'), 10) || 0;
+                    var forced = $('input[name="forceUnsafe"]').is(':checked') && parseInt($option.data('force-allowed'), 10) === 1;
+                    var allowed = parseInt($option.data('allowed'), 10) === 1 || forced;
+                    var limit = parseInt($('#reviewLimit').val(), 10) || 0;
                     if (count === 0) {
                         alert('The selected state has no jobs to review.');
                         return false;
                     }
+                    if (limit < 1 || limit > count) {
+                        alert('Jobs to review must be between 1 and the selected state count.');
+                        return false;
+                    }
+                    if (!allowed && !allowUnsafePause) {
+                        alert($option.data('message') || 'The selected state cannot be reviewed safely.');
+                        return false;
+                    }
                     return true;
+                }
+                $('#reviewState').on('change', updateReviewBatchStartState);
+                $('input[name="forceUnsafe"]').on('change', updateReviewBatchStartState);
+                $('#reviewBatchStartSubmit').on('click', function () {
+                    return validateReviewBatchStart(false);
                 });
+                $('#reviewBatchPauseProceedSubmit').on('click', function () {
+                    return validateReviewBatchStart(true);
+                });
+                updateReviewBatchStartState();
                 $(document).on('click', '#addServer', function () {
                     $('#servers-add').modal('toggle');
                     return false;
@@ -282,7 +322,11 @@ $(document).ready(
                         return false;
                     }
                     if ($(this).data('requires-moved') && (parseInt($('#reviewRemainingMovedCount').val(), 10) || 0) === 0) {
-                        alert('There are no remaining moved review jobs to process.');
+                        alert('There are no undecided review jobs to process.');
+                        return false;
+                    }
+                    if ($(this).data('requires-target') && $.trim($('#reviewTargetTube').val()) === '') {
+                        alert('Destination tube is required for this action.');
                         return false;
                     }
                     return confirm($(this).data('confirm'));

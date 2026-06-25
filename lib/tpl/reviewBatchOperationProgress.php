@@ -1,7 +1,7 @@
 <?php
 $batch = $reviewBatch;
 $operation = $reviewOperation;
-$label = $operation['operation'] === 'return_all_moved' ? 'Returning jobs to source tube' : 'Deleting review copies';
+$label = ucfirst($console->getReviewOperationLabel($operation));
 $ownedByAnotherSession = $console->isReviewOwnedByAnotherSession($operation);
 $takeOverBlockReason = $console->getReviewTakeOverBlockReason($batch, $operation);
 ?>

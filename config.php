@@ -95,7 +95,7 @@ $GLOBALS['config'] = array(
         // Dangerous: allow delayed job review even when workers may be watching. Requires explicit checkbox in the UI.
         'allowUnsafeDelayedOverride' => false,
         // If true, the UI never offers body snapshot capture and the backend refuses to create body snapshots.
-        // Body snapshots preserve review-time payloads, but can create large sensitive files and impact review-page/body-load performance.
+        // Body snapshots preserve review-time payloads, but can create large local files and impact review-page/body-load performance.
         'neverIncludeBodySnapshot' => false,
         // Directory for review metadata files. null means dirname($config['storage']) . '/review-batches'.
         // This stores audit JSONL, materialized current summaries, operation metadata, and optional body snapshot JSONL files.

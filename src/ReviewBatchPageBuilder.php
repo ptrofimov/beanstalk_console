@@ -157,7 +157,7 @@ class ReviewBatchPageBuilder {
      * @return bool
      */
     public function isReviewJobCleanupStatus($status) {
-        return in_array($status, array('copy_delete_error', 'return_delete_error'), true);
+        return in_array($status, array('copy_delete_error', 'return_delete_error', 'move_delete_error', 'duplicated'), true);
     }
 
     /**

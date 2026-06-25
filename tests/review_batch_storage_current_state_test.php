@@ -60,7 +60,11 @@ try {
 
     $jobsFile = $storagePath . DIRECTORY_SEPARATOR . $batchId . '.jobs.jsonl';
     $currentFile = $storagePath . DIRECTORY_SEPARATOR . $batchId . '.current.json';
+    $bodySnapshotFile = $storagePath . DIRECTORY_SEPARATOR . $batchId . '.body-snapshot.jsonl';
+    $bodySnapshotIndexFile = $storagePath . DIRECTORY_SEPARATOR . $batchId . '.body-snapshot.idx.jsonl';
     assertTrueValue(is_file($currentFile), 'Current-state file should be created with the batch');
+    assertTrueValue(!is_file($bodySnapshotFile), 'Body snapshot file should not be created when snapshots are disabled');
+    assertTrueValue(!is_file($bodySnapshotIndexFile), 'Body snapshot index should not be created when snapshots are disabled');
 
     $storage->appendJob($batchId, array('original_id' => 1, 'review_id' => 101, 'status' => 'moved', 'pri' => 1, 'job_created_at' => '2026-06-19T00:00:00+00:00'));
     $storage->appendJob($batchId, array('original_id' => 2, 'review_id' => 102, 'status' => 'moved', 'pri' => 2));
@@ -83,10 +87,17 @@ try {
     assertSameValue('returned', $selected[101]['status'], 'Selected lookup should include returned row');
     assertSameValue('moved', $selected[102]['status'], 'Selected lookup should include moved row');
 
+    $storage->updateJob($batchId, array('original_id' => 2, 'review_id' => 102, 'status' => 'duplicated', 'target_tube' => 'copy'));
+    $summary = $storage->getBatchSummary($batchId, 0, 10);
+    assertSameValue(0, $summary['moved_count'], 'Duplicated rows should not count as undecided moved jobs');
+    assertSameValue(1, $summary['page_selectable_count'], 'Duplicated rows should remain selectable for further actions');
+    $moved = $storage->getMovedJobs($batchId, 10);
+    assertSameValue(0, count($moved), 'Duplicated rows should not be included in all-undecided bulk operations');
+
     $current = json_decode(file_get_contents($currentFile), true);
     assertSameValue(filesize($jobsFile), (int)$current['audit_size'], 'Current-state audit size should match jobs JSONL size');
     assertSameValue(2, (int)$current['total'], 'Current-state total should be stored');
-    assertSameValue(1, (int)$current['moved_count'], 'Current-state moved count should be stored');
+    assertSameValue(0, (int)$current['moved_count'], 'Current-state moved count should be stored');
 
     file_put_contents($currentFile, json_encode(array(
         'version' => 1,
@@ -115,7 +126,7 @@ try {
     $storage->appendJob($batchId, array('review_id' => 103, 'status' => 'moved', 'pri' => 3));
     $summary = $storage->getBatchSummary($batchId, 0, 10);
     assertSameValue(3, $summary['total'], 'Append should recover malformed current state before applying the new row');
-    assertSameValue(2, $summary['moved_count'], 'Append should preserve rebuilt jobs and count the new moved row');
+    assertSameValue(1, $summary['moved_count'], 'Append should preserve rebuilt jobs and count the new moved row');
 
     $storage->appendJob($batchId, array('status' => 'ignored'));
     $summary = $storage->getBatchSummary($batchId, 0, 10);
@@ -125,7 +136,8 @@ try {
 
     unlink($currentFile);
     $moved = $storage->getMovedJobs($batchId, 10);
-    assertSameValue(2, count($moved), 'Missing current-state file should rebuild for moved lookup');
+    assertSameValue(1, count($moved), 'Missing current-state file should rebuild for moved lookup');
+    assertSameValue(103, (int)$moved[0]['review_id'], 'Moved lookup should include the current moved row');
     assertTrueValue(is_file($currentFile), 'Current-state file should be recreated after rebuild');
 
     $batches = $storage->listBatches();

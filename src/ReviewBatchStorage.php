@@ -300,7 +300,7 @@ class ReviewBatchStorage {
 
         $pageSelectableCount = 0;
         foreach ($pageJobs as $job) {
-            if (isset($job['status'], $job['review_id']) && $job['status'] === 'moved' && (int)$job['review_id'] > 0) {
+            if (isset($job['status'], $job['review_id']) && in_array($job['status'], array('moved', 'duplicated'), true) && (int)$job['review_id'] > 0) {
                 $pageSelectableCount++;
             }
         }

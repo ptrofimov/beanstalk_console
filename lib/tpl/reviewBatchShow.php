@@ -16,6 +16,11 @@ $ownedByAnotherSession = $console->isReviewOwnedByAnotherSession($batch);
 $takeOverBlockReason = $console->getReviewTakeOverBlockReason($batch, $operation);
 $pageActionDisabled = $pageSelectableCount === 0 || $ownedByAnotherSession ? ' disabled="disabled"' : '';
 $batchActionDisabled = $remainingMovedCount === 0 || $ownedByAnotherSession ? ' disabled="disabled"' : '';
+$targetTubeOptions = isset($tubes) && is_array($tubes) ? $tubes : array();
+if (!in_array($batch['source_tube'], $targetTubeOptions, true)) {
+    $targetTubeOptions[] = $batch['source_tube'];
+    sort($targetTubeOptions);
+}
 ?>
 <h3>Review batch</h3>
 <p>
@@ -107,33 +112,75 @@ $batchActionDisabled = $remainingMovedCount === 0 || $ownedByAnotherSession ? ' 
     <input type="hidden" name="perPage" value="<?php echo (int)$perPage; ?>">
     <input type="hidden" id="reviewRemainingMovedCount" value="<?php echo (int)$remainingMovedCount; ?>">
 
-    <div class="form-inline" style="margin-bottom: 10px;">
-        <label for="reviewReturnDelay">Return delay seconds</label>
-        <input id="reviewReturnDelay" class="form-control input-sm" type="number" min="0" step="1" name="delay" value="0">
-        <button type="submit" class="btn btn-sm btn-success"
-                data-requires-selection="1"
-                data-confirm="Return selected review jobs to the source tube?"
-                formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchReturnJobs&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $pageActionDisabled; ?>>
-            Return selected to source tube
-        </button>
-        <button type="submit" class="btn btn-sm btn-danger"
-                data-requires-selection="1"
-                data-confirm="Delete selected review-copy jobs?"
-                formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchDeleteJobs&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $pageActionDisabled; ?>>
-            Delete selected review copies
-        </button>
-        <button type="submit" name="operation" value="return_all_moved" class="btn btn-sm btn-success"
-                data-requires-moved="1"
-                data-confirm="Return all remaining moved review jobs to the source tube?"
-                formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchOperationStart&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $batchActionDisabled; ?>>
-            Return all remaining moved jobs
-        </button>
-        <button type="submit" name="operation" value="delete_all_moved" class="btn btn-sm btn-danger"
-                data-requires-moved="1"
-                data-confirm="Delete all remaining moved review-copy jobs?"
-                formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchOperationStart&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $batchActionDisabled; ?>>
-            Delete all remaining review copies
-        </button>
+    <div class="well well-sm" style="margin-bottom: 10px;">
+        <div class="form-inline" style="margin-bottom: 8px;">
+            <label for="reviewTargetTube" style="display: inline-block; width: 110px;">Destination tube</label>
+            <input id="reviewTargetTube" class="form-control input-sm" style="width: 300px;" type="text" name="targetTube" list="reviewTargetTubeList" value="<?php echo htmlspecialchars($batch['source_tube']); ?>">
+            <datalist id="reviewTargetTubeList">
+                <?php foreach ($targetTubeOptions as $targetTubeOption): ?>
+                    <option value="<?php echo htmlspecialchars($targetTubeOption); ?>"></option>
+                <?php endforeach; ?>
+            </datalist>
+            <span class="help-block" style="display: inline; margin-left: 8px;">
+                Source tube: <?php echo htmlspecialchars($batch['source_tube']); ?>. Type a new tube name or choose an existing one.
+            </span>
+        </div>
+        <div class="form-inline">
+            <label for="reviewReturnDelay" style="display: inline-block; width: 110px;">Delay seconds</label>
+            <input id="reviewReturnDelay" class="form-control input-sm" style="width: 95px;" type="number" min="0" step="1" name="delay" value="0">
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-6">
+                <strong>Selected jobs</strong>
+                <div style="margin-top: 5px;">
+                    <button type="submit" class="btn btn-sm btn-primary"
+                            data-requires-selection="1"
+                            data-requires-target="1"
+                            data-confirm="Move selected review jobs to the destination tube?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchMoveJobs&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $pageActionDisabled; ?>>
+                        Move selected
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-default"
+                            data-requires-selection="1"
+                            data-requires-target="1"
+                            data-confirm="Duplicate selected review jobs to the destination tube?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchDuplicateJobs&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $pageActionDisabled; ?>>
+                        Duplicate selected
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            data-requires-selection="1"
+                            data-confirm="Delete selected review-copy jobs?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchDeleteJobs&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $pageActionDisabled; ?>>
+                        Delete selected
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <strong>All undecided jobs</strong>
+                <div style="margin-top: 5px;">
+                    <button type="submit" name="operation" value="move_all_moved" class="btn btn-sm btn-primary"
+                            data-requires-moved="1"
+                            data-requires-target="1"
+                            data-confirm="Move all undecided review jobs to the destination tube?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchOperationStart&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $batchActionDisabled; ?>>
+                        Move all
+                    </button>
+                    <button type="submit" name="operation" value="duplicate_all_moved" class="btn btn-sm btn-default"
+                            data-requires-moved="1"
+                            data-requires-target="1"
+                            data-confirm="Duplicate all undecided review jobs to the destination tube?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchOperationStart&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $batchActionDisabled; ?>>
+                        Duplicate all
+                    </button>
+                    <button type="submit" name="operation" value="delete_all_moved" class="btn btn-sm btn-danger"
+                            data-requires-moved="1"
+                            data-confirm="Delete all undecided review-copy jobs?"
+                            formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchOperationStart&batchId=<?php echo urlencode($batch['id']); ?>"<?php echo $batchActionDisabled; ?>>
+                        Delete all
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <table class="table table-striped table-bordered table-condensed" id="reviewJobsTable">
@@ -164,7 +211,7 @@ $batchActionDisabled = $remainingMovedCount === 0 || $ownedByAnotherSession ? ' 
                 <?php
                 $reviewId = isset($job['review_id']) ? (int)$job['review_id'] : 0;
                 $status = isset($job['status']) ? $job['status'] : '';
-                $selectable = $status === 'moved';
+                $selectable = in_array($status, array('moved', 'duplicated'), true);
                 $viewable = $console->reviewJobHasInspectableCopy($job);
                 $preview = isset($jobPreviews[$reviewId]) ? $jobPreviews[$reviewId] : '';
                 $bodyInfo = isset($jobBodies[$reviewId]) ? $jobBodies[$reviewId] : array();
@@ -209,6 +256,10 @@ $batchActionDisabled = $remainingMovedCount === 0 || $ownedByAnotherSession ? ' 
                             Returned to source tube<?php echo isset($job['returned_id']) ? ' as job ' . (int)$job['returned_id'] : ''; ?>.
                         <?php elseif ($status === 'deleted'): ?>
                             Review copy deleted.
+                        <?php elseif ($status === 'moved_to_tube'): ?>
+                            Moved to <?php echo isset($job['target_tube']) ? htmlspecialchars($job['target_tube']) : 'destination tube'; ?><?php echo isset($job['target_id']) ? ' as job ' . (int)$job['target_id'] : ''; ?>.
+                        <?php elseif ($status === 'duplicated'): ?>
+                            Duplicated to <?php echo isset($job['target_tube']) ? htmlspecialchars($job['target_tube']) : 'destination tube'; ?><?php echo isset($job['target_id']) ? ' as job ' . (int)$job['target_id'] : ''; ?>. Review copy remains.
                         <?php elseif ($status === 'error'): ?>
                             <span class="text-danger"><?php echo isset($job['error_message']) ? htmlspecialchars($job['error_message']) : 'Review preparation error'; ?></span>
                         <?php else: ?>
@@ -229,13 +280,24 @@ $batchActionDisabled = $remainingMovedCount === 0 || $ownedByAnotherSession ? ' 
                                     data-buries="<?php echo isset($job['buries']) ? (int)$job['buries'] : ''; ?>">
                                 View
                             </button>
+                            <?php if ($status === 'duplicated'): ?>
+                                <button type="submit"
+                                        class="btn btn-xs btn-default"
+                                        name="job[]"
+                                        value="<?php echo $reviewId; ?>"
+                                        data-requires-target="1"
+                                        data-confirm="Duplicate this review job to the destination tube again?"<?php echo $ownedByAnotherSession ? ' disabled="disabled"' : ''; ?>
+                                        formaction="./?server=<?php echo urlencode($server); ?>&action=reviewBatchDuplicateJobs&batchId=<?php echo urlencode($batch['id']); ?>">
+                                    Duplicate again
+                                </button>
+                            <?php endif; ?>
                             <?php if ($console->isReviewJobCleanupStatus($status)): ?>
                                 <button type="submit"
                                         class="btn btn-xs btn-danger"
                                         form="reviewSingleDeleteForm"
                                         name="job[]"
                                         value="<?php echo $reviewId; ?>"
-                                        data-confirm="Delete this review copy? The source job may already exist."<?php echo $ownedByAnotherSession ? ' disabled="disabled"' : ''; ?>>
+                                        data-confirm="Delete this review copy? This only removes the copy in the review tube."<?php echo $ownedByAnotherSession ? ' disabled="disabled"' : ''; ?>>
                                     Delete review copy
                                 </button>
                             <?php endif; ?>

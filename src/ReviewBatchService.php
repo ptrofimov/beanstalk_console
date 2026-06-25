@@ -92,8 +92,8 @@ class ReviewBatchService {
     }
 
     /**
-     * Applies one return/delete operation to one review-copy job and records the outcome.
-     * If returning succeeds but review-copy deletion fails, records return_delete_error for cleanup.
+     * Applies one review operation to one review-copy job and records the outcome.
+     * If an operation creates another queue copy but review-copy deletion fails, records a cleanup status.
      *
      * @param array $batch Review batch metadata.
      * @param array $manifestJob Collapsed manifest row for the review-copy job.
@@ -104,31 +104,60 @@ class ReviewBatchService {
     public function operateReviewJob($batch, $manifestJob, $operation) {
         $operationType = isset($operation['operation']) ? $operation['operation'] : '';
         $delay = isset($operation['delay']) ? (int)$operation['delay'] : 0;
+        $targetTube = isset($operation['target_tube']) ? $operation['target_tube'] : '';
+        $priority = isset($manifestJob['pri']) ? (int)$manifestJob['pri'] : Pheanstalk::DEFAULT_PRIORITY;
+        $ttr = isset($manifestJob['ttr']) ? (int)$manifestJob['ttr'] : Pheanstalk::DEFAULT_TTR;
         $baseRow = $this->buildOperationRow($manifestJob);
 
         try {
             $reviewJob = $this->interface->_client->peek((int)$manifestJob['review_id']);
-            if ($operationType === 'return_all_moved') {
-                $priority = isset($manifestJob['pri']) ? (int)$manifestJob['pri'] : Pheanstalk::DEFAULT_PRIORITY;
-                $ttr = isset($manifestJob['ttr']) ? (int)$manifestJob['ttr'] : Pheanstalk::DEFAULT_TTR;
-                // Recreate the job in the source tube before removing the isolated review copy.
-                $returnedId = $this->interface->addJob($batch['source_tube'], $reviewJob->getData(), $priority, $delay, $ttr);
+            if ($operationType === 'move_all_moved') {
+                // Write the destination copy first. If destination is the source tube, this is a return.
+                $targetId = $this->interface->addJob($targetTube, $reviewJob->getData(), $priority, $delay, $ttr);
                 try {
                     $this->interface->_client->delete($reviewJob);
                 } catch (Exception $e) {
-                    // The source job now exists, so keep the remaining review copy visible for cleanup.
-                    $this->storage->updateJob($batch['id'], array_merge($baseRow, array(
-                        'returned_id' => $returnedId,
-                        'return_delay' => $delay,
-                        'status' => 'return_delete_error',
+                    // The destination job now exists, so keep the remaining review copy visible for cleanup.
+                    $errorRow = array(
+                        'status' => $targetTube === $batch['source_tube'] ? 'return_delete_error' : 'move_delete_error',
                         'error_message' => $e->getMessage(),
-                    )));
+                    );
+                    if ($targetTube === $batch['source_tube']) {
+                        $errorRow['returned_id'] = $targetId;
+                        $errorRow['return_delay'] = $delay;
+                    } else {
+                        $errorRow['target_tube'] = $targetTube;
+                        $errorRow['target_id'] = $targetId;
+                        $errorRow['target_delay'] = $delay;
+                    }
+                    $this->storage->updateJob($batch['id'], array_merge($baseRow, $errorRow));
                     return false;
                 }
+                if ($targetTube === $batch['source_tube']) {
+                    $this->storage->updateJob($batch['id'], array_merge($baseRow, array(
+                        'returned_id' => $targetId,
+                        'return_delay' => $delay,
+                        'status' => 'returned',
+                    )));
+                } else {
+                    $this->storage->updateJob($batch['id'], array_merge($baseRow, array(
+                        'target_tube' => $targetTube,
+                        'target_id' => $targetId,
+                        'target_delay' => $delay,
+                        'status' => 'moved_to_tube',
+                    )));
+                }
+                return true;
+            }
+
+            if ($operationType === 'duplicate_all_moved') {
+                // Duplicate intentionally leaves the review copy in place for continued inspection/cleanup.
+                $targetId = $this->interface->addJob($targetTube, $reviewJob->getData(), $priority, $delay, $ttr);
                 $this->storage->updateJob($batch['id'], array_merge($baseRow, array(
-                    'returned_id' => $returnedId,
-                    'return_delay' => $delay,
-                    'status' => 'returned',
+                    'target_tube' => $targetTube,
+                    'target_id' => $targetId,
+                    'target_delay' => $delay,
+                    'status' => 'duplicated',
                 )));
                 return true;
             }

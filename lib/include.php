@@ -480,6 +480,8 @@ class Console {
             'reviewBatchProcess',
             'reviewBatchReturnJobs',
             'reviewBatchDeleteJobs',
+            'reviewBatchMoveJobs',
+            'reviewBatchDuplicateJobs',
             'reviewBatchDownloadManifest',
             'reviewBatchDelete',
             'reviewBatchTakeOver',
@@ -829,6 +831,9 @@ class Console {
         $state = isset($_POST['state']) ? $_POST['state'] : 'buried';
         $tube = $this->_globalVar['tube'];
         $forceUnsafe = !empty($_POST['forceUnsafe']);
+        if (!empty($_POST['pauseAndProceed'])) {
+            $this->interface->pauseTube($tube, $this->getReviewPauseSeconds());
+        }
         $safety = $this->canPrepareReviewState($tube, $state, $forceUnsafe);
 
         if (!$safety['allowed']) {
@@ -838,12 +843,14 @@ class Console {
         }
 
         $tubeStats = $this->getTubeStatValues($tube);
-        $targetCount = $this->getStateCountFromStats($tubeStats, $state);
-        if ($targetCount <= 0) {
+        $stateCount = $this->getStateCountFromStats($tubeStats, $state);
+        if ($stateCount <= 0) {
             $_SESSION['error'] = 'The selected state has no jobs to review.';
             header(sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($tube)));
             exit();
         }
+        $targetCount = isset($_POST['reviewLimit']) ? max(1, (int)$_POST['reviewLimit']) : $stateCount;
+        $targetCount = min($targetCount, $stateCount);
         $createdAt = date('c');
         $id = 'review-' . date('Ymd-His') . '-' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $tube) . '-' . mt_rand(1000, 9999);
         $reviewTube = isset($_POST['reviewTube']) && $_POST['reviewTube'] !== ''
@@ -861,6 +868,7 @@ class Console {
             'owner_ip' => $this->getRequestIp(),
             'status' => 'processing',
             'target_count' => $targetCount,
+            'source_state_count' => $stateCount,
             'processed' => 0,
             'errors' => 0,
             'force_unsafe' => $forceUnsafe ? 1 : 0,
@@ -971,6 +979,26 @@ class Console {
     }
 
     /**
+     * Moves selected review-copy jobs to the destination tube inline.
+     *
+     * @return void
+     * @throws InvalidArgumentException If the batch cannot be loaded or the operation cannot be recorded.
+     */
+    protected function _actionReviewBatchMoveJobs() {
+        $this->reviewBatchOperateJobs('move');
+    }
+
+    /**
+     * Duplicates selected review-copy jobs to the destination tube inline.
+     *
+     * @return void
+     * @throws InvalidArgumentException If the batch cannot be loaded or the operation cannot be recorded.
+     */
+    protected function _actionReviewBatchDuplicateJobs() {
+        $this->reviewBatchOperateJobs('duplicate');
+    }
+
+    /**
      * Downloads audit, summary, or body-snapshot export files for a review batch.
      *
      * @return void
@@ -1017,7 +1045,7 @@ class Console {
 
         foreach ($jobs as $manifestJob) {
             $status = isset($manifestJob['status']) ? $manifestJob['status'] : '';
-            if (in_array($status, array('returned', 'deleted'))) {
+            if (in_array($status, array('returned', 'deleted', 'moved_to_tube'), true)) {
                 continue;
             }
             if (empty($manifestJob['review_id'])) {
@@ -1043,7 +1071,7 @@ class Console {
     }
 
     /**
-     * Starts a chunked all-remaining return/delete operation for a review batch.
+     * Starts a chunked all-remaining review operation for a review batch.
      *
      * @return void
      * @throws InvalidArgumentException If the batch cannot be loaded, operation is invalid, or operation metadata cannot be saved.
@@ -1055,8 +1083,12 @@ class Console {
         $operationType = isset($_POST['operation']) ? $_POST['operation'] : '';
         $delay = isset($_POST['delay']) ? max(0, (int)$_POST['delay']) : 0;
 
-        if (!in_array($operationType, array('return_all_moved', 'delete_all_moved'))) {
+        if (!in_array($operationType, array('move_all_moved', 'duplicate_all_moved', 'delete_all_moved'), true)) {
             throw new InvalidArgumentException('Unsupported review operation');
+        }
+        $targetTube = isset($_POST['targetTube']) ? trim($_POST['targetTube']) : '';
+        if (in_array($operationType, array('move_all_moved', 'duplicate_all_moved'), true) && $targetTube === '') {
+            throw new InvalidArgumentException('Destination tube is required for move and duplicate operations');
         }
 
         $summary = $storage->getBatchSummary($batch['id'], 0, 0);
@@ -1067,6 +1099,7 @@ class Console {
             'batch_id' => $batch['id'],
             'operation' => $operationType,
             'delay' => $delay,
+            'target_tube' => $targetTube,
             'return_page' => isset($_POST['returnPage']) ? max(1, (int)$_POST['returnPage']) : 1,
             'per_page' => isset($_POST['perPage']) ? max(1, min(100, (int)$_POST['perPage'])) : 25,
             'mode' => 'all_moved',
@@ -1445,9 +1478,9 @@ class Console {
     }
 
     /**
-     * Runs the existing selected-row return/delete action for small manual selections.
+     * Runs the selected-row review action for small manual selections.
      *
-     * @param string $operation Operation name: return or delete.
+     * @param string $operation Operation name: move, duplicate, or delete.
      * @return void
      * @throws InvalidArgumentException If the batch cannot be loaded or the operation cannot be recorded.
      */
@@ -1460,6 +1493,22 @@ class Console {
         $selected = isset($_POST['job']) && is_array($_POST['job']) ? $_POST['job'] : array();
         $selectedJobs = $storage->getJobsByReviewIds($batch['id'], $selected);
         $delay = isset($_POST['delay']) ? max(0, (int)$_POST['delay']) : 0;
+        $targetTube = isset($_POST['targetTube']) ? trim($_POST['targetTube']) : '';
+        if ($operation === 'return' && $targetTube === '') {
+            $targetTube = $batch['source_tube'];
+        }
+        if (in_array($operation, array('move', 'duplicate'), true) && $targetTube === '') {
+            throw new InvalidArgumentException('Destination tube is required for move and duplicate operations');
+        }
+        $operationTypes = array(
+            'return' => 'move_all_moved',
+            'move' => 'move_all_moved',
+            'duplicate' => 'duplicate_all_moved',
+            'delete' => 'delete_all_moved',
+        );
+        if (!isset($operationTypes[$operation])) {
+            throw new InvalidArgumentException('Unsupported review operation');
+        }
 
         foreach ($selected as $reviewId) {
             $reviewId = (int)$reviewId;
@@ -1468,15 +1517,17 @@ class Console {
                 continue;
             }
             $status = isset($manifestJob['status']) ? $manifestJob['status'] : '';
-            $canReturn = $status === 'moved';
+            $canMoveOrDuplicate = in_array($status, array('moved', 'duplicated'), true);
             $canDelete = $status === 'moved' || $this->isReviewJobCleanupStatus($status);
-            if (($operation === 'return' && !$canReturn) || ($operation === 'delete' && !$canDelete)) {
+            if (($operation === 'delete' && !$canDelete)
+                    || (in_array($operation, array('return', 'move', 'duplicate'), true) && !$canMoveOrDuplicate)) {
                 continue;
             }
 
             $operationMeta = array(
-                'operation' => $operation === 'return' ? 'return_all_moved' : 'delete_all_moved',
+                'operation' => $operationTypes[$operation],
                 'delay' => $delay,
+                'target_tube' => $targetTube,
             );
             $service->operateReviewJob($batch, $manifestJob, $operationMeta);
         }
@@ -1607,11 +1658,20 @@ class Console {
      */
     public function getReviewOperationLabel($operation) {
         $operationType = isset($operation['operation']) ? $operation['operation'] : '';
-        if ($operationType === 'return_all_moved') {
+        if ($operationType === 'move_all_moved') {
+            if (isset($operation['target_tube']) && $operation['target_tube'] !== '') {
+                return 'moving jobs to ' . $operation['target_tube'];
+            }
             return 'returning jobs to the source tube';
         }
         if ($operationType === 'delete_all_moved') {
             return 'deleting review copies';
+        }
+        if ($operationType === 'duplicate_all_moved') {
+            if (isset($operation['target_tube']) && $operation['target_tube'] !== '') {
+                return 'duplicating jobs to ' . $operation['target_tube'];
+            }
+            return 'duplicating jobs to another tube';
         }
         return $operationType !== '' ? $operationType : 'a review operation';
     }
@@ -1666,6 +1726,8 @@ class Console {
             'original_id',
             'review_id',
             'returned_id',
+            'target_tube',
+            'target_id',
             'status',
             'pri',
             'age',
@@ -1680,6 +1742,7 @@ class Console {
             'buries',
             'kicks',
             'return_delay',
+            'target_delay',
             'error_message',
         );
 
@@ -1817,6 +1880,20 @@ class Console {
     }
 
     /**
+     * Returns the configured pause duration used by the review pause-and-proceed path.
+     *
+     * @return int Pause duration in seconds.
+     */
+    private function getReviewPauseSeconds() {
+        $settings = new Settings();
+        $settingValue = $settings->getTubePauseSeconds();
+        if ($settingValue == -1) {
+            return 3600;
+        }
+        return max(0, (int)$settingValue);
+    }
+
+    /**
      * Evaluates whether preparing the requested state is safe or explicitly allowed.
      *
      * @param string $tube Tube name.
@@ -1827,7 +1904,7 @@ class Console {
      */
     private function canPrepareReviewState($tube, $state, $forceUnsafe) {
         if ($state === 'buried') {
-            return array('allowed' => true, 'message' => 'Buried jobs are not reservable by workers.');
+            return array('allowed' => true, 'message' => 'Buried review can proceed because buried jobs are not reservable by workers.');
         }
 
         if ($state !== 'ready' && $state !== 'delayed') {
@@ -1837,24 +1914,32 @@ class Console {
         $stats = $this->getTubeStatValues($tube);
         $watching = isset($stats['current-watching']) ? (int)$stats['current-watching'] : 0;
         $waiting = isset($stats['current-waiting']) ? (int)$stats['current-waiting'] : 0;
+        $pauseTimeLeft = isset($stats['pause-time-left']) ? (int)$stats['pause-time-left'] : 0;
+        $safeBecausePaused = $pauseTimeLeft > 0;
 
         if ($state === 'ready') {
+            if ($safeBecausePaused) {
+                return array('allowed' => true, 'message' => 'Ready review is allowed because the tube is paused for ' . $pauseTimeLeft . ' more seconds.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
+            }
             if ($watching === 0 && $waiting === 0 && $this->getReviewConfigBool('allowReadyWhenUnwatched', false)) {
-                return array('allowed' => true, 'message' => 'Ready review is allowed because there are no watchers or waiters.');
+                return array('allowed' => true, 'message' => 'Ready review is allowed because there are no watchers or waiters.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
             }
             if ($forceUnsafe && $this->getReviewConfigBool('allowUnsafeReadyOverride', false)) {
-                return array('allowed' => true, 'message' => 'Unsafe ready review override is enabled.');
+                return array('allowed' => true, 'message' => 'Unsafe ready review override is enabled.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
             }
-            return array('allowed' => false, 'message' => 'Ready jobs can only be reviewed when no clients are watching/waiting, unless unsafe ready override is enabled.');
+            return array('allowed' => false, 'message' => 'Ready jobs can only be reviewed when no clients are watching/waiting or the tube is paused, unless unsafe ready override is enabled.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
         }
 
+        if ($safeBecausePaused) {
+            return array('allowed' => true, 'message' => 'Delayed review is allowed because the tube is paused for ' . $pauseTimeLeft . ' more seconds.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
+        }
         if ($watching === 0 && $waiting === 0 && $this->getReviewConfigBool('allowDelayedWhenUnwatched', false)) {
-            return array('allowed' => true, 'message' => 'Delayed review is allowed because there are no watchers or waiters.');
+            return array('allowed' => true, 'message' => 'Delayed review is allowed because there are no watchers or waiters.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
         }
         if ($forceUnsafe && $this->getReviewConfigBool('allowUnsafeDelayedOverride', false)) {
-            return array('allowed' => true, 'message' => 'Unsafe delayed review override is enabled.');
+            return array('allowed' => true, 'message' => 'Unsafe delayed review override is enabled.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
         }
-        return array('allowed' => false, 'message' => 'Delayed jobs can only be reviewed when no clients are watching/waiting, unless unsafe delayed override is enabled.');
+        return array('allowed' => false, 'message' => 'Delayed jobs can only be reviewed when no clients are watching/waiting or the tube is paused, unless unsafe delayed override is enabled.', 'watching' => $watching, 'waiting' => $waiting, 'pause_time_left' => $pauseTimeLeft);
     }
 
     /**
