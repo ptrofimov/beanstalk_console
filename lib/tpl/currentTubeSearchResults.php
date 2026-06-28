@@ -60,7 +60,7 @@ if (array_key_exists('total', $searchResults) && $searchResults['total'] > 0) {
                 </table>
             </div>
         </div>
-        First <?php echo intval($_GET['limit']); ?> rows are displayed for each state.
+        First <?php echo intval($_GET['limit'] ?? 25); ?> rows are displayed for each state.
         <br/>
         <br/>
     </section>
@@ -69,6 +69,6 @@ if (array_key_exists('total', $searchResults) && $searchResults['total'] > 0) {
 } else {
     ?>
     <br/>
-    No results found for <b><?php echo htmlspecialchars($_GET['searchStr']); ?></b> in tube: <b><?php echo $tube; ?></b>
+    No results found for <b><?php echo htmlspecialchars($_GET['searchStr'] ?? ''); ?></b> in tube: <b><?php echo $tube; ?></b>
     <?php
 }
