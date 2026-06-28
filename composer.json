@@ -19,7 +19,7 @@
     },
     "license": "MIT",
     "require": {
-        "php": ">=5.2.0",
+        "php": ">=7.0.0",
         "ext-json": "*",
         "ext-mbstring": "*"
     }

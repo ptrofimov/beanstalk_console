@@ -118,7 +118,7 @@ if ($tplVars['_tplMain'] != 'ajax') {
                     'timeout' => 2,
                     'header' => "Accept-language: en\r\n" .
                     "Cookie: foo=bar\r\n" . // check function.stream-context-create on php.net
-                    "User-Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" .
+                    "User-Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'Beanstalk Console') . "\r\n" .
                     "Accept: application/vnd.github.v3+json\r\n",
                 )
     ));

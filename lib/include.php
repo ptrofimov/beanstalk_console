@@ -384,7 +384,7 @@ class Console {
     }
 
     protected function _actionKickJob() {
-        $job = $this->interface->_client->peek(intval($_GET['jobid']));
+        $job = $this->interface->_client->peek(intval($_GET['jobid'] ?? 0));
         if ($job) {
             $this->interface->_client->kickJob($job);
         }
@@ -410,7 +410,7 @@ class Console {
     }
 
     protected function _actionDeleteJob() {
-        $job = $this->interface->_client->peek(intval($_GET['jobid']));
+        $job = $this->interface->_client->peek(intval($_GET['jobid'] ?? 0));
         if ($job) {
             $this->interface->_client->delete($job);
         }
@@ -440,7 +440,7 @@ class Console {
     }
 
     protected function _actionServersRemove() {
-        $server = $_GET['removeServer'];
+        $server = $_GET['removeServer'] ?? '';
         $cookie_servers = array_diff($this->getServersCookie(), array($server));
         if (count($cookie_servers)) {
             setcookie('beansServers', implode(';', $cookie_servers), time() + 86400 * 365);
@@ -543,7 +543,7 @@ class Console {
     }
 
     protected function _actionLoadSample() {
-        $key = $_GET['key'];
+        $key = $_GET['key'] ?? '';
         if (!empty($key)) {
             $storage = new Storage($this->_globalVar['config']['storage']);
             $job = $storage->load($key);
@@ -568,7 +568,7 @@ class Console {
     protected function _actionEditSample() {
         $this->_tplVars['_tplMain'] = 'main';
         $this->_tplVars['_tplPage'] = 'sampleJobsEdit';
-        $key = $_GET['key'];
+        $key = $_GET['key'] ?? '';
         if (!empty($key)) {
             $storage = new Storage($this->_globalVar['config']['storage']);
             $job = $storage->load($key);
@@ -668,7 +668,7 @@ class Console {
     }
 
     protected function _actionDeleteSample() {
-        $key = $_GET['key'];
+        $key = $_GET['key'] ?? '';
         if (!empty($key)) {
             $storage = new Storage($this->_globalVar['config']['storage']);
             $job = $storage->load($key);
@@ -697,7 +697,7 @@ class Console {
         $timelimit_in_seconds = 15;
         $searchStr = (isset($_GET['searchStr'])) ? $_GET['searchStr'] : null;
         $states = array('ready', 'delayed', 'buried');
-        $jobList = array();
+        $jobList = array('total' => 0);
         $limit = null;
 
         if ($searchStr === null or $searchStr === '')
