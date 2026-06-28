@@ -19,12 +19,12 @@
  * =============================================================================
  */
 
-define('BEANSTALK_CONSOLE_VERSION', '1.8.2');
+define('BEANSTALK_CONSOLE_VERSION', '1.9');
 
 $localConfigFile = __DIR__ . '/config.local.php';
 if (file_exists($localConfigFile) && is_readable($localConfigFile) && basename(__FILE__) !== 'config.local.php') {
     require $localConfigFile;
-    if (count($GLOBALS['config'], true) != 1 && count($GLOBALS['config'], true) < 15) {
+    if (count($GLOBALS['config'], true) != 1 && count($GLOBALS['config'], true) < 22) {
         die('Please update your config.local.php with all new options. You are missing some.');
     }
     if (is_array($GLOBALS['config']['servers'])) {
