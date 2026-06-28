@@ -279,22 +279,8 @@ $(document).ready(
                     updateReviewSelectAllState();
                     e.stopPropagation();
                 });
-                $('.reviewJobCheckbox').closest('tr').on('click', function (e) {
-                    if ($(e.target).is('a, button, input, label, select, textarea') || $(e.target).closest('a, button, label').length) {
-                        return;
-                    }
-                    if (!e.shiftKey && window.getSelection && String(window.getSelection()).length > 0) {
-                        return;
-                    }
-                    var checkbox = $(this).find('.reviewJobCheckbox').get(0);
-                    if (!checkbox) {
-                        return;
-                    }
-                    if (e.shiftKey) {
-                        e.preventDefault();
-                        clearTextSelection();
-                    }
-                    checkbox.checked = !checkbox.checked;
+                $('.reviewJobCheckbox').on('click', function (e) {
+                    var checkbox = this;
                     if (e.shiftKey && lastReviewCheckbox) {
                         selectReviewCheckboxRange(lastReviewCheckbox, checkbox, checkbox.checked);
                     }
@@ -304,6 +290,15 @@ $(document).ready(
                 $('.reviewJobView').on('click', function () {
                     loadReviewJobBody($(this).data('review-id'), this);
                     return false;
+                });
+                $('#reviewJobsTable tbody').on('click', 'tr.clickable-row', function (e) {
+                    if ($(e.target).is('input, button, a') || $(e.target).parents('input, button, a').length) {
+                        return;
+                    }
+                    var $btn = $(this).find('.reviewJobView');
+                    if ($btn.length) {
+                        loadReviewJobBody($btn.data('review-id'), $btn[0]);
+                    }
                 });
                 $('#reviewToggleBodies').on('click', function () {
                     var $button = $(this);
@@ -563,18 +558,50 @@ $(document).ready(
                     return;
                 }
 
+                var stats = [
+                    { label: 'Original ID', value: $button.data('original-id') },
+                    { label: 'TTR', value: $button.data('ttr') },
+                    { label: 'Age', value: formatDuration($button.data('age')) },
+                    { label: 'Reserves', value: $button.data('reserves') },
+                    { label: 'Priority', value: $button.data('pri') },
+                    { label: 'Buries', value: $button.data('buries') }
+                ];
+
                 var rows = '';
-                rows += reviewJobStatRow('Original ID', $button.data('original-id'));
-                rows += reviewJobStatRow('Review ID', reviewId);
-                rows += reviewJobStatRow('Status', $button.data('status'));
-                rows += reviewJobStatRow('Priority', $button.data('pri'));
-                rows += reviewJobStatRow('TTR', $button.data('ttr'));
-                rows += reviewJobStatRow('Age', formatDuration($button.data('age')));
-                rows += reviewJobStatRow('Reserves', $button.data('reserves'));
-                rows += reviewJobStatRow('Buries', $button.data('buries'));
-                rows += reviewJobStatRow('Display', $body.data('content-type') || 'text');
+                for (var i = 0; i < stats.length; i += 2) {
+                    rows += '<tr>';
+                    rows += '<th style="background: #f8fafc; width: 20%; font-weight: 600;">' + escapeHtml(stats[i].label) + '</th>';
+                    rows += '<td style="width: 50%;">' + escapeHtml(String(stats[i].value !== undefined && stats[i].value !== null ? stats[i].value : '')) + '</td>';
+                    if (i + 1 < stats.length) {
+                        rows += '<th style="background: #f8fafc; width: 15%; font-weight: 600;">' + escapeHtml(stats[i+1].label) + '</th>';
+                        rows += '<td style="width: 15%;">' + escapeHtml(String(stats[i+1].value !== undefined && stats[i+1].value !== null ? stats[i+1].value : '')) + '</td>';
+                    } else {
+                        rows += '<th style="background: #f8fafc; width: 15%;"></th><td style="width: 15%;"></td>';
+                    }
+                    rows += '</tr>';
+                }
                 $('#reviewJobBodyStats').html(rows);
                 $('#reviewJobBodyContent').text($body.text());
+                if (typeof hljs !== 'undefined') {
+                    $('#reviewJobBodyContent').removeClass().addClass('json');
+                    hljs.highlightBlock($('#reviewJobBodyContent')[0]);
+                }
+
+                // Set up modal action form
+                var status = $button.data('status') || '';
+                var ownedByAnotherSession = $('#reviewModalJobForm').data('owned') === 1;
+
+                $('#reviewModalJobId').val(reviewId);
+                $('#reviewModalTargetTube').val($('#reviewTargetTube').val());
+                $('#reviewModalDelay').val($('#reviewReturnDelay').val());
+
+                var isSelectable = (status === 'moved' || status === 'duplicated');
+                var isCleanup = (status === 'duplicated' || status === 'error');
+                var canDelete = isSelectable || isCleanup;
+
+                $('#reviewModalMoveBtn').prop('disabled', !isSelectable || ownedByAnotherSession);
+                $('#reviewModalDuplicateBtn').prop('disabled', !isSelectable || ownedByAnotherSession);
+                $('#reviewModalDeleteBtn').prop('disabled', !canDelete || ownedByAnotherSession);
             }
 
             // Expand all visible preview cells using the full bodies already loaded with the page.

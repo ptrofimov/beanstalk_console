@@ -477,6 +477,7 @@ class Console {
     private function shouldDispatchBeforeTubeStats($action) {
         return in_array($action, array(
             'reviewBatchStart',
+            'reviewBatchAddJobs',
             'reviewBatchProcess',
             'reviewBatchReturnJobs',
             'reviewBatchDeleteJobs',
@@ -484,6 +485,7 @@ class Console {
             'reviewBatchDuplicateJobs',
             'reviewBatchDownloadManifest',
             'reviewBatchDelete',
+            'reviewBatchDeleteAll',
             'reviewBatchTakeOver',
             'reviewBatchOperationStart',
             'reviewBatchOperationProcess',
@@ -884,6 +886,43 @@ class Console {
     }
 
     /**
+     * Appends additional jobs from the source tube to an existing review batch.
+     *
+     * @return void
+     * @throws InvalidArgumentException If the batch cannot be loaded.
+     */
+    protected function _actionReviewBatchAddJobs() {
+        $batchId = isset($_POST['batchId']) ? $_POST['batchId'] : (isset($_GET['batchId']) ? $_GET['batchId'] : null);
+        if (!$batchId) {
+            throw new InvalidArgumentException('Batch ID is required');
+        }
+        $storage = $this->getReviewBatchStorage();
+        $batch = $storage->loadBatch($batchId);
+        if (!$batch) {
+            throw new InvalidArgumentException('Review batch not found');
+        }
+        $this->assertReviewBatchOwner($batch);
+
+        $tube = $batch['source_tube'];
+        $state = $batch['source_state'];
+        $tubeStats = $this->getTubeStatValues($tube);
+        $stateCount = $this->getStateCountFromStats($tubeStats, $state);
+
+        if ($stateCount <= 0) {
+            $_SESSION['error'] = 'No new jobs to review in the source tube.';
+            header(sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($tube)));
+            exit();
+        }
+
+        $batch['target_count'] = (int)$batch['target_count'] + $stateCount;
+        $batch['status'] = 'processing';
+        $storage->saveBatch($batch);
+
+        header(sprintf('Location: ./?server=%s&action=reviewBatchProgress&batchId=%s', $this->_globalVar['server'], urlencode($batchId)));
+        exit();
+    }
+
+    /**
      * Shows progress while jobs are copied to the review tube and removed from the source state.
      *
      * @return void
@@ -944,6 +983,7 @@ class Console {
      */
     protected function _actionReviewBatchShow() {
         $batch = $this->loadReviewBatchFromRequest();
+        $batch = $this->syncReviewBatchFromQueue($batch);
         $storage = $this->getReviewBatchStorage();
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $perPage = isset($_GET['perPage']) ? max(1, min(100, (int)$_GET['perPage'])) : 25;
@@ -1067,6 +1107,54 @@ class Console {
 
         $storage->deleteBatch($batch['id']);
         header(sprintf('Location: ./?server=%s&action=reviewBatches', $this->_globalVar['server']));
+        exit();
+    }
+
+    /**
+     * Deletes all review batches (or all batches for a specific source tube),
+     * including their remaining review-copy jobs and local files.
+     */
+    protected function _actionReviewBatchDeleteAll() {
+        $sourceTube = isset($_GET['sourceTube']) && $_GET['sourceTube'] !== '' ? $_GET['sourceTube'] : null;
+        $storage = $this->getReviewBatchStorage();
+        $batches = $storage->listBatches();
+
+        foreach ($batches as $batch) {
+            if ($sourceTube !== null && (!isset($batch['source_tube']) || $batch['source_tube'] !== $sourceTube)) {
+                continue;
+            }
+            try {
+                $summary = $storage->getBatchSummary($batch['id']);
+                $jobs = $summary['jobs'];
+
+                foreach ($jobs as $manifestJob) {
+                    $status = isset($manifestJob['status']) ? $manifestJob['status'] : '';
+                    if (in_array($status, array('returned', 'deleted', 'moved_to_tube'), true)) {
+                        continue;
+                    }
+                    if (empty($manifestJob['review_id'])) {
+                        continue;
+                    }
+                    try {
+                        $reviewJob = $this->interface->_client->peek((int)$manifestJob['review_id']);
+                        if ($reviewJob) {
+                            $this->interface->_client->delete($reviewJob);
+                        }
+                    } catch (Exception $e) {
+                        // ignore if job is not found
+                    }
+                }
+                $storage->deleteBatch($batch['id']);
+            } catch (Exception $e) {
+                // ignore and continue
+            }
+        }
+
+        $redirectUrl = './?server=' . urlencode($this->_globalVar['server']) . '&action=reviewBatches';
+        if ($sourceTube !== null) {
+            $redirectUrl .= '&sourceTube=' . urlencode($sourceTube);
+        }
+        header('Location: ' . $redirectUrl);
         exit();
     }
 
@@ -1234,6 +1322,149 @@ class Console {
      * @return int
      * @throws InvalidArgumentException If review storage is unavailable.
      */
+    /**
+     * Finds a review batch where the given tube is used as the review tube.
+     *
+     * @param string $tube Tube name.
+     * @return array|false The batch array, or false if not found.
+     */
+    public function getReviewBatchForReviewTube($tube) {
+        if (!$this->isReviewEnabled()) {
+            return false;
+        }
+        try {
+            $batches = $this->getReviewBatchStorage()->listBatches();
+            foreach ($batches as $batch) {
+                if (isset($batch['review_tube']) && $batch['review_tube'] === $tube) {
+                    return $batch;
+                }
+            }
+        } catch (Exception $e) {
+            // ignore
+        }
+        return false;
+    }
+
+    /**
+     * Scans the review tube for any jobs not currently recorded in the batch manifest,
+     * and appends them to the manifest automatically.
+     *
+     * @param array $batch The review batch metadata.
+     * @return array The updated review batch metadata.
+     */
+    public function syncReviewBatchFromQueue($batch) {
+        if (!$this->isReviewEnabled()) {
+            return $batch;
+        }
+
+        try {
+            $reviewTube = $batch['review_tube'];
+            $tubeStats = $this->interface->getTubeStats($reviewTube);
+            if (!$tubeStats) {
+                return $batch;
+            }
+
+            $ready = isset($tubeStats['current-jobs-ready']) ? (int)$tubeStats['current-jobs-ready'] : 0;
+            $delayed = isset($tubeStats['current-jobs-delayed']) ? (int)$tubeStats['current-jobs-delayed'] : 0;
+            $buried = isset($tubeStats['current-jobs-buried']) ? (int)$tubeStats['current-jobs-buried'] : 0;
+            $totalInQueue = $ready + $delayed + $buried;
+
+            if ($totalInQueue <= 0) {
+                return $batch;
+            }
+
+            $storage = $this->getReviewBatchStorage();
+            $summary = $storage->getBatchSummary($batch['id'], 0, null);
+            $manifestJobs = $summary['jobs'];
+
+            // Find which jobs in the manifest are still active in the review tube
+            $manifestActiveIds = array();
+            $maxReviewId = 0;
+            foreach ($manifestJobs as $mj) {
+                $rid = isset($mj['review_id']) ? (int)$mj['review_id'] : 0;
+                if ($rid > 0) {
+                    $maxReviewId = max($maxReviewId, $rid);
+                    $status = isset($mj['status']) ? $mj['status'] : '';
+                    if (in_array($status, array('moved', 'duplicated'), true)) {
+                        $manifestActiveIds[$rid] = true;
+                    }
+                }
+            }
+
+            $extraCount = $totalInQueue - count($manifestActiveIds);
+            if ($extraCount <= 0) {
+                return $batch;
+            }
+
+            // We need to scan beanstalkd job IDs starting from $maxReviewId + 1
+            // to find the $extraCount jobs belonging to $reviewTube.
+            $foundCount = 0;
+            $currentId = $maxReviewId + 1;
+            $maxScanLookahead = 10000;
+            $scanned = 0;
+
+            $newJobs = array();
+            $bodySnapshots = array();
+
+            while ($foundCount < $extraCount && $scanned < $maxScanLookahead) {
+                $scanned++;
+                try {
+                    $jobStats = $this->interface->_client->statsJob($currentId);
+                    if ($jobStats && isset($jobStats['tube']) && $jobStats['tube'] === $reviewTube) {
+                        // Found a job belonging to our review tube!
+                        $job = $this->interface->_client->peek($currentId);
+                        if ($job) {
+                            $priority = isset($jobStats['pri']) ? (int)$jobStats['pri'] : Pheanstalk::DEFAULT_PRIORITY;
+                            $ttr = isset($jobStats['ttr']) ? (int)$jobStats['ttr'] : Pheanstalk::DEFAULT_TTR;
+                            
+                            $row = array(
+                                'original_id' => null,
+                                'review_id' => $currentId,
+                                'status' => 'moved',
+                                'pri' => $priority,
+                                'delay' => isset($jobStats['delay']) ? (int)$jobStats['delay'] : 0,
+                                'ttr' => $ttr,
+                                'job_created_at' => date('c', time() - (isset($jobStats['age']) ? (int)$jobStats['age'] : 0)),
+                            );
+                            $newJobs[] = $row;
+                            
+                            if (!empty($batch['include_body_snapshot'])) {
+                                $bodySnapshots[] = array(
+                                    'original_id' => null,
+                                    'review_id' => $currentId,
+                                    'status' => 'snapshot',
+                                    'body_encoding' => 'base64',
+                                    'body_base64' => base64_encode($job->getData()),
+                                );
+                            }
+                            $foundCount++;
+                        }
+                    }
+                } catch (Exception $e) {
+                    // ignore NotFound or other errors
+                }
+                $currentId++;
+            }
+
+            if (count($newJobs) > 0) {
+                foreach ($newJobs as $row) {
+                    $storage->appendJob($batch['id'], $row);
+                }
+                if (count($bodySnapshots) > 0) {
+                    $storage->appendBodySnapshotRows($batch['id'], $bodySnapshots);
+                }
+                $batch['target_count'] = (int)$batch['target_count'] + count($newJobs);
+                $batch['processed'] = (int)$batch['processed'] + count($newJobs);
+                $storage->saveBatch($batch);
+            }
+
+        } catch (Exception $e) {
+            // ignore outer errors
+        }
+
+        return $batch;
+    }
+
     public function countReviewBatchesForTube($tube) {
         if (!$this->isReviewEnabled()) {
             return 0;

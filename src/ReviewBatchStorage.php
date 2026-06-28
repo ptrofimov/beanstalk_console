@@ -33,13 +33,18 @@ class ReviewBatchStorage {
      * @return bool
      */
     public function isAvailable() {
-        if (!is_dir($this->path) && !mkdir($this->path, 0755, true)) {
-            $this->error = 'Review batch storage directory could not be created: ' . $this->path;
-            return false;
+        if (!is_dir($this->path)) {
+            if (!@mkdir($this->path, 0777, true)) {
+                $this->error = 'Review batch storage directory could not be created: ' . $this->path;
+                return false;
+            }
         }
         if (!is_writable($this->path)) {
-            $this->error = 'Review batch storage directory must be writable: ' . $this->path;
-            return false;
+            @chmod($this->path, 0777);
+            if (!is_writable($this->path)) {
+                $this->error = 'Review batch storage directory must be writable: ' . $this->path;
+                return false;
+            }
         }
         return true;
     }

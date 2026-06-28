@@ -2,7 +2,10 @@
 $sampleJobs = $console->getSampleJobs($tube);
 $buriedJobsCount = isset($allStats['current-jobs-buried']) ? $allStats['current-jobs-buried'] : 0;
 $reviewEnabled = $console->isReviewEnabled();
+$matchingReviewBatch = $reviewEnabled ? $console->getReviewBatchForReviewTube($tube) : false;
 $reviewBatchCount = 0;
+$activeBatchToAppend = null;
+$additionalJobsAvailable = false;
 $reviewError = null;
 $reviewSafety = array();
 $reviewSafetyError = null;
@@ -14,6 +17,9 @@ if ($reviewEnabled) {
         foreach ($reviewBatchesForTube as $reviewBatchForTube) {
             if ($console->isReviewOwnedByAnotherSession($reviewBatchForTube)) {
                 $reviewOwnerIps[$console->getReviewOwnerIp($reviewBatchForTube)] = true;
+            }
+            if ($reviewBatchForTube['status'] === 'complete' || $reviewBatchForTube['status'] === 'ready_to_inspect') {
+                $activeBatchToAppend = $reviewBatchForTube;
             }
         }
     } catch (Exception $e) {
@@ -34,6 +40,14 @@ $reviewStateCounts = array(
     'delayed' => $delayedJobsCount,
     'ready' => $readyJobsCount,
 );
+
+if ($activeBatchToAppend) {
+    $bState = $activeBatchToAppend['source_state'];
+    $bStateCount = isset($reviewStateCounts[$bState]) ? $reviewStateCounts[$bState] : 0;
+    if ($bStateCount > 0) {
+        $additionalJobsAvailable = true;
+    }
+}
 $defaultReviewState = 'buried';
 foreach ($reviewStateCounts as $reviewState => $reviewStateCount) {
     if ($reviewStateCount > $reviewStateCounts[$defaultReviewState]) {
@@ -102,12 +116,21 @@ if ($tubePauseSeconds === -1) {
             <?php } ?>
         </ul>
     </div>
-    <?php if ($reviewEnabled && $reviewBatchCount > 0): ?>
-        <a class="btn btn-warning btn-sm" href="./?server=<?php echo urlencode($server); ?>&action=reviewBatches&sourceTube=<?php echo urlencode($tube); ?>"><i class="glyphicon glyphicon-list-alt glyphicon-white"></i> Reviews for this tube (<?php echo (int)$reviewBatchCount; ?>)</a>
-    <?php endif; ?>
-    <?php if ($reviewEnabled): ?>
+
+    <?php if ($reviewEnabled && $matchingReviewBatch): ?>
+        <a class="btn btn-info btn-sm" href="./?server=<?php echo urlencode($server); ?>&action=reviewBatchShow&batchId=<?php echo urlencode($matchingReviewBatch['id']); ?>"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i> Go to review batch</a>
+    <?php elseif ($reviewEnabled): ?>
         <a data-toggle="modal" class="btn btn-info btn-sm" href="#reviewBatchStart"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i> Prepare review batch</a>
     <?php endif; ?>
+
+    <!-- DEBUG:
+    reviewEnabled: <?php echo $reviewEnabled ? 'yes' : 'no'; ?>
+    reviewBatchCount: <?php echo $reviewBatchCount; ?>
+    activeBatchToAppend: <?php echo $activeBatchToAppend ? $activeBatchToAppend['id'] : 'none'; ?>
+    additionalJobsAvailable: <?php echo $additionalJobsAvailable ? 'yes' : 'no'; ?>
+    bState: <?php echo $activeBatchToAppend ? $activeBatchToAppend['source_state'] : 'none'; ?>
+    bStateCount: <?php echo $activeBatchToAppend ? (isset($reviewStateCounts[$activeBatchToAppend['source_state']]) ? $reviewStateCounts[$activeBatchToAppend['source_state']] : 'not set') : 'none'; ?>
+    -->
     <?php if ($reviewError): ?>
         <span class="text-danger">Review batches unavailable: <?php echo htmlspecialchars($reviewError); ?></span>
     <?php endif; ?>

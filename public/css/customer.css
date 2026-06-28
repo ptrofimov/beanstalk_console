@@ -117,3 +117,385 @@ tr.tr-tube-paused {
   .search-wrapper .clear-search:hover {
     color: #555; /* Darken on hover */
   }
+
+/* ==========================================================================
+   Review Batches & Details Dashboard Custom Styles
+   ========================================================================== */
+
+/* Review Batches Table */
+.modern-batches-table {
+    font-size: 14px;
+}
+.modern-batches-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 10px 14px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+.modern-batches-table td {
+    padding: 10px 14px !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #f1f5f9 !important;
+}
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+.clickable-row:hover {
+    background-color: #f8fafc !important;
+}
+.clickable-row.info-row {
+    background-color: #f0f9ff !important;
+}
+.clickable-row.info-row:hover {
+    background-color: #e0f2fe !important;
+}
+
+/* Review Batch Show Details */
+.modern-review-container {
+    color: #334155;
+    margin-top: 10px;
+}
+.modern-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.modern-review-title {
+    font-size: 22px;
+    font-weight: normal;
+    color: #0f172a;
+    margin: 2px 0 0 0;
+}
+.modern-review-breadcrumbs {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
+}
+.modern-review-breadcrumbs a {
+    color: #0284c7;
+    text-decoration: none;
+}
+.modern-review-breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* Compact Stats Bar */
+.modern-stats-bar {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 13px;
+}
+.stat-item {
+    color: #475569;
+}
+.stat-item strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+.stat-divider {
+    color: #cbd5e1;
+}
+
+.modern-button-bar {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.modern-button-bar .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Compact Operations Bar */
+.modern-ops-bar {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.modern-ops-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.modern-ops-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+}
+.modern-ops-divider {
+    width: 1px;
+    height: 20px;
+    background-color: #e2e8f0;
+}
+@media (max-width: 1200px) {
+    .modern-ops-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .modern-ops-divider {
+        display: none;
+    }
+}
+.modern-ops-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+    text-align: left !important;
+}
+.modern-ops-group .btn {
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.modern-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+.modern-table {
+    margin-bottom: 0 !important;
+    border: none !important;
+}
+.modern-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #cbd5e1 !important;
+    padding: 8px 12px !important;
+    vertical-align: middle !important;
+}
+.modern-table td {
+    padding: 8px 12px !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #f1f5f9 !important;
+    color: #334155;
+}
+.modern-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-transform: capitalize;
+}
+.badge-moved { background-color: #e0f2fe; color: #0369a1; }
+.badge-returned { background-color: #dcfce7; color: #15803d; }
+.badge-deleted { background-color: #fee2e2; color: #b91c1c; }
+.badge-duplicated { background-color: #f3e8ff; color: #7e22ce; }
+.badge-error { background-color: #fef3c7; color: #d97706; }
+
+.reviewJobBodyPreview {
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px;
+    padding: 8px !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 0;
+}
+.modern-pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+.modern-pagination {
+    margin: 0 !important;
+}
+.modern-pagination > li > a {
+    border-radius: 6px !important;
+    margin: 0 2px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+.modern-pagination > li.active > a {
+    background-color: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+/* Two-Column Split Layout */
+.modern-split-container {
+    display: grid;
+    grid-template-columns: 1fr 2.2fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+@media (max-width: 992px) {
+    .modern-split-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Left Column: Info & Downloads */
+.modern-info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.modern-info-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 0;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.modern-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.modern-info-item {
+    font-size: 12px;
+    color: #334155;
+}
+.modern-info-item strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+.modern-info-downloads {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+}
+.modern-info-downloads .btn {
+    border-radius: 6px;
+    text-align: left;
+    font-size: 11px;
+    padding: 5px 8px;
+    font-weight: 500;
+}
+
+/* Right Column: Operations */
+.modern-ops-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.modern-ops-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 0;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.modern-ops-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.modern-ops-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.modern-ops-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+    text-align: left !important;
+}
+.modern-ops-group .form-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.modern-ops-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+}
+@media (max-width: 768px) {
+    .modern-ops-actions-row {
+        grid-template-columns: 1fr;
+    }
+}
+.modern-ops-action-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.modern-ops-action-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+}
+.modern-ops-btn-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.modern-ops-btn-group .btn {
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
