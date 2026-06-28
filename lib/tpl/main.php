@@ -139,6 +139,9 @@ $jsDefaults = $settings->getAllDefaults();
                                         <li><a href="#clear-tubes" role="button" data-toggle="modal">Clear multiple tubes</a></li>
                                     <?php } ?>
                                     <li><a href="./?action=manageSamples" role="button">Manage samples</a></li>
+                                    <?php if ($server && $console->isReviewEnabled()) { ?>
+                                        <li><a href="./?server=<?php echo urlencode($server); ?>&action=reviewBatches" role="button">Review batches</a></li>
+                                    <?php } ?>
                                     <li class="divider"></li>
                                     <li><a href="https://github.com/kr/beanstalkd">Beanstalk (github)</a></li>
                                     <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt">Protocol Specification</a></li>
@@ -177,7 +180,8 @@ $jsDefaults = $settings->getAllDefaults();
                                     <input type="text" class="form-control input-sm search-query" name="searchStr" placeholder="Search this tube">
                                 </div>
                             </form>
-                        <?php } elseif (isset($server) && $server) { ?>
+                        <?php // Show global tube search only on the default server view, not custom pages. ?>
+                        <?php } elseif (isset($server) && $server && !isset($_tplPage)) { ?>
                             <form class="navbar-form navbar-right" style="margin-top:5px;margin-bottom:0px;" role="search" action="" method="get">
                                 <input type="hidden" name="server" value="<?php echo $server; ?>" />
                                 <input type="hidden" name="tube" value="<?php echo urlencode($tube); ?>" />

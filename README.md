@@ -21,7 +21,16 @@
 - Search within job data fields
 - Move jobs between tubes
 - Pause tubes
+- Prepare review batches by moving jobs into an isolated review tube before moving, duplicating, or deleting them
 - Configurable UI settings (auto-refresh, decoding, pause duration, etc.)
+
+**Review batches**
+
+Review batches help inspect a bounded set of jobs without workers changing them during review. From a tube page, click "Prepare review batch", choose the source state, set how many current jobs to review, and choose the review tube name. Ready and delayed jobs can be reviewed when no clients are watching/waiting or when the tube is paused; the dialog can pause the tube and proceed when needed. Buried jobs can be reviewed directly because workers cannot reserve buried jobs.
+
+The review page uses a destination tube field, prefilled with the source tube. Moving jobs to the source tube returns them; changing the destination moves them elsewhere. Existing tubes are suggested, but new tube names can be typed. Selected jobs or all undecided jobs can also be duplicated to the destination or deleted from the review tube. Duplicated jobs remain available for further review actions until their review copy is moved or deleted. Job bodies can be snapshotted to local JSONL during preparation so they remain visible after review copies are moved or deleted.
+
+Review batch files are console-local support files used for auditing, current-state tracking, exports, and optional body display. They are not automatically removed, so delete completed review batches or disable body snapshots if disk growth is a concern.
 
 **Change log**
 
