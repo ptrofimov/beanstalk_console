@@ -40,6 +40,7 @@ $reviewStateCounts = array(
     'delayed' => $delayedJobsCount,
     'ready' => $readyJobsCount,
 );
+$hasReviewableJobs = array_sum($reviewStateCounts) > 0;
 
 if ($activeBatchToAppend) {
     $bState = $activeBatchToAppend['source_state'];
@@ -119,8 +120,11 @@ if ($tubePauseSeconds === -1) {
 
     <?php if ($reviewEnabled && $matchingReviewBatch): ?>
         <a class="btn btn-info btn-sm" href="./?server=<?php echo urlencode($server); ?>&action=reviewBatchShow&batchId=<?php echo urlencode($matchingReviewBatch['id']); ?>"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i> Go to review batch</a>
-    <?php elseif ($reviewEnabled): ?>
+    <?php elseif ($reviewEnabled && $hasReviewableJobs): ?>
         <a data-toggle="modal" class="btn btn-info btn-sm" href="#reviewBatchStart"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i> Prepare review batch</a>
+    <?php endif; ?>
+    <?php if ($reviewEnabled && !$matchingReviewBatch && $reviewBatchCount > 0): ?>
+        <a class="btn btn-default btn-sm" href="./?server=<?php echo urlencode($server); ?>&action=reviewBatches&sourceTube=<?php echo urlencode($tube); ?>"><i class="glyphicon glyphicon-list-alt"></i> Reviews for this tube (<?php echo (int)$reviewBatchCount; ?>)</a>
     <?php endif; ?>
 
     <!-- DEBUG:
