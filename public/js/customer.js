@@ -3,6 +3,7 @@ $(document).ready(
 
             var timer;
             var doAutoRefresh = false;
+            var pendingReviewRowClick = null;
 
             // Helper function to get setting value (Cookie > Default > Fallback)
             function getSettingValue(key, ultimateFallback) {
@@ -270,34 +271,72 @@ $(document).ready(
                     return false;
                 });
                 var lastReviewCheckbox = null;
-                $('.reviewJobCheckbox').on('click', function (e) {
-                    if (e.shiftKey && lastReviewCheckbox) {
+                function selectReviewCheckbox(checkbox, checked, shiftKey) {
+                    checkbox.checked = checked;
+                    if (shiftKey && lastReviewCheckbox) {
                         clearTextSelection();
-                        selectReviewCheckboxRange(lastReviewCheckbox, this, $(this).is(':checked'));
-                    }
-                    lastReviewCheckbox = this;
-                    updateReviewSelectAllState();
-                    e.stopPropagation();
-                });
-                $('.reviewJobCheckbox').on('click', function (e) {
-                    var checkbox = this;
-                    if (e.shiftKey && lastReviewCheckbox) {
-                        selectReviewCheckboxRange(lastReviewCheckbox, checkbox, checkbox.checked);
+                        selectReviewCheckboxRange(lastReviewCheckbox, checkbox, checked);
                     }
                     lastReviewCheckbox = checkbox;
                     updateReviewSelectAllState();
+                }
+                $('.reviewJobCheckbox').on('click', function (e) {
+                    selectReviewCheckbox(this, this.checked, e.shiftKey);
+                    e.stopPropagation();
                 });
                 $('.reviewJobView').on('click', function () {
                     loadReviewJobBody($(this).data('review-id'), this);
                     return false;
                 });
-                $('#reviewJobsTable tbody').on('click', 'tr.clickable-row', function (e) {
+                var reviewRowMouseDown = null;
+                // Track movement so dragging to select text does not also select the review row.
+                $('#reviewJobsTable tbody').on('mousedown', 'tr', function (e) {
+                    reviewRowMouseDown = {
+                        row: this,
+                        x: e.pageX,
+                        y: e.pageY
+                    };
+                });
+                // Body previews open the modal; the rest of the row is reserved for selection.
+                $('#reviewJobsTable tbody').on('click', '.reviewJobBodyPreview', function (e) {
+                    var $btn = $(this).closest('tr').find('.reviewJobView');
+                    if ($btn.length) {
+                        loadReviewJobBody($btn.data('review-id'), $btn[0]);
+                    }
+                    e.stopPropagation();
+                    return false;
+                });
+                // Delay row selection slightly so double-click text selection can cancel it.
+                $('#reviewJobsTable tbody').on('click', 'tr', function (e) {
                     if ($(e.target).is('input, button, a') || $(e.target).parents('input, button, a').length) {
                         return;
                     }
-                    var $btn = $(this).find('.reviewJobView');
-                    if ($btn.length) {
-                        loadReviewJobBody($btn.data('review-id'), $btn[0]);
+                    if (e.detail && e.detail > 1) {
+                        clearPendingReviewRowClick();
+                        return;
+                    }
+                    if (getSelectedText()) {
+                        return;
+                    }
+                    if (reviewRowMouseDown && reviewRowMouseDown.row === this) {
+                        var dx = Math.abs(e.pageX - reviewRowMouseDown.x);
+                        var dy = Math.abs(e.pageY - reviewRowMouseDown.y);
+                        if (dx > 4 || dy > 4) {
+                            return;
+                        }
+                    }
+                    var $checkbox = $(this).find('.reviewJobCheckbox');
+                    if ($checkbox.length) {
+                        var checkbox = $checkbox[0];
+                        var checked = !$checkbox.prop('checked');
+                        var shiftKey = e.shiftKey;
+                        clearPendingReviewRowClick();
+                        pendingReviewRowClick = window.setTimeout(function () {
+                            if (!getSelectedText()) {
+                                selectReviewCheckbox(checkbox, checked, shiftKey);
+                            }
+                            pendingReviewRowClick = null;
+                        }, 160);
                     }
                 });
                 $('#reviewToggleBodies').on('click', function () {
@@ -660,6 +699,14 @@ $(document).ready(
                 $('#reviewSelectAll').prop('checked', $boxes.length > 0 && checkedCount === $boxes.length);
             }
 
+            // Cancel a pending row toggle when the click turns into a double-click.
+            function clearPendingReviewRowClick() {
+                if (pendingReviewRowClick) {
+                    window.clearTimeout(pendingReviewRowClick);
+                    pendingReviewRowClick = null;
+                }
+            }
+
             // Prevent accidental text highlighting while using shift-click range selection.
             function clearTextSelection() {
                 if (window.getSelection) {
@@ -667,6 +714,17 @@ $(document).ready(
                 } else if (document.selection) {
                     document.selection.empty();
                 }
+            }
+
+            // Row clicks should not toggle selection after a text selection gesture.
+            function getSelectedText() {
+                if (window.getSelection) {
+                    return $.trim(window.getSelection().toString());
+                }
+                if (document.selection && document.selection.createRange) {
+                    return $.trim(document.selection.createRange().text);
+                }
+                return '';
             }
 
             function formatDuration(value) {

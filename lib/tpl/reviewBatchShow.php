@@ -285,6 +285,7 @@ if (!in_array($batch['source_tube'], $targetTubeOptions, true)) {
                                 <pre class="reviewJobBodyPreview"
                                      data-review-id="<?php echo $reviewId; ?>"
                                      data-preview="<?php echo htmlspecialchars($preview); ?>"
+                                     title="Click to view full body"
                                      style="max-height: 120px; overflow: auto; white-space: pre-wrap; word-break: break-word;"><?php echo htmlspecialchars($preview); ?></pre>
                                 <pre class="reviewJobBodyFull"
                                      data-review-id="<?php echo $reviewId; ?>"
