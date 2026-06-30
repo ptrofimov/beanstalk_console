@@ -7,6 +7,8 @@ if (!class_exists('Pheanstalk_Response')) {
 }
 
 require_once dirname(__FILE__) . '/../src/Settings.php';
+require_once dirname(__FILE__) . '/../src/TubeBodyDisplaySettings.php';
+require_once dirname(__FILE__) . '/../src/JobBodyFormatter.php';
 require_once dirname(__FILE__) . '/../src/ReviewBatchPageBuilder.php';
 
 $GLOBALS['config'] = array(

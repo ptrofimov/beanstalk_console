@@ -6,14 +6,20 @@ class BeanstalkInterface {
     protected $_tubes;
     public $_client;
     private $settings;
+    private $server;
+    private $bodyDisplaySettings;
+    private $bodyFormatter;
 
     /**
      * Constructor
      *
      * @param string $server The server connection string (e.g., "localhost:11300" or "beanstalk://host:port").
      * @param Settings $settings The Settings object instance.
+     * @param TubeBodyDisplaySettings|null $bodyDisplaySettings Per-tube display resolver.
+     * @param JobBodyFormatter|null $bodyFormatter Body formatter.
      */
-    public function __construct($server, $settings = null) {
+    public function __construct($server, $settings = null, $bodyDisplaySettings = null, $bodyFormatter = null) {
+        $this->server = $server;
         if (strpos($server, "beanstalk://") === 0) {
             $url = parse_url($server);
             $host = $url['host'];
@@ -25,6 +31,8 @@ class BeanstalkInterface {
         }
         $this->_client = new Pheanstalk($host, $port);
         $this->settings = $settings ?? new Settings();
+        $this->bodyDisplaySettings = $bodyDisplaySettings !== null ? $bodyDisplaySettings : new TubeBodyDisplaySettings($this->settings);
+        $this->bodyFormatter = $bodyFormatter !== null ? $bodyFormatter : new JobBodyFormatter();
     }
 
     public function getTubes() {
@@ -232,7 +240,7 @@ class BeanstalkInterface {
             $peek = array();
         }
         if ($peek) {
-            $peek['data'] = $this->_decodeData($peek['data']);
+            $peek['data'] = $this->_decodeData($peek['data'], $tube);
         }
         return $peek;
     }
@@ -241,53 +249,14 @@ class BeanstalkInterface {
      * Decodes job data based on user settings.
      *
      * @param string $pData Raw job data.
+     * @param string $tube Tube name.
      * @return mixed Decoded data or original data if no decoding applied/successful.
      */
-    private function _decodeData($pData) { // Renamed from _decodeDate for clarity
-        $this->_contentType = false; // Reset content type flag
-        $out = $pData; // Default output is the raw data
-        $data = null; // Intermediate decoded data
-
-        // 1. Try Base64 Decode (if enabled in settings)
-        if ($this->settings->isBase64DecodeEnabled()) {
-            set_error_handler(array($this, 'exceptions_error_handler'));
-            try {
-                $data = base64_decode($pData);
-            } catch (Exception $e) {
-                $data = $e->getMessage();
-            }
-            ob_get_clean();
-            // restore old error handler
-            restore_error_handler();
-        }
-
-        // 2. Try Unserialize (if enabled in settings)
-        if ($this->settings->isUnserializationEnabled()) {
-            set_error_handler(array($this, 'exceptions_error_handler'));
-            try {
-                $data = unserialize($pData);
-            } catch (Exception $e) {
-                $data = $e->getMessage();
-            }
-            ob_get_clean();
-            // restore old error handler
-            restore_error_handler();
-        }
-
-        if ($data) {
-            $this->_contentType = 'php';
-            $out = $data;
-        } else {
-            // 3. Try JSON Decode (if enabled in settings)
-            if ($this->settings->isJsonDecodeEnabled()) {
-                $data = @json_decode($pData, true);
-            }
-            if ($data) {
-                $this->_contentType = 'json';
-                //$out = $data;
-            }
-        }
-        return $out;
+    private function _decodeData($pData, $tube) { // Renamed from _decodeDate for clarity
+        $displaySettings = $this->bodyDisplaySettings->getEffectiveSettings($this->server, $tube);
+        $display = $this->bodyFormatter->decodeForPeek($pData, $displaySettings);
+        $this->_contentType = $display['content_type'] === 'text' ? false : $display['content_type'];
+        return $display['body'];
     }
 
     public function exceptions_error_handler($severity, $message, $filename, $lineno) {

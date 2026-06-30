@@ -26,6 +26,9 @@ require_once dirname(__FILE__) . '/../src/ReviewBatchNaming.php';
 require_once dirname(__FILE__) . '/../src/ReviewBatchStorage.php';
 require_once dirname(__FILE__) . '/../src/ReviewBatchService.php';
 require_once dirname(__FILE__) . '/../src/Settings.php';
+require_once dirname(__FILE__) . '/../src/TubeBodyDisplayStorage.php';
+require_once dirname(__FILE__) . '/../src/TubeBodyDisplaySettings.php';
+require_once dirname(__FILE__) . '/../src/JobBodyFormatter.php';
 require_once dirname(__FILE__) . '/../src/ReviewBatchPageBuilder.php';
 
 $GLOBALS['server'] = !empty($_GET['server']) ? filter_input(INPUT_GET, 'server', FILTER_SANITIZE_SPECIAL_CHARS) : '';
@@ -50,6 +53,8 @@ class Console {
     private $serversCookie = array();
     private $searchResults = array();
     private $reviewBatchPageBuilder = null;
+    private $tubeBodyDisplayStorage = null;
+    private $tubeBodyDisplaySettings = null;
     private $actionTimeStart = 0;
 
     public function __construct() {
@@ -384,7 +389,12 @@ class Console {
         }
 
         try {
-            $this->interface = new BeanstalkInterface($this->_globalVar['server']);
+            $this->interface = new BeanstalkInterface(
+                $this->_globalVar['server'],
+                new Settings(),
+                $this->getTubeBodyDisplaySettings(),
+                new JobBodyFormatter()
+            );
 
             if (!empty($_GET['action']) && $this->shouldDispatchBeforeTubeStats($this->_globalVar['action'])) {
                 if ($this->isReviewJsonAction($this->_globalVar['action'])) {
@@ -407,6 +417,9 @@ class Console {
                 $this->_tplVars['peek'] = $this->interface->peekAll($this->_globalVar['tube']);
             }
             $this->_tplVars['contentType'] = $this->interface->getContentType();
+            if (!empty($this->_globalVar['tube'])) {
+                $this->setTubeBodyDisplayTplVars($this->_globalVar['server'], $this->_globalVar['tube']);
+            }
             // Refactor target: this dispatch block can eventually share dispatchAction().
             if (!empty($_GET['action'])) {
                 $funcName = "_action" . ucfirst($this->_globalVar['action']);
@@ -489,6 +502,7 @@ class Console {
             'reviewBatchTakeOver',
             'reviewBatchOperationStart',
             'reviewBatchOperationProcess',
+            'tubeBodyDisplaySave',
         ), true);
     }
 
@@ -640,6 +654,46 @@ class Console {
         $this->interface->pauseTube($this->_globalVar['tube'], $delay);
         header(
                 sprintf('Location: ./?server=%s&tube=%s', $this->_globalVar['server'], urlencode($this->_globalVar['tube'])));
+        exit();
+    }
+
+    /**
+     * Saves or clears the current tube body display override.
+     *
+     * @return void
+     * @throws InvalidArgumentException If the override cannot be saved.
+     */
+    protected function _actionTubeBodyDisplaySave() {
+        $tube = isset($_POST['tube']) ? $_POST['tube'] : $this->_globalVar['tube'];
+        $targetServer = $this->_globalVar['server'];
+        if ($tube === '') {
+            throw new InvalidArgumentException('Tube is required');
+        }
+
+        $resolver = $this->getTubeBodyDisplaySettings();
+        $mode = isset($_POST['mode']) ? $_POST['mode'] : 'global';
+        if ($mode === 'custom') {
+            $resolver->saveOverride($targetServer, $tube, array(
+                'enableBase64Decode' => !empty($_POST['enableBase64Decode']),
+                'enableUnserialization' => !empty($_POST['enableUnserialization']),
+                'enableJsonDecode' => !empty($_POST['enableJsonDecode']),
+            ));
+        } else {
+            $resolver->deleteOverride($targetServer, $tube);
+        }
+
+        if (!empty($_POST['batchId']) && $this->isReviewEnabled()) {
+            $batch = $this->getReviewBatchStorage()->loadBatch($_POST['batchId']);
+            if ($batch
+                    && isset($batch['source_server'], $batch['source_tube'])
+                    && $batch['source_server'] === $this->_globalVar['server']
+                    && $batch['source_tube'] === $tube) {
+                header('Location: ' . $this->reviewBatchShowUrl($batch['id']));
+                exit();
+            }
+        }
+
+        header(sprintf('Location: ./?server=%s&tube=%s', urlencode($this->_globalVar['server']), urlencode($tube)));
         exit();
     }
 
@@ -935,6 +989,7 @@ class Console {
         $this->_tplVars['_tplPage'] = 'reviewBatchProgress';
         $this->_tplVars['reviewBatch'] = $batch;
         $this->_tplVars['reviewOperation'] = $storage->loadOperation($batch['id']);
+        $this->setTubeBodyDisplayTplVarsForBatch($batch);
     }
 
     /**
@@ -994,8 +1049,14 @@ class Console {
 
         $this->_tplVars['_tplMain'] = 'main';
         $this->_tplVars['_tplPage'] = 'reviewBatchShow';
-        $pageBuilder = new ReviewBatchPageBuilder($this->interface, $storage);
+        $pageBuilder = new ReviewBatchPageBuilder(
+            $this->interface,
+            $storage,
+            $this->getTubeBodyDisplaySettings(),
+            new JobBodyFormatter()
+        );
         $this->_tplVars = array_merge($this->_tplVars, $pageBuilder->buildShowPage($batch, $page, $perPage, $previewLength));
+        $this->setTubeBodyDisplayTplVarsForBatch($batch);
     }
 
     /**
@@ -1220,6 +1281,7 @@ class Console {
         $this->_tplVars['_tplPage'] = 'reviewBatchOperationProgress';
         $this->_tplVars['reviewBatch'] = $batch;
         $this->_tplVars['reviewOperation'] = $operation;
+        $this->setTubeBodyDisplayTplVarsForBatch($batch);
     }
 
     /**
@@ -2034,9 +2096,69 @@ class Console {
      */
     private function getReviewBatchPageBuilder() {
         if ($this->reviewBatchPageBuilder === null) {
-            $this->reviewBatchPageBuilder = new ReviewBatchPageBuilder($this->interface, $this->getReviewBatchStorage());
+            $this->reviewBatchPageBuilder = new ReviewBatchPageBuilder(
+                $this->interface,
+                $this->getReviewBatchStorage(),
+                $this->getTubeBodyDisplaySettings(),
+                new JobBodyFormatter()
+            );
         }
         return $this->reviewBatchPageBuilder;
+    }
+
+    /**
+     * Returns per-tube body display storage.
+     *
+     * @return TubeBodyDisplayStorage
+     */
+    private function getTubeBodyDisplayStorage() {
+        if ($this->tubeBodyDisplayStorage === null) {
+            $this->tubeBodyDisplayStorage = new TubeBodyDisplayStorage($this->_globalVar['config']);
+        }
+        return $this->tubeBodyDisplayStorage;
+    }
+
+    /**
+     * Returns the body display settings resolver.
+     *
+     * @return TubeBodyDisplaySettings
+     */
+    private function getTubeBodyDisplaySettings() {
+        if ($this->tubeBodyDisplaySettings === null) {
+            $this->tubeBodyDisplaySettings = new TubeBodyDisplaySettings(new Settings(), $this->getTubeBodyDisplayStorage());
+        }
+        return $this->tubeBodyDisplaySettings;
+    }
+
+    /**
+     * Sets template variables for editing one tube's body display settings.
+     *
+     * @param string $targetServer Server connection string.
+     * @param string $targetTube Tube name.
+     * @param string $batchId Optional review batch id.
+     * @return void
+     * @throws InvalidArgumentException If tube display settings cannot be read.
+     */
+    private function setTubeBodyDisplayTplVars($targetServer, $targetTube, $batchId = '') {
+        $display = $this->getTubeBodyDisplaySettings()->getEffectiveSettings($targetServer, $targetTube);
+        $this->_tplVars['tubeBodyDisplayTargetServer'] = $targetServer;
+        $this->_tplVars['tubeBodyDisplayTargetTube'] = $targetTube;
+        $this->_tplVars['tubeBodyDisplayBatchId'] = $batchId;
+        $this->_tplVars['tubeBodyDisplay'] = $display;
+        $this->_tplVars['tubeBodyDisplayOverride'] = !empty($display['has_override']) ? $display : null;
+    }
+
+    /**
+     * Sets template variables for editing the source tube body display settings.
+     *
+     * @param array $batch Review batch metadata.
+     * @return void
+     * @throws InvalidArgumentException If tube display settings cannot be read.
+     */
+    private function setTubeBodyDisplayTplVarsForBatch($batch) {
+        $targetServer = isset($batch['source_server']) ? $batch['source_server'] : $this->_globalVar['server'];
+        $targetTube = isset($batch['source_tube']) ? $batch['source_tube'] : '';
+        $this->setTubeBodyDisplayTplVars($targetServer, $targetTube, isset($batch['id']) ? $batch['id'] : '');
     }
 
     /**
