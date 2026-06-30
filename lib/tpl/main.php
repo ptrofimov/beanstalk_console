@@ -6,6 +6,14 @@ if ($server) {
 }
 $settings = new Settings();
 $jsDefaults = $settings->getAllDefaults();
+$tubeBodyDisplayTargetTube = null;
+$tubeBodyDisplayMenuLabel = 'Edit settings for this tube';
+if ($server && $tube && isset($tubes) && in_array($tube, $tubes)) {
+    $tubeBodyDisplayTargetTube = $tube;
+} elseif (isset($reviewBatch['source_tube']) && $reviewBatch['source_tube'] !== '') {
+    $tubeBodyDisplayTargetTube = $reviewBatch['source_tube'];
+    $tubeBodyDisplayMenuLabel = 'Edit settings for source tube';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -147,7 +155,10 @@ $jsDefaults = $settings->getAllDefaults();
                                     <li><a href="https://github.com/kr/beanstalkd/blob/master/doc/protocol.txt">Protocol Specification</a></li>
                                     <li><a href="https://github.com/ptrofimov/beanstalk_console">Beanstalk console (github)</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#settings" role="button" data-toggle="modal">Edit settings</a></li>
+                                    <li><a href="#settings" role="button" data-toggle="modal">Edit settings (global)</a></li>
+                                    <?php if ($tubeBodyDisplayTargetTube) { ?>
+                                        <li><a href="#tube-body-display-settings" role="button" data-toggle="modal"><?php echo htmlspecialchars($tubeBodyDisplayMenuLabel); ?></a></li>
+                                    <?php } ?>
                                 </ul>
                             </li>
                             <?php if (@$config['auth']['enabled']) { ?>
@@ -248,6 +259,9 @@ $jsDefaults = $settings->getAllDefaults();
                             <?php require_once dirname(__FILE__) . '/modalFilterColumns.php'; ?>
                         <?php } ?>
                         <?php require_once dirname(__FILE__) . '/modalSettings.php'; ?>
+                        <?php if ($tubeBodyDisplayTargetTube) { ?>
+                            <?php require_once dirname(__FILE__) . '/modalTubeBodyDisplaySettings.php'; ?>
+                        <?php } ?>
                     <?php endif; ?>
             </div>
 

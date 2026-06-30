@@ -77,6 +77,14 @@ $GLOBALS['config'] = array(
     ),
 
     /**
+     * Per-server, per-tube job body display overrides.
+     */
+    'tubeBodyDisplay' => array(
+        // null means dirname($config['storage']) . '/tube-body-display.json'.
+        'storage' => null,
+    ),
+
+    /**
      * Review batch settings.
      */
     'review' => array(

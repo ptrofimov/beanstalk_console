@@ -7,16 +7,22 @@ class ReviewBatchPageBuilder {
 
     private $interface;
     private $storage;
+    private $bodyDisplaySettings;
+    private $bodyFormatter;
 
     /**
      * Stores queue and review storage dependencies.
      *
      * @param BeanstalkInterface $interface Queue interface wrapper.
      * @param ReviewBatchStorage $storage Review batch storage.
+     * @param TubeBodyDisplaySettings|null $bodyDisplaySettings Per-tube display resolver.
+     * @param JobBodyFormatter|null $bodyFormatter Body formatter.
      */
-    public function __construct($interface, $storage) {
+    public function __construct($interface, $storage, $bodyDisplaySettings = null, $bodyFormatter = null) {
         $this->interface = $interface;
         $this->storage = $storage;
+        $this->bodyDisplaySettings = $bodyDisplaySettings ?: new TubeBodyDisplaySettings();
+        $this->bodyFormatter = $bodyFormatter ?: new JobBodyFormatter();
     }
 
     /**
@@ -55,7 +61,7 @@ class ReviewBatchPageBuilder {
                 : array();
         foreach ($previewReviewIds as $reviewId) {
             if (isset($bodySnapshots[$reviewId])) {
-                $display = $this->formatJobBodyForDisplay($bodySnapshots[$reviewId]['body'], false);
+                $display = $this->formatJobBodyForDisplay($bodySnapshots[$reviewId]['body'], false, $batch);
                 $bodies[$reviewId] = array(
                     'body' => $display['body'],
                     'content_type' => $display['content_type'],
@@ -66,7 +72,7 @@ class ReviewBatchPageBuilder {
             }
 
             try {
-                $display = $this->getLiveReviewJobBodyDisplay($reviewId);
+                $display = $this->getLiveReviewJobBodyDisplay($reviewId, $batch);
                 $bodies[$reviewId] = array(
                     'body' => $display['body'],
                     'content_type' => $display['content_type'],
@@ -119,6 +125,10 @@ class ReviewBatchPageBuilder {
             'reviewPageBodyCount' => count($bodies),
             'reviewJobPreviews' => $previews,
             'reviewJobBodies' => $bodies,
+            'reviewBodyDisplay' => $this->bodyDisplaySettings->getEffectiveSettings(
+                isset($batch['source_server']) ? $batch['source_server'] : '',
+                isset($batch['source_tube']) ? $batch['source_tube'] : ''
+            ),
         );
     }
 
@@ -126,15 +136,16 @@ class ReviewBatchPageBuilder {
      * Returns a formatted display body for a live review-copy job.
      *
      * @param int $reviewId Review-copy job id.
+     * @param array $batch Review batch metadata.
      * @return array
      * @throws Exception If the live review-copy job cannot be peeked.
      */
-    public function getLiveReviewJobBodyDisplay($reviewId) {
+    public function getLiveReviewJobBodyDisplay($reviewId, $batch = array()) {
         $job = $this->interface->_client->peek((int)$reviewId);
         if (!$job) {
             throw new Exception('Review job not found');
         }
-        return $this->formatJobBodyForDisplay($job->getData(), false);
+        return $this->formatJobBodyForDisplay($job->getData(), false, $batch);
     }
 
     /**
@@ -209,49 +220,15 @@ class ReviewBatchPageBuilder {
      *
      * @param string $body Raw job body.
      * @param bool $html Whether to HTML-escape the formatted body.
+     * @param array $batch Review batch metadata.
      * @return array
+     * @throws InvalidArgumentException If tube display settings cannot be read.
      */
-    public function formatJobBodyForDisplay($body, $html) {
-        $settings = new Settings();
-        $contentType = 'text';
-        $display = $body;
-
-        if ($settings->isBase64DecodeEnabled()) {
-            $decoded = base64_decode($display, true);
-            if ($decoded !== false) {
-                $display = $decoded;
-                $contentType = 'base64';
-            }
-        }
-
-        if ($settings->isUnserializationEnabled()) {
-            $unserialized = @unserialize($display);
-            if ($unserialized !== false || $display === serialize(false)) {
-                $display = print_r($unserialized, true);
-                $contentType = 'php';
-            }
-        }
-
-        if ($settings->isJsonDecodeEnabled()) {
-            $decodedJson = json_decode($display, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $display = json_encode($decodedJson, JSON_PRETTY_PRINT);
-                $contentType = 'json';
-            }
-        }
-
-        if (!is_string($display)) {
-            $display = print_r($display, true);
-        }
-        if (!preg_match('//u', $display)) {
-            $display = base64_encode($display);
-            $contentType = 'base64';
-        }
-
-        return array(
-            'body' => $html ? htmlspecialchars($display) : $display,
-            'content_type' => $contentType,
-        );
+    public function formatJobBodyForDisplay($body, $html, $batch = array()) {
+        $server = isset($batch['source_server']) ? $batch['source_server'] : '';
+        $tube = isset($batch['source_tube']) ? $batch['source_tube'] : '';
+        $settings = $this->bodyDisplaySettings->getEffectiveSettings($server, $tube);
+        return $this->bodyFormatter->formatForDisplay($body, $settings, $html);
     }
 
     /**
